@@ -1,25 +1,30 @@
 #define TOP    0
 #define BOTTOM 1
 
-static const configs_t configs[] = {
+static const enum sb_routine_e chosen_routines[] = {
 	/* TOP BAR */
-	{ LOG,        TOP },
-	{ TODO,       TOP },
-	{ WEATHER,    TOP },
-	{ BACKUP,     TOP },
-	{ WIFI,       TOP },
-	{ TIME,       TOP },
+	LOG,
+	TODO,
+	WEATHER,
+	BACKUP,
+	WIFI,
+	TIME,
+
+	/* DELIMITER BETWEEN BARS */
+	DELIMITER,
 	
 	/*BOTTOM BAR */
-	{ NETWORK,    BOTTOM },
-	{ DISK,       BOTTOM },
-	{ RAM,        BOTTOM },
-	{ LOAD,       BOTTOM },
-	{ CPU_USAGE,  BOTTOM },
-	{ CPU_TEMP,   BOTTOM },
-	{ FAN,        BOTTOM },
-	{ BATTERY,    BOTTOM },
-	{ VOLUME,     BOTTOM },
-	{ BRIGHTNESS, BOTTOM },
-	{ -1, -1 }
+	NETWORK,
+	DISK,
+	RAM,
+	LOAD,
+	CPU_USAGE,
+	CPU_TEMP,
+	FAN,
+	BATTERY,
+	VOLUME,
+	BRIGHTNESS,
+
+	/* this must always be the list item in this list */
+	ENDOFLIST
 };
