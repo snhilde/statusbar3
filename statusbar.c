@@ -100,9 +100,9 @@ static void *wifi_routine(void *thunk)
 
 
 static const struct thread_routines_t {
-	enum sb_process_e process;
-	void *(*routine)(void *thunk);
-} thread_routines[] = {
+	enum sb_routine_e routine;
+	void *(*callback)(void *thunk);
+} possible_routines[] = {
 	{ BACKUP,     backup_routine     },
 	{ BATTERY,    battery_routine    },
 	{ BRIGHTNESS, brightness_routine },
@@ -119,35 +119,44 @@ static const struct thread_routines_t {
 	{ VOLUME,     volume_routine     },
 	{ WEATHER,    weather_routine    },
 	{ WIFI,       wifi_routine       },
-	{ -1, NULL }
+	{ ENDOFLIST, NULL }
 };
 
 int main(int argc, char *argv[])
 {
 	int           i;
 	int           index;
-	sb_process_t *process;
+	sb_routine_t *routine_object;
 	int           j;
 
-	for (i = 0; configs[i].process >= 0; i++) {
-		index            = configs[i].process;
-		process          = process_array + index;
-
-		/* set flag for this process */
-		sb_flags_active |= 1<<index;
-
-		/* set process-specific settings in process object */
-		process->bar     = configs[i].bar;
-
-		/* determine proper routine for this thread */
-		for (j = 0; thread_routines[j].process >= 0; j++) {
-			if (thread_routines[j].process == configs[i].process)
+	/* step through each routine chosen in config.h and set it up */
+	for (i = 0; chosen_routines[i] != ENDOFLIST; i++) {
+		/* First, match chosen routine to master list of routines (possible_routines) to determine
+		 * callback function. If a match is not found, throw an error and exit. */
+		for (j = 0; possible_routines[j].routine != ENDOFLIST; j++) {
+			if (possible_routines[j].routine == chosen_routines[i])
 				break;
 		}
 
-		/* TODO: where to catch fallthroughs? */
+		if (possible_routines[j].routine == ENDOFLIST) {
+			/* we have an unknown value */
+			fprintf(stderr, "Unknown routine in index %d of chosen_routines", i);
+			/* clean up all threads */
+			return 1;
+		}
 
-		pthread_create(&(process->thread), NULL, thread_routines[j].routine, (void *)process);
+		/* all good, start initializing the routine */
+		index          = chosen_routines[i];
+		routine_object = routine_array + index;
+
+		/* set flag for this routine */
+		sb_flags_active |= 1<<index;
+
+		/* set routine-specific settings in routine object */
+
+
+		/* create thread */
+		pthread_create(&(routine_object->thread), NULL, possible_routines[j].callback, (void *)routine_object);
 	}
 
 	return 0;
