@@ -26,6 +26,7 @@ enum sb_routine_e {
 	ENDOFLIST  = -1 /* terminator value */
 };
 
+/* Routine object declaration */
 typedef struct sb_routine {
 	enum sb_routine_e  routine;     /* Number assigned to each routine. This is used to
 	                                   access the routine's flags and to match it to various
