@@ -3,6 +3,7 @@
 #include <X11/Xlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdlib.h>
 
 
 enum sb_routine_e {
@@ -24,6 +25,25 @@ enum sb_routine_e {
 	WIFI       = 15,
 	DELIMITER  = 100,
 	ENDOFLIST  = -1 /* terminator value */
+};
+
+static const char *routine_names[] = {
+	"Backup",
+	"Battery",
+	"Brightness",
+	"CPU Temp",
+	"CPU Usage",
+	"Disk",
+	"Fan",
+	"Load",
+	"Log",
+	"Network",
+	"RAM",
+	"Time",
+	"TODO",
+	"Volume",
+	"Weather",
+	"Wifi"
 };
 
 /* Routine object declaration */
