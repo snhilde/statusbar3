@@ -57,18 +57,18 @@ typedef struct sb_routine {
 	pthread_t          thread;      /* Thread assigned to this routine */
 	pthread_mutex_t    mutex;       /* Mutex assigned to this routine. This will be used to
 	                                   lock output when reading from or writing to it. */
-	void            *(*thread_func)(void *);     /* Callback function for thread */
+	void            *(*thread_func)(void *); /* Callback function for thread */
 	struct sb_routine *next;        /* Pointer to next routine in list. This is how we are
 	                                   going to keep track of the order or routines for
 	                                   printing to the status bar. */
 } sb_routine_t;
 
-/* These are all the flags for the routine. Because it is global, it is zero'd out on
- * startup. If a user does not chose a particular routine in the config file, that routine's
- * flag will remain zero. If the routine is chosen, then its bit flag will be set to 1. */
-unsigned long sb_flags_active;
-
 /* This array will hold all the routine objects. Because it is global, it is zero'd out on
  * startup. If a user does not chose a particular routine in the config file, that
  * routine's index will remain empty. */
 sb_routine_t routine_array[16];
+
+/* These are all the flags for the routine. Because it is global, it is zero'd out on
+ * startup. If a user does not chose a particular routine in the config file, that routine's
+ * flag will remain zero. If the routine is chosen, then its bit flag will be set to 1. */
+unsigned long sb_flags_active;
