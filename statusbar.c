@@ -124,17 +124,22 @@ static const struct thread_routines_t {
 
 int main(int argc, char *argv[])
 {
-	int           i;
-	int           index;
-	sb_routine_t *routine_object;
-	int           j;
+	int                i;
+	enum sb_routine_e  chosen_routine;
+	int                j;
+	sb_routine_t      *routine_object;
+	void              *join_ret;
 
 	/* step through each routine chosen in config.h and set it up */
 	for (i = 0; chosen_routines[i] != ENDOFLIST; i++) {
+		chosen_routine = chosen_routines[i];
+		if (chosen_routine == DELIMITER)
+			continue; /* stub */
+
 		/* First, match chosen routine to master list of routines (possible_routines) to determine
 		 * callback function. If a match is not found, throw an error and exit. */
 		for (j = 0; possible_routines[j].routine != ENDOFLIST; j++) {
-			if (possible_routines[j].routine == chosen_routines[i])
+			if (possible_routines[j].routine == chosen_routine)
 				break;
 		}
 
@@ -145,18 +150,27 @@ int main(int argc, char *argv[])
 			return 1;
 		}
 
-		/* all good, start initializing the routine */
-		index          = chosen_routines[i];
-		routine_object = routine_array + index;
-
 		/* set flag for this routine */
-		sb_flags_active |= 1<<index;
+		sb_flags_active |= 1<<chosen_routine;
+
+		/* start initializing the routine */
+		routine_object = routine_array + chosen_routine;
 
 		/* set routine-specific settings in routine object */
 
 
 		/* create thread */
 		pthread_create(&(routine_object->thread), NULL, possible_routines[j].callback, (void *)routine_object);
+	}
+
+	/* block until all threads exit */
+	for (i = 0; chosen_routines[i] != ENDOFLIST; i++) {
+		chosen_routine = chosen_routines[i];
+		if (pthread_join(routine_array[chosen_routine].thread, &join_ret) != 0)
+			fprintf(stderr, "%s thread did not exit cleanly (%s)", routine_names[chosen_routine], (char *)join_ret);
+		else
+			fprintf(stdout, "%s thread returned \"%s\"", routine_names[chosen_routine], (char *)join_ret);
+		free(join_ret);
 	}
 
 	return 0;
