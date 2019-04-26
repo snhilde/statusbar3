@@ -166,11 +166,13 @@ int main(int argc, char *argv[])
 	/* block until all threads exit */
 	for (i = 0; chosen_routines[i] != ENDOFLIST; i++) {
 		chosen_routine = chosen_routines[i];
-		if (pthread_join(routine_array[chosen_routine].thread, &join_ret) != 0)
-			fprintf(stderr, "%s thread did not exit cleanly (%s)", routine_names[chosen_routine], (char *)join_ret);
-		else
-			fprintf(stdout, "%s thread returned \"%s\"", routine_names[chosen_routine], (char *)join_ret);
-		free(join_ret);
+		if (chosen_routine == DELIMITER)
+			continue;
+
+		if (pthread_join(routine_array[chosen_routine].thread, &join_ret) != 0) {
+			fprintf(stderr, "%s thread did not exit cleanly (%s)\n", routine_names[chosen_routine], (char *)join_ret);
+			free(join_ret);
+		}
 	}
 
 	return 0;
