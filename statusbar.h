@@ -27,15 +27,19 @@ enum sb_routine_e {
 };
 
 typedef struct sb_routine {
-	enum sb_routine_e    routine;     /* The number assigned to each routine. This is used to
-	                                     access the routine's flags and to match it to various
-										 checks and calls. */
-	char                 output[256]; /*  */
-	size_t               length;      /*  */
-	pthread_t            thread;      /*  */
-	pthread_mutex_t      mutex;       /*  */
-	void *(*thread_func)(void *);     /*  */
-	struct sb_routine *next;          /*  */
+	enum sb_routine_e  routine;     /* Number assigned to each routine. This is used to
+	                                   access the routine's flags and to match it to various
+	                                   checks and calls. */
+	char               output[256]; /* String of data that each routine will output for
+	                                   master status bar string to copy */
+	size_t             length;      /* Length of output */
+	pthread_t          thread;      /* Thread assigned to this routine */
+	pthread_mutex_t    mutex;       /* Mutex assigned to this routine. This will be used to
+	                                   lock output when reading from or writing to it. */
+	void            *(*thread_func)(void *);     /* Callback function for thread */
+	struct sb_routine *next;        /* Pointer to next routine in list. This is how we are
+	                                   going to keep track of the order or routines for
+	                                   printing to the status bar. */
 } sb_routine_t;
 
 /* These are all the flags for the routine. Because it is global, it is zero'd out on
