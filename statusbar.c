@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
 	enum sb_routine_e  chosen_routine;
 	int                j;
 	sb_routine_t      *routine_object;
-	void              *join_ret;
+	void              *join_ret = NULL;
 
 	/* step through each routine chosen in config.h and set it up */
 	for (i = 0; chosen_routines[i] != ENDOFLIST; i++) {
@@ -169,10 +169,9 @@ int main(int argc, char *argv[])
 		if (chosen_routine == DELIMITER)
 			continue;
 
-		if (pthread_join(routine_array[chosen_routine].thread, &join_ret) != 0) {
+		if (pthread_join(routine_array[chosen_routine].thread, &join_ret) != 0)
 			fprintf(stderr, "%s thread did not exit cleanly (%s)\n", routine_names[chosen_routine], (char *)join_ret);
-			free(join_ret);
-		}
+		free(join_ret);
 	}
 
 	return 0;
