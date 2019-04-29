@@ -16,7 +16,7 @@ static void *battery_routine(void *thunk)
 
 static void *brightness_routine(void *thunk)
 {
-	
+
 	return NULL;
 }
 
