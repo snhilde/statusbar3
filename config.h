@@ -1,6 +1,3 @@
-#define TOP    0
-#define BOTTOM 1
-
 static const enum sb_routine_e chosen_routines[] = {
 	/* TOP BAR */
 	LOG,
@@ -28,3 +25,6 @@ static const enum sb_routine_e chosen_routines[] = {
 	/* this must always be the list item in this list */
 	ENDOFLIST
 };
+
+/* 1 to display keyboard brightness with screen brightness */
+#define SHOW_KBD 1
