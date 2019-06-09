@@ -23,8 +23,7 @@ enum sb_routine_e {
 	VOLUME     = 13,
 	WEATHER    = 14,
 	WIFI       = 15,
-	DELIMITER  = 100,
-	ENDOFLIST  = -1 /* terminator value */
+	DELIMITER  = -1
 };
 
 static const char *routine_names[] = {
@@ -66,9 +65,12 @@ typedef struct sb_routine {
 /* This array will hold all the routine objects. Because it is global, it is zero'd out on
  * startup. If a user does not chose a particular routine in the config file, that
  * routine's index will remain empty. */
-sb_routine_t routine_array[16];
+sb_routine_t routine_array[sizeof(routine_names) / sizeof(*routine_names) + 1];
 
 /* These are all the flags for the routine. Because it is global, it is zero'd out on
  * startup. If a user does not chose a particular routine in the config file, that routine's
  * flag will remain zero. If the routine is chosen, then its bit flag will be set to 1. */
 unsigned long sb_flags_active;
+
+/* This will be the ordered list of routines used for printing to the master string. */
+sb_routine_t *routine_list;
