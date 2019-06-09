@@ -13,7 +13,8 @@ INCS= -I ${INCDIR} \
 
 LIBS= -L ${LIBDIR} \
 	  -L ${X11LIBDIR} \
-	  -l pthread
+	  -l pthread \
+      -l X11
 
 all:
 	@${CC} -g -O0 ${INCS} -o statusbar statusbar.c ${LIBS} -Wall
