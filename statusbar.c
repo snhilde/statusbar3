@@ -190,12 +190,12 @@ int main(int argc, char *argv[])
 	/* step through each routine chosen in config.h and set it up */
 	for (i = 0; i < num_routines; i++) {
 		index = chosen_routines[i];
-		if (index == DELIMITER)
-			continue; /* stub */
 
 		/* initialize the routine */
 		routine_object = routine_array + index;
 		pthread_mutex_init(&(routine_object->mutex), NULL);
+		if (index == DELIMITER)
+			snprintf(routine_object->output, sizeof(routine_object->output), ";");
 
 		/* string onto routine list */
 		routine_object->next = routine_array + chosen_routines[i+1];
