@@ -21,9 +21,6 @@ static const enum sb_routine_e chosen_routines[] = {
 	BATTERY,
 	VOLUME,
 	BRIGHTNESS,
-
-	/* this must always be the list item in this list */
-	ENDOFLIST
 };
 
 /* 1 to display keyboard brightness with screen brightness */
