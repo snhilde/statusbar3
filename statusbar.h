@@ -23,7 +23,7 @@ enum sb_routine_e {
 	VOLUME     = 13,
 	WEATHER    = 14,
 	WIFI       = 15,
-	DELIMITER  = -1
+	DELIMITER  = 16
 };
 
 static const char *routine_names[] = {
