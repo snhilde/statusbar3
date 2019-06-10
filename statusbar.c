@@ -67,96 +67,416 @@ static void *sb_print_to_sb(void *thunk)
 
 static void *sb_backup_routine(void *thunk)
 {
+	sb_routine_t   *routine = thunk;
+	struct timeb    tm;
+	unsigned short  start_ms;
+	unsigned short  finish_ms;
+
+	memset(&tm, 0, sizeof(tm));
+
+	while(1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
+		/* TODO: run routine */
+
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_backup_routine");
+		}
+	}
 	
 	return NULL;
 }
 
 static void *sb_battery_routine(void *thunk)
 {
+	sb_routine_t   *routine = thunk;
+	struct timeb    tm;
+	unsigned short  start_ms;
+	unsigned short  finish_ms;
+
+	memset(&tm, 0, sizeof(tm));
+
+	while(1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
+		/* TODO: run routine */
+
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_battery_routine");
+		}
+	}
 	
 	return NULL;
 }
 
 static void *sb_brightness_routine(void *thunk)
 {
+	sb_routine_t   *routine = thunk;
+	struct timeb    tm;
+	unsigned short  start_ms;
+	unsigned short  finish_ms;
+
+	memset(&tm, 0, sizeof(tm));
+
+	while(1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
+		/* TODO: run routine */
+
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_brightness_routine");
+		}
+	}
 
 	return NULL;
 }
 
 static void *sb_cpu_temp_routine(void *thunk)
 {
+	sb_routine_t   *routine = thunk;
+	struct timeb    tm;
+	unsigned short  start_ms;
+	unsigned short  finish_ms;
+
+	memset(&tm, 0, sizeof(tm));
+
+	while(1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
+		/* TODO: run routine */
+
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_cpu_temp_routine");
+		}
+	}
 	
 	return NULL;
 }
 
 static void *sb_cpu_usage_routine(void *thunk)
 {
+	sb_routine_t   *routine = thunk;
+	struct timeb    tm;
+	unsigned short  start_ms;
+	unsigned short  finish_ms;
+
+	memset(&tm, 0, sizeof(tm));
+
+	while(1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
+		/* TODO: run routine */
+
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_cpu_usage_routine");
+		}
+	}
 	
 	return NULL;
 }
 
 static void *sb_disk_routine(void *thunk)
 {
+	sb_routine_t   *routine = thunk;
+	struct timeb    tm;
+	unsigned short  start_ms;
+	unsigned short  finish_ms;
+
+	memset(&tm, 0, sizeof(tm));
+
+	while(1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
+		/* TODO: run routine */
+
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_disk_routine");
+		}
+	}
 	
 	return NULL;
 }
 
 static void *sb_fan_routine(void *thunk)
 {
+	sb_routine_t   *routine = thunk;
+	struct timeb    tm;
+	unsigned short  start_ms;
+	unsigned short  finish_ms;
+
+	memset(&tm, 0, sizeof(tm));
+
+	while(1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
+		/* TODO: run routine */
+
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_fan_routine");
+		}
+	}
 	
 	return NULL;
 }
 
 static void *sb_load_routine(void *thunk)
 {
+	sb_routine_t   *routine = thunk;
+	struct timeb    tm;
+	unsigned short  start_ms;
+	unsigned short  finish_ms;
+
+	memset(&tm, 0, sizeof(tm));
+
+	while(1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
+		/* TODO: run routine */
+
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_load_routine");
+		}
+	}
 	
 	return NULL;
 }
 
 static void *sb_log_routine(void *thunk)
 {
+	sb_routine_t   *routine = thunk;
+	struct timeb    tm;
+	unsigned short  start_ms;
+	unsigned short  finish_ms;
+
+	memset(&tm, 0, sizeof(tm));
+
+	while(1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
+		/* TODO: run routine */
+
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_log_routine");
+		}
+	}
 	
 	return NULL;
 }
 
 static void *sb_network_routine(void *thunk)
 {
+	sb_routine_t   *routine = thunk;
+	struct timeb    tm;
+	unsigned short  start_ms;
+	unsigned short  finish_ms;
+
+	memset(&tm, 0, sizeof(tm));
+
+	while(1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
+		/* TODO: run routine */
+
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_network_routine");
+		}
+	}
 	
 	return NULL;
 }
 
 static void *sb_ram_routine(void *thunk)
 {
+	sb_routine_t   *routine = thunk;
+	struct timeb    tm;
+	unsigned short  start_ms;
+	unsigned short  finish_ms;
+
+	memset(&tm, 0, sizeof(tm));
+
+	while(1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
+		/* TODO: run routine */
+
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_ram_routine");
+		}
+	}
 	
 	return NULL;
 }
 
 static void *sb_time_routine(void *thunk)
 {
+	sb_routine_t   *routine = thunk;
+	struct timeb    tm;
+	unsigned short  start_ms;
+	unsigned short  finish_ms;
+
+	memset(&tm, 0, sizeof(tm));
+
+	while(1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
+		/* TODO: run routine */
+
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_time_routine");
+		}
+	}
 	
 	return NULL;
 }
 
 static void *sb_todo_routine(void *thunk)
 {
+	sb_routine_t   *routine = thunk;
+	struct timeb    tm;
+	unsigned short  start_ms;
+	unsigned short  finish_ms;
+
+	memset(&tm, 0, sizeof(tm));
+
+	while(1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
+		/* TODO: run routine */
+
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_todo_routine");
+		}
+	}
 	
 	return NULL;
 }
 
 static void *sb_volume_routine(void *thunk)
 {
+	sb_routine_t   *routine = thunk;
+	struct timeb    tm;
+	unsigned short  start_ms;
+	unsigned short  finish_ms;
+
+	memset(&tm, 0, sizeof(tm));
+
+	while(1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
+		/* TODO: run routine */
+
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_volume_routine");
+		}
+	}
 	
 	return NULL;
 }
 
 static void *sb_weather_routine(void *thunk)
 {
+	sb_routine_t   *routine = thunk;
+	struct timeb    tm;
+	unsigned short  start_ms;
+	unsigned short  finish_ms;
+
+	memset(&tm, 0, sizeof(tm));
+
+	while(1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
+		/* TODO: run routine */
+
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_weather_routine");
+		}
+	}
 	
 	return NULL;
 }
 
 static void *sb_wifi_routine(void *thunk)
 {
+	sb_routine_t   *routine = thunk;
+	struct timeb    tm;
+	unsigned short  start_ms;
+	unsigned short  finish_ms;
+
+	memset(&tm, 0, sizeof(tm));
+
+	while(1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
+		/* TODO: run routine */
+
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_wifi_routine");
+		}
+	}
 	
 	return NULL;
 }
