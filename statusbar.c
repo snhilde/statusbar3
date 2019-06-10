@@ -5,7 +5,7 @@
 
 /* ftime for milliseconds */
 /* clock_getres(2) (see test.c) */
-static int sb_print_to_sb(void)
+static void *sb_print_to_sb(void *thunk)
 {
 	Display      *dpy;
 	Window        root;
@@ -38,17 +38,17 @@ static int sb_print_to_sb(void)
 
 		if (!XStoreName(dpy, root, full_output)) {
 			fprintf(stderr, "Failed to set root name");
-			return -1;
+			break;
 		}
 		if (!XFlush(dpy)) {
 			fprintf(stderr, "Failed to flush output buffer");
-			return -1;
+			break;
 		}
 
 		/* TODO: sleep for 1 second */
 	}
 
-	return 1;
+	return NULL;
 }
 
 static void *sb_backup_routine(void *thunk)
@@ -175,8 +175,8 @@ int main(int argc, char *argv[])
 	size_t             num_routines;
 	int                i;
 	enum sb_routine_e  index;
-	int                j;
 	sb_routine_t      *routine_object;
+	pthread_t          print_thread;
 	void              *join_ret = NULL;
 
 	num_routines = sizeof(chosen_routines) / sizeof(*chosen_routines);
@@ -190,29 +190,31 @@ int main(int argc, char *argv[])
 	/* step through each routine chosen in config.h and set it up */
 	for (i = 0; i < num_routines; i++) {
 		index = chosen_routines[i];
-
-		/* initialize the routine */
 		routine_object = routine_array + index;
-		pthread_mutex_init(&(routine_object->mutex), NULL);
-		if (index == DELIMITER)
-			snprintf(routine_object->output, sizeof(routine_object->output), ";");
-
-		/* string onto routine list */
-		routine_object->next = routine_array + chosen_routines[i+1];
-		
-		/* create thread */
-		for (j = 0; j < sizeof(possible_routines) / sizeof(*possible_routines); j++) {
-			if (chosen_routines[i] == possible_routines[j].routine) {
-				pthread_create(&(routine_object->thread), NULL, possible_routines[j].callback, (void *)routine_object);
-				break;
-			}
-		}
 
 		/* set flag for this routine */
 		sb_flags_active |= 1<<index;
+
+		/* string onto routine list */
+		routine_object->next = routine_array + chosen_routines[i+1];
+
+		/* initialize the routine */
+		routine_object->routine = chosen_routines[i];
+		if (index == DELIMITER) {
+			snprintf(routine_object->output, sizeof(routine_object->output), ";");
+			routine_object->length = 1;
+			continue;
+		}
+		routine_object->thread_func = possible_routines[index].callback;
+
+		/* create thread */
+		pthread_mutex_init(&(routine_object->mutex), NULL);
+		pthread_create(&(routine_object->thread), NULL, routine_object->thread_func, (void *)routine_object);
 	}
 	/* properly terminate the routine list */
 	routine_object->next = NULL;
+
+	pthread_create(&print_thread, NULL, sb_print_to_sb, NULL);
 
 	/* block until all threads exit */
 	for (i = 0; i < num_routines; i++) {
