@@ -1,26 +1,29 @@
-static const enum sb_routine_e chosen_routines[] = {
+static const struct {
+	enum sb_routine_e routine;
+	time_t            seconds;
+} chosen_routines[] = {
 	/* TOP BAR */
-	LOG,
-	TODO,
-	WEATHER,
-	BACKUP,
-	WIFI,
-	TIME,
+	{ LOG       , 5       },
+	{ TODO      , 5       },
+	{ WEATHER   , 60 * 30 },
+	{ BACKUP    , 5       },
+	{ WIFI      , 5       },
+	{ TIME      , 1       },
 
 	/* DELIMITER BETWEEN BARS */
-	DELIMITER,
+	{ DELIMITER , 0       },
 	
 	/*BOTTOM BAR */
-	NETWORK,
-	DISK,
-	RAM,
-	LOAD,
-	CPU_USAGE,
-	CPU_TEMP,
-	FAN,
-	BATTERY,
-	VOLUME,
-	BRIGHTNESS,
+	{ NETWORK   , 1       },
+	{ DISK      , 5       },
+	{ RAM       , 1       },
+	{ LOAD      , 1       },
+	{ CPU_USAGE , 1       },
+	{ CPU_TEMP  , 1       },
+	{ FAN       , 1       },
+	{ BATTERY   , 30      },
+	{ VOLUME    , 1       },
+	{ BRIGHTNESS, 1       },
 };
 
 /* 1 to display keyboard brightness with screen brightness */
