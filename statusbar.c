@@ -199,21 +199,21 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	routine_list = routine_array + chosen_routines[0];
+	routine_list = routine_array + chosen_routines[0].routine;
 
 	/* step through each routine chosen in config.h and set it up */
 	for (i = 0; i < num_routines; i++) {
-		index = chosen_routines[i];
+		index = chosen_routines[i].routine;
 		routine_object = routine_array + index;
 
 		/* set flag for this routine */
 		sb_flags_active |= 1<<index;
 
 		/* string onto routine list */
-		routine_object->next = routine_array + chosen_routines[i+1];
+		routine_object->next = routine_array + chosen_routines[i+1].routine;
 
 		/* initialize the routine */
-		routine_object->routine = chosen_routines[i];
+		routine_object->routine = chosen_routines[i].routine;
 		if (index == DELIMITER) {
 			snprintf(routine_object->output, sizeof(routine_object->output), ";");
 			routine_object->length = 1;
@@ -233,7 +233,7 @@ int main(int argc, char *argv[])
 
 	/* block until all threads exit */
 	for (i = 0; i < num_routines; i++) {
-		index = chosen_routines[i];
+		index = chosen_routines[i].routine;
 		if (index == DELIMITER)
 			continue;
 
