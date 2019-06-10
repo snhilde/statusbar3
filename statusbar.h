@@ -51,6 +51,7 @@ typedef struct sb_routine {
 	enum sb_routine_e  routine;     /* Number assigned to each routine. This is used to
 	                                   access the routine's flags and to match it to various
 	                                   checks and calls. */
+	time_t             interval;    /* How often to call routine in seconds. */
 	char               output[256]; /* String of data that each routine will output for
 	                                   master status bar string to copy */
 	size_t             length;      /* Length of output */
