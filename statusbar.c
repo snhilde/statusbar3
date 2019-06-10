@@ -7,17 +7,25 @@
 /* clock_getres(2) (see test.c) */
 static void *sb_print_to_sb(void *thunk)
 {
-	Display      *dpy;
-	Window        root;
-	char          full_output[SBLENGTH];
-	size_t        offset;;
-	sb_routine_t *routine;
-	size_t        len;
+	Display         *dpy;
+	Window           root;
+	struct timeb     tm;
+	unsigned short   start_ms;
+	unsigned short   finish_ms;
+	char             full_output[SBLENGTH];
+	size_t           offset;;
+	sb_routine_t    *routine;
+	size_t           len;
 
 	dpy = XOpenDisplay(NULL);
 	root = RootWindow(dpy, DefaultScreen(dpy));
 
+	memset(&tm, 0, sizeof(tm));
+
 	while (1) {
+		ftime(&tm);
+		start_ms = tm.millitm;
+
 		offset = 0;
 		routine = routine_list;
 		while (routine != NULL) {
@@ -45,9 +53,15 @@ static void *sb_print_to_sb(void *thunk)
 			break;
 		}
 
-		/* TODO: sleep for 1 second */
+		ftime(&tm);
+		finish_ms = tm.millitm;
+
+		if (usleep((1000 - abs(finish_ms - start_ms)) * 1000) != 0) {
+			fprintf(stderr, "Error sleeping in sb_print_to_sb");
+		}
 	}
 
+	/* TODO: exit program here */
 	return NULL;
 }
 
@@ -215,6 +229,7 @@ int main(int argc, char *argv[])
 	routine_object->next = NULL;
 
 	pthread_create(&print_thread, NULL, sb_print_to_sb, NULL);
+	pthread_join(print_thread, NULL); /* TODO: remove when threads start going */
 
 	/* block until all threads exit */
 	for (i = 0; i < num_routines; i++) {
