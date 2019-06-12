@@ -3,8 +3,6 @@
 
 #define SBLENGTH 10240
 
-/* ftime for milliseconds */
-/* clock_getres(2) (see test.c) */
 static void *sb_print_to_sb(void *thunk)
 {
 	Display         *dpy;
@@ -32,7 +30,7 @@ static void *sb_print_to_sb(void *thunk)
 			pthread_mutex_lock(&(routine->mutex));
 			len = strlen(routine->output);
 			if (offset + len > SBLENGTH - 1) {
-				fprintf(stderr, "Exceeded max output length");
+				fprintf(stderr, "Exceeded max output length\n");
 				break;
 			}
 
@@ -45,11 +43,11 @@ static void *sb_print_to_sb(void *thunk)
 		full_output[offset] = '\0';
 
 		if (!XStoreName(dpy, root, full_output)) {
-			fprintf(stderr, "Failed to set root name");
+			fprintf(stderr, "Failed to set root name\n");
 			break;
 		}
 		if (!XFlush(dpy)) {
-			fprintf(stderr, "Failed to flush output buffer");
+			fprintf(stderr, "Failed to flush output buffer\n");
 			break;
 		}
 
@@ -57,7 +55,7 @@ static void *sb_print_to_sb(void *thunk)
 		finish_ms = tm.millitm;
 
 		if (usleep((1000 - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_print_to_sb");
+			fprintf(stderr, "Print routine: Error sleeping\n");
 		}
 	}
 
@@ -84,7 +82,7 @@ static void *sb_backup_routine(void *thunk)
 		finish_ms = tm.millitm;
 
 		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_backup_routine");
+			fprintf(stderr, "Backup routine: Error sleeping\n");
 		}
 	}
 	
@@ -110,7 +108,7 @@ static void *sb_battery_routine(void *thunk)
 		finish_ms = tm.millitm;
 
 		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_battery_routine");
+			fprintf(stderr, "Battery routine: Error sleeping\n");
 		}
 	}
 	
@@ -136,7 +134,7 @@ static void *sb_brightness_routine(void *thunk)
 		finish_ms = tm.millitm;
 
 		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_brightness_routine");
+			fprintf(stderr, "Brightness routine: Error sleeping\n");
 		}
 	}
 
@@ -162,7 +160,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 		finish_ms = tm.millitm;
 
 		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_cpu_temp_routine");
+			fprintf(stderr, "CPU Temp routine: Error sleeping\n");
 		}
 	}
 	
@@ -188,7 +186,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		finish_ms = tm.millitm;
 
 		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_cpu_usage_routine");
+			fprintf(stderr, "CPU Usage routine: Error sleeping\n");
 		}
 	}
 	
@@ -214,7 +212,7 @@ static void *sb_disk_routine(void *thunk)
 		finish_ms = tm.millitm;
 
 		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_disk_routine");
+			fprintf(stderr, "Disk routine: Error sleeping\n");
 		}
 	}
 	
@@ -240,7 +238,7 @@ static void *sb_fan_routine(void *thunk)
 		finish_ms = tm.millitm;
 
 		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_fan_routine");
+			fprintf(stderr, "Fan routine: Error sleeping\n");
 		}
 	}
 	
@@ -266,7 +264,7 @@ static void *sb_load_routine(void *thunk)
 		finish_ms = tm.millitm;
 
 		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_load_routine");
+			fprintf(stderr, "Load routine: Error sleeping\n");
 		}
 	}
 	
@@ -292,7 +290,7 @@ static void *sb_log_routine(void *thunk)
 		finish_ms = tm.millitm;
 
 		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_log_routine");
+			fprintf(stderr, "Log routine: Error sleeping\n");
 		}
 	}
 	
@@ -318,7 +316,7 @@ static void *sb_network_routine(void *thunk)
 		finish_ms = tm.millitm;
 
 		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_network_routine");
+			fprintf(stderr, "Network routine: Error sleeping\n");
 		}
 	}
 	
@@ -344,7 +342,7 @@ static void *sb_ram_routine(void *thunk)
 		finish_ms = tm.millitm;
 
 		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_ram_routine");
+			fprintf(stderr, "Ram routine: Error sleeping\n");
 		}
 	}
 	
@@ -370,7 +368,7 @@ static void *sb_time_routine(void *thunk)
 		finish_ms = tm.millitm;
 
 		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_time_routine");
+			fprintf(stderr, "Time routine: Error sleeping\n");
 		}
 	}
 	
@@ -396,7 +394,7 @@ static void *sb_todo_routine(void *thunk)
 		finish_ms = tm.millitm;
 
 		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_todo_routine");
+			fprintf(stderr, "TODO routine: Error sleeping\n");
 		}
 	}
 	
@@ -422,7 +420,7 @@ static void *sb_volume_routine(void *thunk)
 		finish_ms = tm.millitm;
 
 		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_volume_routine");
+			fprintf(stderr, "Volume routine: Error sleeping\n");
 		}
 	}
 	
@@ -448,11 +446,47 @@ static void *sb_weather_routine(void *thunk)
 		finish_ms = tm.millitm;
 
 		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_weather_routine");
+			fprintf(stderr, "Weather routine: Error sleeping\n");
 		}
 	}
 	
 	return NULL;
+}
+
+static int sb_init_wifi(int *fd, char **ifname, struct iwreq *iwr, char *essid)
+{
+	struct ifaddrs *ifap = NULL;
+
+	memset(essid, 0, IW_ESSID_MAX_SIZE + 1);
+	iwr->u.essid.pointer = (caddr_t *)essid;
+	iwr->u.data.length   = IW_ESSID_MAX_SIZE + 1;
+	iwr->u.data.flags    = 0;
+
+	/* open socket and return file descriptor for it */
+	*fd = socket(AF_INET, SOCK_DGRAM, 0);
+	if (*fd < 0) {
+		fprintf(stderr, "Wifi routine: Error opening socket file descriptor\n");
+		return -1;
+	}
+
+	/* get all network interfaces */
+	if (getifaddrs(&ifap) < 0 || ifap == NULL) {
+		fprintf(stderr, "Wifi routine: Error finding interface addresses\n");
+		return -1;
+	}
+
+	/* go through each interface until one returns an ssid */
+	while (ifap != NULL) {
+		strncpy(iwr->ifr_ifrn.ifrn_name, ifap->ifa_name, IFNAMSIZ);
+		if (ioctl(*fd, SIOCGIWESSID, iwr) >= 0) {
+			*ifname = strdup(ifap->ifa_name);
+			return 1;
+		}
+		ifap = ifap->ifa_next;
+	}
+
+	fprintf(stderr, "Wifi routine: Could not find wireless interface\n");
+	return -1;
 }
 
 static void *sb_wifi_routine(void *thunk)
@@ -461,22 +495,38 @@ static void *sb_wifi_routine(void *thunk)
 	struct timeb    tm;
 	unsigned short  start_ms;
 	unsigned short  finish_ms;
+	int             fd;
+	char           *ifname;
+	struct iwreq    iwr;
+	char            essid[IW_ESSID_MAX_SIZE + 1];
 
 	memset(&tm, 0, sizeof(tm));
+
+	if (sb_init_wifi(&fd, &ifname, &iwr, essid) < 0)
+		return NULL;
 
 	while(1) {
 		ftime(&tm);
 		start_ms = tm.millitm;
 
-		/* TODO: run routine */
+		memset(essid, 0, sizeof(essid));
+		if (ioctl(fd, SIOCGIWESSID, &iwr) < 0) {
+			fprintf(stderr, "Wifi routine: Error getting SSID\n");
+			break;
+		}
+
+		printf("%s\n", essid);
 
 		ftime(&tm);
 		finish_ms = tm.millitm;
 
 		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
-			fprintf(stderr, "Error sleeping in sb_wifi_routine");
+			fprintf(stderr, "Wifi routine: Error sleeping\n");
 		}
 	}
+
+	close(fd);
+	free(ifname);
 	
 	return NULL;
 }
@@ -515,7 +565,7 @@ int main(int argc, char *argv[])
 
 	num_routines = sizeof(chosen_routines) / sizeof(*chosen_routines);
 	if (num_routines < 1) {
-		fprintf(stderr, "No routines chosen, exiting...");
+		fprintf(stderr, "No routines chosen, exiting...\n");
 		return 1;
 	}
 
