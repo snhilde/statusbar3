@@ -2,6 +2,7 @@
 #include "config.h"
 
 #define SBLENGTH 10240
+/* TODO: check seconds-long time span around routines as well */
 
 static void *sb_print_to_sb(void *thunk)
 {
