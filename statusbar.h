@@ -6,6 +6,10 @@
 #include <stdlib.h>
 #include <sys/timeb.h>
 
+/* for wifi routine */
+#include <sys/ioctl.h>
+#include <linux/wireless.h>
+#include <ifaddrs.h>
 
 enum sb_routine_e {
 	BACKUP     = 0,
