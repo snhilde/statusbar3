@@ -455,7 +455,8 @@ static void *sb_weather_routine(void *thunk)
 
 static int sb_init_wifi(int *fd, struct iwreq *iwr, char *essid)
 {
-	struct ifaddrs *ifap = NULL;
+	struct ifaddrs *ifaddrs = NULL;
+	struct ifaddrs *ifap;
 
 	memset(essid, 0, IW_ESSID_MAX_SIZE + 1);
 	iwr->u.essid.pointer = (caddr_t *)essid;
@@ -470,25 +471,33 @@ static int sb_init_wifi(int *fd, struct iwreq *iwr, char *essid)
 	}
 
 	/* get all network interfaces */
-	if (getifaddrs(&ifap) < 0 || ifap == NULL) {
+	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
 		fprintf(stderr, "Wifi routine: Error finding interface addresses\n");
 		return -1;
 	}
+	ifap = ifaddrs;
 
 	/* go through each interface until one returns an ssid */
 	while (ifap != NULL) {
 		strncpy(iwr->ifr_ifrn.ifrn_name, ifap->ifa_name, IFNAMSIZ);
-		if (ioctl(*fd, SIOCGIWESSID, iwr) >= 0)
+		if (ioctl(*fd, SIOCGIWESSID, iwr) >= 0) {
+			freeifaddrs(ifaddrs);
 			return 1;
+		}
 		ifap = ifap->ifa_next;
 	}
 
 	fprintf(stderr, "Wifi routine: Could not find wireless interface\n");
+	freeifaddrs(ifaddrs);
 	return -1;
 }
 
 static void *sb_wifi_routine(void *thunk)
 {
+	/* TODO:
+	 * if sb_init_wifi() fails, try again after interval sleep
+	 * handle break and reattach at a later time
+	 */
 	sb_routine_t   *routine = thunk;
 	struct timeb    tm;
 	unsigned short  start_ms;
@@ -512,7 +521,9 @@ static void *sb_wifi_routine(void *thunk)
 			break;
 		}
 
-		printf("%s\n", essid);
+		pthread_mutex_lock(&(routine->mutex));
+		strncpy(routine->output, essid, sizeof(essid)-1);
+		pthread_mutex_unlock(&(routine->mutex));
 
 		ftime(&tm);
 		finish_ms = tm.millitm;
