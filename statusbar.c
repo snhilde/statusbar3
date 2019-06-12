@@ -63,6 +63,8 @@ static void *sb_print_to_sb(void *thunk)
 	return NULL;
 }
 
+
+/* --- BACKUP ROUTINE --- */
 static void *sb_backup_routine(void *thunk)
 {
 	sb_routine_t   *routine = thunk;
@@ -89,6 +91,8 @@ static void *sb_backup_routine(void *thunk)
 	return NULL;
 }
 
+
+/* --- BATTERY ROUTINE --- */
 static void *sb_battery_routine(void *thunk)
 {
 	sb_routine_t   *routine = thunk;
@@ -115,6 +119,8 @@ static void *sb_battery_routine(void *thunk)
 	return NULL;
 }
 
+
+/* --- BRIGHTNESS ROUTINE --- */
 static void *sb_brightness_routine(void *thunk)
 {
 	sb_routine_t   *routine = thunk;
@@ -141,6 +147,8 @@ static void *sb_brightness_routine(void *thunk)
 	return NULL;
 }
 
+
+/* --- CPU TEMP ROUTINE --- */
 static void *sb_cpu_temp_routine(void *thunk)
 {
 	sb_routine_t   *routine = thunk;
@@ -167,6 +175,8 @@ static void *sb_cpu_temp_routine(void *thunk)
 	return NULL;
 }
 
+
+/* --- CPU USAGE ROUTINE --- */
 static void *sb_cpu_usage_routine(void *thunk)
 {
 	sb_routine_t   *routine = thunk;
@@ -193,6 +203,8 @@ static void *sb_cpu_usage_routine(void *thunk)
 	return NULL;
 }
 
+
+/* --- DISK ROUTINE --- */
 static void *sb_disk_routine(void *thunk)
 {
 	sb_routine_t   *routine = thunk;
@@ -219,6 +231,8 @@ static void *sb_disk_routine(void *thunk)
 	return NULL;
 }
 
+
+/* --- FAN ROUTINE --- */
 static void *sb_fan_routine(void *thunk)
 {
 	sb_routine_t   *routine = thunk;
@@ -245,6 +259,8 @@ static void *sb_fan_routine(void *thunk)
 	return NULL;
 }
 
+
+/* --- LOAD ROUTINE --- */
 static void *sb_load_routine(void *thunk)
 {
 	sb_routine_t   *routine = thunk;
@@ -271,6 +287,8 @@ static void *sb_load_routine(void *thunk)
 	return NULL;
 }
 
+
+/* --- LOG ROUTINE --- */
 static void *sb_log_routine(void *thunk)
 {
 	sb_routine_t   *routine = thunk;
@@ -297,6 +315,8 @@ static void *sb_log_routine(void *thunk)
 	return NULL;
 }
 
+
+/* --- NETWORK ROUTINE --- */
 static void *sb_network_routine(void *thunk)
 {
 	sb_routine_t   *routine = thunk;
@@ -323,6 +343,8 @@ static void *sb_network_routine(void *thunk)
 	return NULL;
 }
 
+
+/* --- RAM ROUTINE --- */
 static void *sb_ram_routine(void *thunk)
 {
 	sb_routine_t   *routine = thunk;
@@ -349,6 +371,8 @@ static void *sb_ram_routine(void *thunk)
 	return NULL;
 }
 
+
+/* --- TIME ROUTINE --- */
 static void *sb_time_routine(void *thunk)
 {
 	sb_routine_t   *routine = thunk;
@@ -375,6 +399,8 @@ static void *sb_time_routine(void *thunk)
 	return NULL;
 }
 
+
+/* --- TODO ROUTINE --- */
 static void *sb_todo_routine(void *thunk)
 {
 	sb_routine_t   *routine = thunk;
@@ -401,6 +427,8 @@ static void *sb_todo_routine(void *thunk)
 	return NULL;
 }
 
+
+/* --- VOLUME ROUTINE --- */
 static void *sb_volume_routine(void *thunk)
 {
 	sb_routine_t   *routine = thunk;
@@ -427,6 +455,8 @@ static void *sb_volume_routine(void *thunk)
 	return NULL;
 }
 
+
+/* --- WEATHER ROUTINE --- */
 static void *sb_weather_routine(void *thunk)
 {
 	sb_routine_t   *routine = thunk;
@@ -453,6 +483,8 @@ static void *sb_weather_routine(void *thunk)
 	return NULL;
 }
 
+
+/* --- WIFI ROUTINE --- */
 static int sb_init_wifi(int *fd, struct iwreq *iwr, char *essid)
 {
 	struct ifaddrs *ifaddrs = NULL;
@@ -559,7 +591,6 @@ static const struct thread_routines_t {
 	{ WEATHER,    sb_weather_routine    },
 	{ WIFI,       sb_wifi_routine       },
 };
-
 int main(int argc, char *argv[])
 {
 	size_t             num_routines;
