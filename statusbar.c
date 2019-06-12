@@ -453,7 +453,7 @@ static void *sb_weather_routine(void *thunk)
 	return NULL;
 }
 
-static int sb_init_wifi(int *fd, char **ifname, struct iwreq *iwr, char *essid)
+static int sb_init_wifi(int *fd, struct iwreq *iwr, char *essid)
 {
 	struct ifaddrs *ifap = NULL;
 
@@ -478,10 +478,8 @@ static int sb_init_wifi(int *fd, char **ifname, struct iwreq *iwr, char *essid)
 	/* go through each interface until one returns an ssid */
 	while (ifap != NULL) {
 		strncpy(iwr->ifr_ifrn.ifrn_name, ifap->ifa_name, IFNAMSIZ);
-		if (ioctl(*fd, SIOCGIWESSID, iwr) >= 0) {
-			*ifname = strdup(ifap->ifa_name);
+		if (ioctl(*fd, SIOCGIWESSID, iwr) >= 0)
 			return 1;
-		}
 		ifap = ifap->ifa_next;
 	}
 
@@ -496,13 +494,12 @@ static void *sb_wifi_routine(void *thunk)
 	unsigned short  start_ms;
 	unsigned short  finish_ms;
 	int             fd;
-	char           *ifname;
 	struct iwreq    iwr;
 	char            essid[IW_ESSID_MAX_SIZE + 1];
 
 	memset(&tm, 0, sizeof(tm));
 
-	if (sb_init_wifi(&fd, &ifname, &iwr, essid) < 0)
+	if (sb_init_wifi(&fd, &iwr, essid) < 0)
 		return NULL;
 
 	while(1) {
@@ -526,8 +523,6 @@ static void *sb_wifi_routine(void *thunk)
 	}
 
 	close(fd);
-	free(ifname);
-	
 	return NULL;
 }
 
