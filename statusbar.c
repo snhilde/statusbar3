@@ -314,8 +314,6 @@ static int sb_init_network(FILE **rxfd, FILE **txfd)
 	struct ifreq    ifr;
 	struct ifaddrs *ifaddrs = NULL;
 	struct ifaddrs *ifap;
-	char            rx_file[IFNAMSIZ + 64] = {0};
-	char            tx_file[IFNAMSIZ + 64] = {0};
 
 	/* open socket and return file descriptor for it */
 	fd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -370,10 +368,11 @@ static void *sb_network_routine(void *thunk)
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
 
-	FILE            *rxfd;
-	FILE            *txfd;
-	char             rx_s[64] = {0};
-	char             tx_s[64] = {0};
+	struct {
+		FILE *fd;
+		char  path[IFNAMSIZ + 64];
+		char  contents[64];
+	} files[2] = {{0}, {0}};
 
 	if (sb_init_network(&rxfd, &txfd) < 0)
 		return NULL;
