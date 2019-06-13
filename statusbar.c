@@ -367,14 +367,20 @@ static void *sb_time_routine(void *thunk)
 	struct timespec  start_tp;
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
+	struct tm        tm;
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		clock_gettime(CLOCK_REALTIME, &start_tp);
+
+		/* convert time in seconds since epoch to local time */
+		memset(&tm, 0, sizeof(tm));
+		localtime_r(&start_tp.tv_sec, &tm);
 
 		pthread_mutex_lock(&(routine->mutex));
+		strftime(routine->output, sizeof(routine->output)-1, time_format, &tm);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
