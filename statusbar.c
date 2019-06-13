@@ -308,14 +308,14 @@ static void *sb_log_routine(void *thunk)
 
 
 /* --- NETWORK ROUTINE --- */
-static int sb_init_network(char *interface)
+static int sb_init_network(FILE **rxfd, FILE **txfd)
 {
 	int             fd;
 	struct ifreq    ifr;
 	struct ifaddrs *ifaddrs = NULL;
 	struct ifaddrs *ifap;
-
-	memset(interface, 0, IFNAMSIZ);
+	char            rx_file[IFNAMSIZ + 64] = {0};
+	char            tx_file[IFNAMSIZ + 64] = {0};
 
 	/* open socket and return file descriptor for it */
 	fd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -332,24 +332,35 @@ static int sb_init_network(char *interface)
 	}
 	ifap = ifaddrs;
 
-	/* go through each interface until one returns an ssid */
+	/* go through each interface until we find an active one */
 	while (ifap != NULL) {
 		strncpy(ifr.ifr_name, ifap->ifa_name, IFNAMSIZ);
 		if (ioctl(fd, SIOCGIFFLAGS, &ifr) >= 0) {
 			if (ifr.ifr_flags & IFF_RUNNING && !(ifr.ifr_flags & IFF_LOOPBACK)) {
-				strncpy(interface, ifap->ifa_name, IFNAMSIZ);
-				close(fd);
-				freeifaddrs(ifaddrs);
-				return 1;
+				snprintf(rx_file, sizeof(rx_file), "/sys/class/net/%s/statistics/rx_bytes", ifap->ifa_name);
+				snprintf(tx_file, sizeof(tx_file), "/sys/class/net/%s/statistics/tx_bytes", ifap->ifa_name);
+				break;
 			}
 		}
 		ifap = ifap->ifa_next;
 	}
 
-	fprintf(stderr, "Network routine: Could not find wireless interface\n");
 	close(fd);
 	freeifaddrs(ifaddrs);
-	return -1;
+
+	if (ifap == NULL) {
+		fprintf(stderr, "Network routine: Could not find wireless interface\n");
+		return -1;
+	}
+
+	*rxfd = fopen(rx_file, "r");
+	*txfd = fopen(tx_file, "r");
+	if (*rxfd == NULL || *txfd == NULL) {
+		fprintf(stderr, "Network routine: Error opening network files\n");
+		return -1;
+	}
+
+	return 1;
 }
 
 static void *sb_network_routine(void *thunk)
@@ -359,9 +370,7 @@ static void *sb_network_routine(void *thunk)
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
 
-	char             interface[IFNAMSIZ];
-
-	if (sb_init_network(interface) < 0)
+	if (sb_init_network(&rxfd, &txfd) < 0)
 		return NULL;
 
 	memset(&start_tp, 0, sizeof(start_tp));
@@ -369,8 +378,6 @@ static void *sb_network_routine(void *thunk)
 
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
-
-		/* TODO: run routine */
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
