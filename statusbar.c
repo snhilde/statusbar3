@@ -370,6 +370,11 @@ static void *sb_network_routine(void *thunk)
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
 
+	FILE            *rxfd;
+	FILE            *txfd;
+	char             rx_s[64] = {0};
+	char             tx_s[64] = {0};
+
 	if (sb_init_network(&rxfd, &txfd) < 0)
 		return NULL;
 
