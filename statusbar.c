@@ -396,6 +396,8 @@ static void *sb_network_routine(void *thunk)
 		}
 	}
 	
+	fclose(rxfd);
+	fclose(txfd);
 	return NULL;
 }
 
