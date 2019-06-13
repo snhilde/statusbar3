@@ -308,7 +308,7 @@ static void *sb_log_routine(void *thunk)
 
 
 /* --- NETWORK ROUTINE --- */
-static int sb_init_network(FILE **rxfd, FILE **txfd)
+static int sb_init_network(char *rx_path, size_t rx_path_size, char *tx_path, size_t tx_path_size)
 {
 	int             fd;
 	struct ifreq    ifr;
@@ -335,8 +335,8 @@ static int sb_init_network(FILE **rxfd, FILE **txfd)
 		strncpy(ifr.ifr_name, ifap->ifa_name, IFNAMSIZ);
 		if (ioctl(fd, SIOCGIFFLAGS, &ifr) >= 0) {
 			if (ifr.ifr_flags & IFF_RUNNING && !(ifr.ifr_flags & IFF_LOOPBACK)) {
-				snprintf(rx_file, sizeof(rx_file), "/sys/class/net/%s/statistics/rx_bytes", ifap->ifa_name);
-				snprintf(tx_file, sizeof(tx_file), "/sys/class/net/%s/statistics/tx_bytes", ifap->ifa_name);
+				snprintf(rx_path, rx_path_size, "/sys/class/net/%s/statistics/rx_bytes", ifap->ifa_name);
+				snprintf(tx_path, tx_path_size, "/sys/class/net/%s/statistics/tx_bytes", ifap->ifa_name);
 				break;
 			}
 		}
@@ -348,13 +348,6 @@ static int sb_init_network(FILE **rxfd, FILE **txfd)
 
 	if (ifap == NULL) {
 		fprintf(stderr, "Network routine: Could not find wireless interface\n");
-		return -1;
-	}
-
-	*rxfd = fopen(rx_file, "r");
-	*txfd = fopen(tx_file, "r");
-	if (*rxfd == NULL || *txfd == NULL) {
-		fprintf(stderr, "Network routine: Error opening network files\n");
 		return -1;
 	}
 
@@ -374,7 +367,7 @@ static void *sb_network_routine(void *thunk)
 		char  contents[64];
 	} files[2] = {{0}, {0}};
 
-	if (sb_init_network(&rxfd, &txfd) < 0)
+	if (sb_init_network(files[0].path, sizeof(files[0].path), files[0].path, sizeof(files[0].path)) < 0)
 		return NULL;
 
 	memset(&start_tp, 0, sizeof(start_tp));
