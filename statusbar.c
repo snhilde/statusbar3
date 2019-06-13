@@ -374,7 +374,8 @@ static void *sb_time_routine(void *thunk)
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
-		/* TODO: run routine */
+		pthread_mutex_lock(&(routine->mutex));
+		pthread_mutex_unlock(&(routine->mutex));
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
@@ -539,7 +540,7 @@ static void *sb_wifi_routine(void *thunk)
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
-		strncpy(routine->output, essid, sizeof(essid)-1);
+		strncpy(routine->output, essid, sizeof(routine->output)-1);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
