@@ -569,8 +569,10 @@ static void *sb_wifi_routine(void *thunk)
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
-	if (sb_init_wifi(&fd, &iwr, essid) < 0)
+	if (sb_init_wifi(&fd, &iwr, essid) < 0) {
+		close(fd);
 		return NULL;
+	}
 
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
