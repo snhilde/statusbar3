@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
-#include <sys/timeb.h>
 
 /* for wifi routine */
 #include <sys/ioctl.h>

@@ -8,9 +8,9 @@ static void *sb_print_to_sb(void *thunk)
 {
 	Display         *dpy;
 	Window           root;
-	struct timeb     tm;
-	unsigned short   start_ms;
-	unsigned short   finish_ms;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
 	char             full_output[SBLENGTH];
 	size_t           offset;;
 	sb_routine_t    *routine;
@@ -19,11 +19,11 @@ static void *sb_print_to_sb(void *thunk)
 	dpy = XOpenDisplay(NULL);
 	root = RootWindow(dpy, DefaultScreen(dpy));
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while (1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		offset = 0;
 		routine = routine_list;
@@ -52,10 +52,10 @@ static void *sb_print_to_sb(void *thunk)
 			break;
 		}
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep((1000 - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep(1000000 - elapsed_usec) != 0) {
 			fprintf(stderr, "Print routine: Error sleeping\n");
 		}
 	}
@@ -68,23 +68,23 @@ static void *sb_print_to_sb(void *thunk)
 /* --- BACKUP ROUTINE --- */
 static void *sb_backup_routine(void *thunk)
 {
-	sb_routine_t   *routine = thunk;
-	struct timeb    tm;
-	unsigned short  start_ms;
-	unsigned short  finish_ms;
+	sb_routine_t    *routine = thunk;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		/* TODO: run routine */
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Backup routine: Error sleeping\n");
 		}
 	}
@@ -96,23 +96,23 @@ static void *sb_backup_routine(void *thunk)
 /* --- BATTERY ROUTINE --- */
 static void *sb_battery_routine(void *thunk)
 {
-	sb_routine_t   *routine = thunk;
-	struct timeb    tm;
-	unsigned short  start_ms;
-	unsigned short  finish_ms;
+	sb_routine_t    *routine = thunk;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		/* TODO: run routine */
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Battery routine: Error sleeping\n");
 		}
 	}
@@ -124,23 +124,23 @@ static void *sb_battery_routine(void *thunk)
 /* --- BRIGHTNESS ROUTINE --- */
 static void *sb_brightness_routine(void *thunk)
 {
-	sb_routine_t   *routine = thunk;
-	struct timeb    tm;
-	unsigned short  start_ms;
-	unsigned short  finish_ms;
+	sb_routine_t    *routine = thunk;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		/* TODO: run routine */
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Brightness routine: Error sleeping\n");
 		}
 	}
@@ -152,23 +152,23 @@ static void *sb_brightness_routine(void *thunk)
 /* --- CPU TEMP ROUTINE --- */
 static void *sb_cpu_temp_routine(void *thunk)
 {
-	sb_routine_t   *routine = thunk;
-	struct timeb    tm;
-	unsigned short  start_ms;
-	unsigned short  finish_ms;
+	sb_routine_t    *routine = thunk;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		/* TODO: run routine */
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "CPU Temp routine: Error sleeping\n");
 		}
 	}
@@ -180,23 +180,23 @@ static void *sb_cpu_temp_routine(void *thunk)
 /* --- CPU USAGE ROUTINE --- */
 static void *sb_cpu_usage_routine(void *thunk)
 {
-	sb_routine_t   *routine = thunk;
-	struct timeb    tm;
-	unsigned short  start_ms;
-	unsigned short  finish_ms;
+	sb_routine_t    *routine = thunk;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		/* TODO: run routine */
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "CPU Usage routine: Error sleeping\n");
 		}
 	}
@@ -208,23 +208,23 @@ static void *sb_cpu_usage_routine(void *thunk)
 /* --- DISK ROUTINE --- */
 static void *sb_disk_routine(void *thunk)
 {
-	sb_routine_t   *routine = thunk;
-	struct timeb    tm;
-	unsigned short  start_ms;
-	unsigned short  finish_ms;
+	sb_routine_t    *routine = thunk;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		/* TODO: run routine */
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Disk routine: Error sleeping\n");
 		}
 	}
@@ -236,23 +236,23 @@ static void *sb_disk_routine(void *thunk)
 /* --- FAN ROUTINE --- */
 static void *sb_fan_routine(void *thunk)
 {
-	sb_routine_t   *routine = thunk;
-	struct timeb    tm;
-	unsigned short  start_ms;
-	unsigned short  finish_ms;
+	sb_routine_t    *routine = thunk;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		/* TODO: run routine */
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Fan routine: Error sleeping\n");
 		}
 	}
@@ -264,23 +264,23 @@ static void *sb_fan_routine(void *thunk)
 /* --- LOAD ROUTINE --- */
 static void *sb_load_routine(void *thunk)
 {
-	sb_routine_t   *routine = thunk;
-	struct timeb    tm;
-	unsigned short  start_ms;
-	unsigned short  finish_ms;
+	sb_routine_t    *routine = thunk;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		/* TODO: run routine */
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Load routine: Error sleeping\n");
 		}
 	}
@@ -292,23 +292,23 @@ static void *sb_load_routine(void *thunk)
 /* --- LOG ROUTINE --- */
 static void *sb_log_routine(void *thunk)
 {
-	sb_routine_t   *routine = thunk;
-	struct timeb    tm;
-	unsigned short  start_ms;
-	unsigned short  finish_ms;
+	sb_routine_t    *routine = thunk;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		/* TODO: run routine */
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Log routine: Error sleeping\n");
 		}
 	}
@@ -320,23 +320,23 @@ static void *sb_log_routine(void *thunk)
 /* --- NETWORK ROUTINE --- */
 static void *sb_network_routine(void *thunk)
 {
-	sb_routine_t   *routine = thunk;
-	struct timeb    tm;
-	unsigned short  start_ms;
-	unsigned short  finish_ms;
+	sb_routine_t    *routine = thunk;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		/* TODO: run routine */
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Network routine: Error sleeping\n");
 		}
 	}
@@ -348,23 +348,23 @@ static void *sb_network_routine(void *thunk)
 /* --- RAM ROUTINE --- */
 static void *sb_ram_routine(void *thunk)
 {
-	sb_routine_t   *routine = thunk;
-	struct timeb    tm;
-	unsigned short  start_ms;
-	unsigned short  finish_ms;
+	sb_routine_t    *routine = thunk;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		/* TODO: run routine */
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Ram routine: Error sleeping\n");
 		}
 	}
@@ -376,23 +376,23 @@ static void *sb_ram_routine(void *thunk)
 /* --- TIME ROUTINE --- */
 static void *sb_time_routine(void *thunk)
 {
-	sb_routine_t   *routine = thunk;
-	struct timeb    tm;
-	unsigned short  start_ms;
-	unsigned short  finish_ms;
+	sb_routine_t    *routine = thunk;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		/* TODO: run routine */
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Time routine: Error sleeping\n");
 		}
 	}
@@ -404,23 +404,23 @@ static void *sb_time_routine(void *thunk)
 /* --- TODO ROUTINE --- */
 static void *sb_todo_routine(void *thunk)
 {
-	sb_routine_t   *routine = thunk;
-	struct timeb    tm;
-	unsigned short  start_ms;
-	unsigned short  finish_ms;
+	sb_routine_t    *routine = thunk;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		/* TODO: run routine */
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "TODO routine: Error sleeping\n");
 		}
 	}
@@ -432,23 +432,23 @@ static void *sb_todo_routine(void *thunk)
 /* --- VOLUME ROUTINE --- */
 static void *sb_volume_routine(void *thunk)
 {
-	sb_routine_t   *routine = thunk;
-	struct timeb    tm;
-	unsigned short  start_ms;
-	unsigned short  finish_ms;
+	sb_routine_t    *routine = thunk;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		/* TODO: run routine */
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Volume routine: Error sleeping\n");
 		}
 	}
@@ -460,23 +460,23 @@ static void *sb_volume_routine(void *thunk)
 /* --- WEATHER ROUTINE --- */
 static void *sb_weather_routine(void *thunk)
 {
-	sb_routine_t   *routine = thunk;
-	struct timeb    tm;
-	unsigned short  start_ms;
-	unsigned short  finish_ms;
+	sb_routine_t    *routine = thunk;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		/* TODO: run routine */
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Weather routine: Error sleeping\n");
 		}
 	}
@@ -531,22 +531,22 @@ static void *sb_wifi_routine(void *thunk)
 	 * if sb_init_wifi() fails, try again after interval sleep
 	 * handle break and reattach at a later time
 	 */
-	sb_routine_t   *routine = thunk;
-	struct timeb    tm;
-	unsigned short  start_ms;
-	unsigned short  finish_ms;
-	int             fd;
-	struct iwreq    iwr;
-	char            essid[IW_ESSID_MAX_SIZE + 1];
+	sb_routine_t    *routine = thunk;
+	struct timespec  start_tp;
+	struct timespec  finish_tp;;
+	long             elapsed_usec;
+	int              fd;
+	struct iwreq     iwr;
+	char             essid[IW_ESSID_MAX_SIZE + 1];
 
-	memset(&tm, 0, sizeof(tm));
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	if (sb_init_wifi(&fd, &iwr, essid) < 0)
 		return NULL;
 
 	while(1) {
-		ftime(&tm);
-		start_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &start_tp);
 
 		memset(essid, 0, sizeof(essid));
 		if (ioctl(fd, SIOCGIWESSID, &iwr) < 0) {
@@ -558,10 +558,10 @@ static void *sb_wifi_routine(void *thunk)
 		strncpy(routine->output, essid, sizeof(essid)-1);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		ftime(&tm);
-		finish_ms = tm.millitm;
+		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
-		if (usleep(((routine->interval * 1000) - abs(finish_ms - start_ms)) * 1000) != 0) {
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Wifi routine: Error sleeping\n");
 		}
 	}
