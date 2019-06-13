@@ -373,6 +373,10 @@ static void *sb_ram_routine(void *thunk)
 
 		/* get available memory */
 		available_bytes = sysconf(_SC_AVPHYS_PAGES) * page_size;
+		if (available_bytes < 0) {
+			fprintf(stderr, "Ram routine: Error getting available bytes\n");
+			break;
+		}
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output)-1, "Free: %.3f %c / %.3f %c",
