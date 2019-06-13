@@ -10,6 +10,7 @@ static void *sb_print_to_sb(void *thunk)
 	struct timespec  start_tp;
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
+
 	char             full_output[SBLENGTH];
 	size_t           offset;;
 	sb_routine_t    *routine;
@@ -341,13 +342,42 @@ static void *sb_ram_routine(void *thunk)
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
 
+	long             page_size;
+	long             total_pages;
+	long             total_bytes;
+	int              i       = 0;
+	float            total_bytes_f;
+	int              shift[] = {  0,  10,  20,  30,  40  };
+	char             unit[]  = { 'K', 'M', 'G', 'T', 'P' };
+	long             available_bytes;
+
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
+
+	page_size   = sysconf(_SC_PAGESIZE);
+	total_pages = sysconf(_SC_PHYS_PAGES);
+	total_bytes = total_pages * page_size;
+	if (page_size < 0 || total_pages < 0) {
+		fprintf(stderr, "Ram routine: Error getting page info\n");
+		return NULL;
+	}
+
+	/* calculate unit of memory */
+	for (i = -1; (total_bytes >>= 10) > 0; i++);
+
+	/* get total bytes as a decimal */
+	total_bytes_f = ((total_pages * page_size) >> shift[i]) / 1024.0;
 
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
-		/* TODO: run routine */
+		/* get available memory */
+		available_bytes = sysconf(_SC_AVPHYS_PAGES) * page_size;
+
+		pthread_mutex_lock(&(routine->mutex));
+		snprintf(routine->output, sizeof(routine->output)-1, "Free: %.3f %c / %.3f %c",
+				(available_bytes >> shift[i]) / 1024.0, unit[i], total_bytes_f, unit[i]);
+		pthread_mutex_unlock(&(routine->mutex));
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
@@ -367,6 +397,7 @@ static void *sb_time_routine(void *thunk)
 	struct timespec  start_tp;
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
+
 	struct tm        tm;
 
 	memset(&start_tp, 0, sizeof(start_tp));
@@ -526,6 +557,7 @@ static void *sb_wifi_routine(void *thunk)
 	struct timespec  start_tp;
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
+
 	int              fd;
 	struct iwreq     iwr;
 	char             essid[IW_ESSID_MAX_SIZE + 1];
