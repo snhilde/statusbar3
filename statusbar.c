@@ -308,12 +308,61 @@ static void *sb_log_routine(void *thunk)
 
 
 /* --- NETWORK ROUTINE --- */
+static int sb_init_network(char *interface)
+{
+	int             fd;
+	struct ifreq    ifr;
+	struct ifaddrs *ifaddrs = NULL;
+	struct ifaddrs *ifap;
+
+	memset(interface, 0, IFNAMSIZ);
+
+	/* open socket and return file descriptor for it */
+	fd = socket(AF_INET, SOCK_DGRAM, 0);
+	if (fd < 0) {
+		fprintf(stderr, "Network routine: Error opening socket file descriptor\n");
+		return -1;
+	}
+
+	/* get all network interfaces */
+	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
+		fprintf(stderr, "Network routine: Error finding interface addresses\n");
+		close(fd);
+		return -1;
+	}
+	ifap = ifaddrs;
+
+	/* go through each interface until one returns an ssid */
+	while (ifap != NULL) {
+		strncpy(ifr.ifr_name, ifap->ifa_name, IFNAMSIZ);
+		if (ioctl(fd, SIOCGIFFLAGS, &ifr) >= 0) {
+			if (ifr.ifr_flags & IFF_RUNNING && !(ifr.ifr_flags & IFF_LOOPBACK)) {
+				strncpy(interface, ifap->ifa_name, IFNAMSIZ);
+				close(fd);
+				freeifaddrs(ifaddrs);
+				return 1;
+			}
+		}
+		ifap = ifap->ifa_next;
+	}
+
+	fprintf(stderr, "Network routine: Could not find wireless interface\n");
+	close(fd);
+	freeifaddrs(ifaddrs);
+	return -1;
+}
+
 static void *sb_network_routine(void *thunk)
 {
 	sb_routine_t    *routine = thunk;
 	struct timespec  start_tp;
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
+
+	char             interface[IFNAMSIZ];
+
+	if (sb_init_network(interface) < 0)
+		return NULL;
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
@@ -512,14 +561,14 @@ static void *sb_weather_routine(void *thunk)
 
 
 /* --- WIFI ROUTINE --- */
-static int sb_init_wifi(int *fd, struct iwreq *iwr, char *essid)
+static int sb_init_wifi(int *fd, struct iwreq *iwr, char *essid, size_t max_len)
 {
 	struct ifaddrs *ifaddrs = NULL;
 	struct ifaddrs *ifap;
 
-	memset(essid, 0, IW_ESSID_MAX_SIZE + 1);
+	memset(essid, 0, max_len);
 	iwr->u.essid.pointer = (caddr_t *)essid;
-	iwr->u.data.length   = IW_ESSID_MAX_SIZE + 1;
+	iwr->u.data.length   = max_len;
 	iwr->u.data.flags    = 0;
 
 	/* open socket and return file descriptor for it */
@@ -569,7 +618,7 @@ static void *sb_wifi_routine(void *thunk)
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
-	if (sb_init_wifi(&fd, &iwr, essid) < 0) {
+	if (sb_init_wifi(&fd, &iwr, essid, sizeof(essid)) < 0) {
 		close(fd);
 		return NULL;
 	}
