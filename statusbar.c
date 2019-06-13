@@ -22,7 +22,7 @@ static void *sb_print_to_sb(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while (1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		offset = 0;
 		routine = routine_list;
@@ -51,7 +51,7 @@ static void *sb_print_to_sb(void *thunk)
 			break;
 		}
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep(1000000 - elapsed_usec) != 0) {
 			fprintf(stderr, "Print routine: Error sleeping\n");
@@ -75,11 +75,11 @@ static void *sb_backup_routine(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Backup routine: Error sleeping\n");
@@ -102,11 +102,11 @@ static void *sb_battery_routine(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Battery routine: Error sleeping\n");
@@ -129,11 +129,11 @@ static void *sb_brightness_routine(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Brightness routine: Error sleeping\n");
@@ -156,11 +156,11 @@ static void *sb_cpu_temp_routine(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "CPU Temp routine: Error sleeping\n");
@@ -183,11 +183,11 @@ static void *sb_cpu_usage_routine(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "CPU Usage routine: Error sleeping\n");
@@ -210,11 +210,11 @@ static void *sb_disk_routine(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Disk routine: Error sleeping\n");
@@ -237,11 +237,11 @@ static void *sb_fan_routine(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Fan routine: Error sleeping\n");
@@ -264,11 +264,11 @@ static void *sb_load_routine(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Load routine: Error sleeping\n");
@@ -291,11 +291,11 @@ static void *sb_log_routine(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Log routine: Error sleeping\n");
@@ -318,11 +318,11 @@ static void *sb_network_routine(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Network routine: Error sleeping\n");
@@ -345,11 +345,11 @@ static void *sb_ram_routine(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Ram routine: Error sleeping\n");
@@ -372,11 +372,11 @@ static void *sb_time_routine(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
@@ -400,11 +400,11 @@ static void *sb_todo_routine(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "TODO routine: Error sleeping\n");
@@ -427,11 +427,11 @@ static void *sb_volume_routine(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Volume routine: Error sleeping\n");
@@ -454,11 +454,11 @@ static void *sb_weather_routine(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Weather routine: Error sleeping\n");
@@ -530,7 +530,7 @@ static void *sb_wifi_routine(void *thunk)
 		return NULL;
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		memset(essid, 0, sizeof(essid));
 		if (ioctl(fd, SIOCGIWESSID, &iwr) < 0) {
@@ -542,7 +542,7 @@ static void *sb_wifi_routine(void *thunk)
 		strncpy(routine->output, essid, sizeof(essid)-1);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		clock_gettime(CLOCK_MONOTONIC, &finish_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			fprintf(stderr, "Wifi routine: Error sleeping\n");
