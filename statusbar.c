@@ -384,6 +384,11 @@ static void *sb_network_routine(void *thunk)
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
+		if (fgets(rx_s, 64, rxfd) == NULL || fgets(tx_s, 64, txfd) == NULL) {
+			fprintf(stderr, "Network routine: Error reading network file\n");
+			break;
+		}
+
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
