@@ -361,6 +361,7 @@ static void *sb_network_routine(void *thunk)
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
 
+	int i;
 	struct {
 		FILE *fd;
 		char  path[IFNAMSIZ + 64];
@@ -376,9 +377,17 @@ static void *sb_network_routine(void *thunk)
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
-		if (fgets(rx_s, 64, rxfd) == NULL || fgets(tx_s, 64, txfd) == NULL) {
-			fprintf(stderr, "Network routine: Error reading network file\n");
-			break;
+		for (i = 0; i < 2; i++) {
+			files[i].fd = fopen(files[i].path, "r");
+			if (files[i].fd == NULL) {
+				fprintf(stderr, "Network routine: Error opening network file\n");
+				break;
+			} else if (fgets(files[i].contents, 64, files[i].fd) == NULL) {
+				fprintf(stderr, "Network routine: Error reading network file\n");
+				fclose(files[i].fd);
+				break;
+			}
+			fclose(files[i].fd);
 		}
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
@@ -388,8 +397,6 @@ static void *sb_network_routine(void *thunk)
 		}
 	}
 	
-	fclose(rxfd);
-	fclose(txfd);
 	return NULL;
 }
 
