@@ -738,6 +738,7 @@ int main(int argc, char *argv[])
 	enum sb_routine_e  index;
 	sb_routine_t      *routine_object;
 	pthread_t          print_thread;
+	int                run      = 1;
 	void              *join_ret = NULL;
 
 	num_routines = sizeof(chosen_routines) / sizeof(*chosen_routines);
@@ -776,7 +777,7 @@ int main(int argc, char *argv[])
 	/* properly terminate the routine list */
 	routine_object->next = NULL;
 
-	pthread_create(&print_thread, NULL, sb_print_to_sb, NULL);
+	pthread_create(&print_thread, NULL, sb_print_to_sb, (void *)&run);
 
 	/* block until all threads exit */
 	for (i = 0; i < num_routines; i++) {
