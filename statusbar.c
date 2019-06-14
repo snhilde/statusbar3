@@ -5,6 +5,7 @@
 
 static void *sb_print_to_sb(void *thunk)
 {
+	int             *run = thunk;
 	Display         *dpy;
 	Window           root;
 	struct timespec  start_tp;
@@ -22,7 +23,7 @@ static void *sb_print_to_sb(void *thunk)
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
-	while (1) {
+	while (*run) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		offset = 0;
