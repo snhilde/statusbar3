@@ -363,8 +363,8 @@ static void *sb_network_routine(void *thunk)
 
 	int  i;
 	int  error;
-	int  shift[] = {  0,  10,  20,  30,  40  };
-	char unit[]  = { 'K', 'M', 'G', 'T', 'P' };
+	int  prefix;
+	char unit[] = "KMGTP";
 	struct {
 		FILE          *fd;
 		char           path[IFNAMSIZ + 64];
