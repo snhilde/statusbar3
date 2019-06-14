@@ -277,6 +277,17 @@ static void *sb_load_routine(void *thunk)
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
+		if (lseek(fileno(fd), 0L, SEEK_SET) < 0) {
+			fprintf(stderr, "Load routine: Error resetting file offset\n");
+			break;
+		} else if (fgets(buf, sizeof(buf), fd) == NULL) {
+			fprintf(stderr, "Load routine: Error reading loadavg file\n");
+			break;
+		} else if (sscanf(buf, "%lf %lf %lf", &av[0], &av[1], &av[2]) < 3) {
+			fprintf(stderr, "Load routine: Error scanning buffer\n");
+			break;
+		} else {
+		}
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
