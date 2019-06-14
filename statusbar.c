@@ -28,6 +28,11 @@ static void *sb_print_to_sb(void *thunk)
 		offset = 0;
 		routine = routine_list;
 		while (routine != NULL) {
+			if (routine->skip == 1) {
+				routine = routine->next;
+				continue;
+			}
+				
 			pthread_mutex_lock(&(routine->mutex));
 			len = strlen(routine->output);
 			if (offset + len > SBLENGTH - 1) {
