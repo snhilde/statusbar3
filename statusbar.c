@@ -261,9 +261,9 @@ static void *sb_load_routine(void *thunk)
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
 
-	FILE          *fd;
-	char           buf[64] = {0};
-	static double  av[3];
+	FILE   *fd;
+	char    buf[64] = {0};
+	double  av[3];
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
