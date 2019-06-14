@@ -394,6 +394,7 @@ static void *sb_network_routine(void *thunk)
 				fprintf(stderr, "Network routine: Error reading network file\n");
 				error = 1;
 			} else {
+				files[i].old_bytes = files[i].new_bytes;
 				files[i].new_bytes = strtoul(files[i].contents, NULL, 10);
 				files[i].diff      = files[i].new_bytes - files[i].old_bytes;
 				for (prefix = 0; (files[i].diff >> (10 * (prefix+2))) > 0; prefix++);
