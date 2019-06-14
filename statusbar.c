@@ -369,7 +369,7 @@ static void *sb_network_routine(void *thunk)
 	struct {
 		FILE          *fd;
 		char           path[IFNAMSIZ + 64];
-		char           contents[64];
+		char           contents[64] = {0};
 		unsigned long  old_bytes;
 		unsigned long  new_bytes;
 		unsigned long  diff;
