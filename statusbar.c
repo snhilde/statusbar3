@@ -362,6 +362,7 @@ static void *sb_network_routine(void *thunk)
 	long             elapsed_usec;
 
 	int i;
+	int error;
 	struct {
 		FILE *fd;
 		char  path[IFNAMSIZ + 64];
@@ -377,18 +378,21 @@ static void *sb_network_routine(void *thunk)
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
-		for (i = 0; i < 2; i++) {
+		error = 0;
+		for (i = 0; i < 2 && !error; i++) {
 			files[i].fd = fopen(files[i].path, "r");
 			if (files[i].fd == NULL) {
 				fprintf(stderr, "Network routine: Error opening network file\n");
-				break;
+				error = 1;
 			} else if (fgets(files[i].contents, 64, files[i].fd) == NULL) {
 				fprintf(stderr, "Network routine: Error reading network file\n");
-				fclose(files[i].fd);
-				break;
+				error = 1;
 			}
-			fclose(files[i].fd);
+			if (files[i].fd != NULL)
+				fclose(files[i].fd);
 		}
+		if (error)
+			break;
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
