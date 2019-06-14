@@ -369,7 +369,7 @@ static void *sb_network_routine(void *thunk)
 		char  contents[64];
 	} files[2] = {{0}, {0}};
 
-	if (sb_init_network(files[0].path, sizeof(files[0].path), files[0].path, sizeof(files[0].path)) < 0)
+	if (sb_init_network(files[0].path, sizeof(files[0].path), files[1].path, sizeof(files[1].path)) < 0)
 		return NULL;
 
 	memset(&start_tp, 0, sizeof(start_tp));
