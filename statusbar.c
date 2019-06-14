@@ -280,33 +280,6 @@ static void *sb_load_routine(void *thunk)
 }
 
 
-/* --- LOG ROUTINE --- */
-static void *sb_log_routine(void *thunk)
-{
-	sb_routine_t    *routine = thunk;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;;
-	long             elapsed_usec;
-
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
-
-	while(1) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
-
-		/* TODO: run routine */
-
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
-		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
-			fprintf(stderr, "Log routine: Error sleeping\n");
-		}
-	}
-	
-	return NULL;
-}
-
-
 /* --- NETWORK ROUTINE --- */
 static int sb_init_network(char *rx_path, size_t rx_path_size, char *tx_path, size_t tx_path_size)
 {
@@ -699,7 +672,6 @@ static const struct thread_routines_t {
 	{ DISK,       sb_disk_routine       },
 	{ FAN,        sb_fan_routine        },
 	{ LOAD,       sb_load_routine       },
-	{ LOG,        sb_log_routine        },
 	{ NETWORK,    sb_network_routine    },
 	{ RAM,        sb_ram_routine        },
 	{ TIME,       sb_time_routine       },
