@@ -262,7 +262,7 @@ static void *sb_load_routine(void *thunk)
 	long             elapsed_usec;
 
 	FILE          *fd;
-	char           contents[64] = {0};
+	char           buf[64] = {0};
 	static double  av[3];
 
 	memset(&start_tp, 0, sizeof(start_tp));
@@ -370,7 +370,7 @@ static void *sb_network_routine(void *thunk)
 	struct {
 		FILE          *fd;
 		char           path[IFNAMSIZ + 64];
-		char           contents[64] = {0};
+		char           buf[64] = {0};
 		unsigned long  old_bytes;
 		unsigned long  new_bytes;
 		unsigned long  diff;
@@ -393,12 +393,12 @@ static void *sb_network_routine(void *thunk)
 			if (lseek(fileno(files[i].fd), 0L, SEEK_SET) < 0) {
 				fprintf(stderr, "Network routine: Error resetting file offset\n");
 				error = 1;
-			} else if (fgets(files[i].contents, sizeof(files[i].contents), files[i].fd) == NULL) {
+			} else if (fgets(files[i].buf, sizeof(files[i].buf), files[i].fd) == NULL) {
 				fprintf(stderr, "Network routine: Error reading network file\n");
 				error = 1;
 			} else {
 				files[i].old_bytes = files[i].new_bytes;
-				files[i].new_bytes = strtoul(files[i].contents, NULL, 10);
+				files[i].new_bytes = strtoul(files[i].buf, NULL, 10);
 				files[i].diff      = files[i].new_bytes - files[i].old_bytes;
 				for (prefix = 0; (files[i].diff >> (10 * (prefix+2))) > 0; prefix++);
 				files[i].prefix = prefix;
