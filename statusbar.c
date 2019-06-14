@@ -361,15 +361,17 @@ static void *sb_network_routine(void *thunk)
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
 
-	int  i;
-	int  error;
-	int  prefix;
-	char unit[] = "KMGTP";
+	int            i;
+	int            error;
+	int            prefix;
+	char          *unit = "KMGTP";
 	struct {
 		FILE          *fd;
 		char           path[IFNAMSIZ + 64];
 		char           contents[64];
-		unsigned long  bytes;
+		unsigned long  old_bytes;
+		unsigned long  new_bytes;
+		unsigned long  diff;
 		int            prefix;
 	} files[2] = {0};
 
