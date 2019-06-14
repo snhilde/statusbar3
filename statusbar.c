@@ -283,18 +283,18 @@ static void *sb_load_routine(void *thunk)
 
 
 /* --- NETWORK ROUTINE --- */
-static int sb_open_files(int *rxfd, char *rx_path, int *txrd, char *tx_path)
+static int sb_open_files(FILE **rxfd, char *rx_path, FILE **txfd, char *tx_path)
 {
-	*rxfd = open(rx_path, O_RDONLY);
+	*rxfd = fopen(rx_path, "r");
 	if (*rxfd < 0) {
 		fprintf(stderr, "Network routine: Error opening rx file: %s\n", rx_path);
 		return -1;
 	}
 
-	*txfd = open(tx_path, O_RDONLY);
+	*txfd = fopen(tx_path, "r");
 	if (*txfd < 0) {
 		fprintf(stderr, "Network routine: Error opening tx file: %s\n", tx_path);
-		close(*rxfd);
+		fclose(*rxfd);
 		return -1;
 	}
 
@@ -359,7 +359,7 @@ static void *sb_network_routine(void *thunk)
 	int            prefix;
 	char          *unit = "KMGTP";
 	struct {
-		int            fd;
+		FILE          *fd;
 		char           path[IFNAMSIZ + 64];
 		char           contents[64];
 		unsigned long  old_bytes;
