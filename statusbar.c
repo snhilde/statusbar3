@@ -392,7 +392,7 @@ static void *sb_network_routine(void *thunk)
 			if (lseek(fileno(files[i].fd), 0L, SEEK_SET) < 0) {
 				fprintf(stderr, "Network routine: Error resetting file offset\n");
 				error = 1;
-			} else if (fgets(files[i].contents, 64, files[i].fd) == NULL) {
+			} else if (fgets(files[i].contents, sizeof(files[i].contents), files[i].fd) == NULL) {
 				fprintf(stderr, "Network routine: Error reading network file\n");
 				error = 1;
 			} else {
