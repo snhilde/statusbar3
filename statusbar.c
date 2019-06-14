@@ -776,13 +776,15 @@ int main(int argc, char *argv[])
 	/* block until all threads exit */
 	for (i = 0; i < num_routines; i++) {
 		index = chosen_routines[i].routine;
+		routine_object = routine_array + index;
 		if (index == DELIMITER)
 			continue;
 
-		if (pthread_join(routine_array[index].thread, &join_ret) != 0)
+		if (pthread_join(routine_object->thread, &join_ret) != 0)
 			fprintf(stderr, "%s thread did not exit cleanly (%s)\n", routine_names[index], (char *)join_ret);
 		if (pthread_mutex_destroy(&(routine_object->mutex)) != 0)
 			fprintf(stderr, "%s: error destroying mutex\n", routine_names[index]);
+		routine_object->skip = 1;
 		free(join_ret);
 	}
 
