@@ -361,13 +361,16 @@ static void *sb_network_routine(void *thunk)
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
 
-	int i;
-	int error;
+	int  i;
+	int  error;
+	int  shift[] = {  0,  10,  20,  30,  40  };
+	char unit[]  = { 'K', 'M', 'G', 'T', 'P' };
 	struct {
 		FILE          *fd;
 		char           path[IFNAMSIZ + 64];
 		char           contents[64];
 		unsigned long  bytes;
+		int            prefix;
 	} files[2] = {0};
 
 	if (sb_init_network(files[0].path, sizeof(files[0].path), files[1].path, sizeof(files[1].path)) < 0)
@@ -419,10 +422,9 @@ static void *sb_ram_routine(void *thunk)
 	long             page_size;
 	long             total_pages;
 	long             total_bytes;
-	int              i       = 0;
+	int              i;
 	float            total_bytes_f;
-	int              shift[] = {  0,  10,  20,  30,  40  };
-	char             unit[]  = { 'K', 'M', 'G', 'T', 'P' };
+	char             unit[] = "KMGTP";
 	long             available_bytes;
 
 	memset(&start_tp, 0, sizeof(start_tp));
@@ -430,17 +432,17 @@ static void *sb_ram_routine(void *thunk)
 
 	page_size   = sysconf(_SC_PAGESIZE);
 	total_pages = sysconf(_SC_PHYS_PAGES);
-	total_bytes = total_pages * page_size;
 	if (page_size < 0 || total_pages < 0) {
 		fprintf(stderr, "Ram routine: Error getting page info\n");
 		return NULL;
 	}
 
 	/* calculate unit of memory */
-	for (i = -1; (total_bytes >>= 10) > 0; i++);
+	total_bytes = total_pages * page_size;
+	for (i = 0; (total_bytes >> (10 * (i+2))) > 0; i++);
 
 	/* get total bytes as a decimal */
-	total_bytes_f = ((total_pages * page_size) >> shift[i]) / 1024.0;
+	total_bytes_f = ((total_pages * page_size) >> (10 * i)) / 1024.0;
 
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
@@ -453,8 +455,8 @@ static void *sb_ram_routine(void *thunk)
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "Free: %.3f %c / %.3f %c",
-				(available_bytes >> shift[i]) / 1024.0, unit[i], total_bytes_f, unit[i]);
+		snprintf(routine->output, sizeof(routine->output)-1, "Free: %.1f %c / %.1f %c",
+				(available_bytes >> (10 * i)) / 1024.0, unit[i], total_bytes_f, unit[i]);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
