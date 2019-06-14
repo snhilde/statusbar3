@@ -93,6 +93,7 @@ static void *sb_backup_routine(void *thunk)
 		}
 	}
 	
+	routine->skip = 1;
 	return NULL;
 }
 
@@ -120,6 +121,7 @@ static void *sb_battery_routine(void *thunk)
 		}
 	}
 	
+	routine->skip = 1;
 	return NULL;
 }
 
@@ -147,6 +149,7 @@ static void *sb_brightness_routine(void *thunk)
 		}
 	}
 
+	routine->skip = 1;
 	return NULL;
 }
 
@@ -174,6 +177,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 		}
 	}
 	
+	routine->skip = 1;
 	return NULL;
 }
 
@@ -201,6 +205,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		}
 	}
 	
+	routine->skip = 1;
 	return NULL;
 }
 
@@ -228,6 +233,7 @@ static void *sb_disk_routine(void *thunk)
 		}
 	}
 	
+	routine->skip = 1;
 	return NULL;
 }
 
@@ -255,6 +261,7 @@ static void *sb_fan_routine(void *thunk)
 		}
 	}
 	
+	routine->skip = 1;
 	return NULL;
 }
 
@@ -307,6 +314,7 @@ static void *sb_load_routine(void *thunk)
 	
 	if (fd != NULL)
 		fclose(fd);
+	routine->skip = 1;
 	return NULL;
 }
 
@@ -444,6 +452,7 @@ static void *sb_network_routine(void *thunk)
 		fclose(files[0].fd);
 	if (files[1].fd != NULL)
 		fclose(files[1].fd);
+	routine->skip = 1;
 	return NULL;
 }
 
@@ -503,6 +512,7 @@ static void *sb_ram_routine(void *thunk)
 		}
 	}
 	
+	routine->skip = 1;
 	return NULL;
 }
 
@@ -539,6 +549,7 @@ static void *sb_time_routine(void *thunk)
 		}
 	}
 	
+	routine->skip = 1;
 	return NULL;
 }
 
@@ -566,6 +577,7 @@ static void *sb_todo_routine(void *thunk)
 		}
 	}
 	
+	routine->skip = 1;
 	return NULL;
 }
 
@@ -593,6 +605,7 @@ static void *sb_volume_routine(void *thunk)
 		}
 	}
 	
+	routine->skip = 1;
 	return NULL;
 }
 
@@ -620,6 +633,7 @@ static void *sb_weather_routine(void *thunk)
 		}
 	}
 	
+	routine->skip = 1;
 	return NULL;
 }
 
@@ -708,6 +722,7 @@ static void *sb_wifi_routine(void *thunk)
 	}
 
 	close(fd);
+	routine->skip = 1;
 	return NULL;
 }
 
@@ -791,7 +806,7 @@ int main(int argc, char *argv[])
 			fprintf(stderr, "%s thread did not exit cleanly (%s)\n", routine_names[index], (char *)join_ret);
 		if (pthread_mutex_destroy(&(routine_object->mutex)) != 0)
 			fprintf(stderr, "%s: error destroying mutex\n", routine_names[index]);
-		routine_object->skip = 1;
+		routine_object->skip = 1; /* make sure routine is skipped */
 		free(join_ret);
 	}
 	/* kill print thread */
