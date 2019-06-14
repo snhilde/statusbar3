@@ -412,9 +412,9 @@ static void *sb_network_routine(void *thunk)
 	}
 	
 	if (files[0].fd != NULL)
-		close(files[0].fd);
+		fclose(files[0].fd);
 	if (files[1].fd != NULL)
-		close(files[1].fd);
+		fclose(files[1].fd);
 	return NULL;
 }
 
