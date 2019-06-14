@@ -261,6 +261,8 @@ static void *sb_load_routine(void *thunk)
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
 
+	static double    av[3];
+
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
@@ -359,9 +361,8 @@ static void *sb_network_routine(void *thunk)
 
 		error = 0;
 		for (i = 0; i < 2 && !error; i++) {
-			files[i].fd = fopen(files[i].path, "r");
-			if (files[i].fd == NULL) {
-				fprintf(stderr, "Network routine: Error opening network file\n");
+			if (lseek(files[i].fd, 0L, SEEK_SET) < 0) {
+				fprintf(stderr, "Network routine: Error resetting file offset\n");
 				error = 1;
 			} else if (fgets(files[i].contents, 64, files[i].fd) == NULL) {
 				fprintf(stderr, "Network routine: Error reading network file\n");
@@ -373,8 +374,8 @@ static void *sb_network_routine(void *thunk)
 				for (prefix = 0; (files[i].diff >> (10 * (prefix+2))) > 0; prefix++);
 				files[i].prefix = prefix;
 			}
-			if (files[i].fd != NULL)
-				fclose(files[i].fd);
+			/* if (files[i].fd != NULL) */
+				/* fclose(files[i].fd); */
 		}
 		if (error)
 			break;
