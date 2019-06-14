@@ -286,7 +286,6 @@ static void *sb_load_routine(void *thunk)
 		} else if (sscanf(buf, "%lf %lf %lf", &av[0], &av[1], &av[2]) < 3) {
 			fprintf(stderr, "Load routine: Error scanning buffer\n");
 			break;
-		} else {
 		}
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
@@ -381,7 +380,7 @@ static void *sb_network_routine(void *thunk)
 	struct {
 		FILE          *fd;
 		char           path[IFNAMSIZ + 64];
-		char           buf[64] = {0};
+		char           buf[64];
 		unsigned long  old_bytes;
 		unsigned long  new_bytes;
 		unsigned long  diff;
