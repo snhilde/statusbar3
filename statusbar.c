@@ -262,6 +262,7 @@ static void *sb_load_routine(void *thunk)
 	long             elapsed_usec;
 
 	FILE          *fd;
+	char           contents[64] = {0};
 	static double  av[3];
 
 	memset(&start_tp, 0, sizeof(start_tp));
