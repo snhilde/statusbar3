@@ -261,15 +261,21 @@ static void *sb_load_routine(void *thunk)
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
 
-	static double    av[3];
+	FILE          *fd;
+	static double  av[3];
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
+	fd = fopen("/proc/loadavg", "r");
+	if (fd == NULL) {
+		fprintf(stderr, "Load routine: Error opening loadavg\n");
+		return NULL;
+	}
+
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
-		/* TODO: run routine */
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
@@ -278,6 +284,8 @@ static void *sb_load_routine(void *thunk)
 		}
 	}
 	
+	if (fd != NULL)
+		fclose(fd);
 	return NULL;
 }
 
