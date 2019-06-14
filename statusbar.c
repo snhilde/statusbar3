@@ -406,6 +406,12 @@ static void *sb_network_routine(void *thunk)
 		if (error)
 			break;
 
+		pthread_mutex_lock(&(routine->mutex));
+		snprintf(routine->output, sizeof(routine->output)-1, "Down: %.1f %c Up: %.1f %c",
+				(files[0].diff >> (10 * files[0].prefix)) / 1024.0, unit[files[0].prefix],
+				(files[1].diff >> (10 * files[1].prefix)) / 1024.0, unit[files[1].prefix]);
+		pthread_mutex_unlock(&(routine->mutex));
+
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
