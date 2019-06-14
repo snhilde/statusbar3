@@ -359,7 +359,7 @@ static void *sb_network_routine(void *thunk)
 	int            prefix;
 	char          *unit = "KMGTP";
 	struct {
-		FILE          *fd;
+		int            fd;
 		char           path[IFNAMSIZ + 64];
 		char           contents[64];
 		unsigned long  old_bytes;
