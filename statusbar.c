@@ -283,6 +283,24 @@ static void *sb_load_routine(void *thunk)
 
 
 /* --- NETWORK ROUTINE --- */
+static int sb_open_files(int *rxfd, char *rx_path, int *txrd, char *tx_path)
+{
+	*rxfd = open(rx_path, O_RDONLY);
+	if (*rxfd < 0) {
+		fprintf(stderr, "Network routine: Error opening rx file: %s\n", rx_path);
+		return -1;
+	}
+
+	*txfd = open(tx_path, O_RDONLY);
+	if (*txfd < 0) {
+		fprintf(stderr, "Network routine: Error opening tx file: %s\n", tx_path);
+		close(*rxfd);
+		return -1;
+	}
+
+	return 1;
+}
+
 static int sb_init_network(char *rx_path, size_t rx_path_size, char *tx_path, size_t tx_path_size)
 {
 	int             fd;
