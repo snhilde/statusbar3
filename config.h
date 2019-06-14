@@ -3,7 +3,6 @@ static const struct {
 	time_t            seconds;
 } chosen_routines[] = {
 	/* TOP BAR */
-	{ LOG       , 5       },
 	{ TODO      , 5       },
 	{ WEATHER   , 60 * 30 },
 	{ BACKUP    , 5       },
