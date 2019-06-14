@@ -394,8 +394,6 @@ static void *sb_network_routine(void *thunk)
 				for (prefix = 0; (files[i].diff >> (10 * (prefix+2))) > 0; prefix++);
 				files[i].prefix = prefix;
 			}
-			/* if (files[i].fd != NULL) */
-				/* fclose(files[i].fd); */
 		}
 		if (error)
 			break;
