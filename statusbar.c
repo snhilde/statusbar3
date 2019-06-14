@@ -364,10 +364,11 @@ static void *sb_network_routine(void *thunk)
 	int i;
 	int error;
 	struct {
-		FILE *fd;
-		char  path[IFNAMSIZ + 64];
-		char  contents[64];
-	} files[2] = {{0}, {0}};
+		FILE      *fd;
+		char       path[IFNAMSIZ + 64];
+		char       contents[64];
+		long long  bytes;
+	} files[2] = {0};
 
 	if (sb_init_network(files[0].path, sizeof(files[0].path), files[1].path, sizeof(files[1].path)) < 0)
 		return NULL;
