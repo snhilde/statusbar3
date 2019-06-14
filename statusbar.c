@@ -301,7 +301,7 @@ static int sb_open_files(int *rxfd, char *rx_path, int *txrd, char *tx_path)
 	return 1;
 }
 
-static int sb_init_network(char *rx_path, size_t rx_path_size, char *tx_path, size_t tx_path_size)
+static int sb_get_paths(char *rx_path, size_t rx_path_size, char *tx_path, size_t tx_path_size)
 {
 	int             fd;
 	struct ifreq    ifr;
@@ -368,7 +368,7 @@ static void *sb_network_routine(void *thunk)
 		int            prefix;
 	} files[2] = {0};
 
-	if (sb_init_network(files[0].path, sizeof(files[0].path), files[1].path, sizeof(files[1].path)) < 0)
+	if (sb_get_paths(files[0].path, sizeof(files[0].path), files[1].path, sizeof(files[1].path)) < 0)
 		return NULL;
 	if (sb_open_files(&files[0].fd, files[0].path, &files[1].fd, files[1].path) < 0)
 		return NULL;
