@@ -388,6 +388,8 @@ static void *sb_network_routine(void *thunk)
 			} else if (fgets(files[i].contents, 64, files[i].fd) == NULL) {
 				fprintf(stderr, "Network routine: Error reading network file\n");
 				error = 1;
+			} else {
+				files[i].bytes = strtoul(files[i].contents, NULL, 10);
 			}
 			if (files[i].fd != NULL)
 				fclose(files[i].fd);
