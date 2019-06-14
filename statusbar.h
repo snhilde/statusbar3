@@ -63,6 +63,8 @@ typedef struct sb_routine {
 	struct sb_routine *next;        /* Pointer to next routine in list. This is how we are
 	                                   going to keep track of the order or routines for
 	                                   printing to the status bar. */
+	int                skip;        /* 0 (default) means don't skip, 1 means thread has
+									   exited and this routine should not be printed. */
 } sb_routine_t;
 
 /* This array will hold all the routine objects. Because it is global, it is zero'd out on
