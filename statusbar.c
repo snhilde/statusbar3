@@ -781,6 +781,8 @@ int main(int argc, char *argv[])
 
 		if (pthread_join(routine_array[index].thread, &join_ret) != 0)
 			fprintf(stderr, "%s thread did not exit cleanly (%s)\n", routine_names[index], (char *)join_ret);
+		if (pthread_mutex_destroy(&(routine_object->mutex)) != 0)
+			fprintf(stderr, "%s: error destroying mutex\n", routine_names[index]);
 		free(join_ret);
 	}
 
