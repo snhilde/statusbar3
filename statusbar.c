@@ -779,6 +779,7 @@ int main(int argc, char *argv[])
 	routine_object->next = NULL;
 
 	pthread_create(&print_thread, NULL, sb_print_to_sb, (void *)&run);
+	sleep(5);
 
 	/* block until all threads exit */
 	for (i = 0; i < num_routines; i++) {
