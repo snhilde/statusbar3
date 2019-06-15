@@ -3,6 +3,11 @@
 
 #define SBLENGTH 10240
 
+typedef enum _SB_BOOL {
+	SB_FALSE = 0,
+	SB_TRUE  = 1
+} SB_BOOL;
+
 static void *sb_print_to_sb(void *thunk)
 {
 	int             *run = thunk;
@@ -320,25 +325,25 @@ static void *sb_load_routine(void *thunk)
 
 
 /* --- NETWORK ROUTINE --- */
-static int sb_open_files(FILE **rxfd, char *rx_path, FILE **txfd, char *tx_path)
+static SB_BOOL sb_open_files(FILE **rxfd, char *rx_path, FILE **txfd, char *tx_path)
 {
 	*rxfd = fopen(rx_path, "r");
 	if (*rxfd < 0) {
 		fprintf(stderr, "Network routine: Error opening rx file: %s\n", rx_path);
-		return -1;
+		return SB_FALSE;
 	}
 
 	*txfd = fopen(tx_path, "r");
 	if (*txfd < 0) {
 		fprintf(stderr, "Network routine: Error opening tx file: %s\n", tx_path);
 		fclose(*rxfd);
-		return -1;
+		return SB_FALSE;
 	}
 
-	return 1;
+	return SB_TRUE;
 }
 
-static int sb_get_paths(char *rx_path, size_t rx_path_size, char *tx_path, size_t tx_path_size)
+static SB_BOOL sb_get_paths(char *rx_path, size_t rx_path_size, char *tx_path, size_t tx_path_size)
 {
 	int             fd;
 	struct ifreq    ifr;
@@ -349,14 +354,14 @@ static int sb_get_paths(char *rx_path, size_t rx_path_size, char *tx_path, size_
 	fd = socket(AF_INET, SOCK_DGRAM, 0);
 	if (fd < 0) {
 		fprintf(stderr, "Network routine: Error opening socket file descriptor\n");
-		return -1;
+		return SB_FALSE;
 	}
 
 	/* get all network interfaces */
 	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
 		fprintf(stderr, "Network routine: Error finding interface addresses\n");
 		close(fd);
-		return -1;
+		return SB_FALSE;
 	}
 	ifap = ifaddrs;
 
@@ -378,10 +383,10 @@ static int sb_get_paths(char *rx_path, size_t rx_path_size, char *tx_path, size_
 
 	if (ifap == NULL) {
 		fprintf(stderr, "Network routine: Could not find wireless interface\n");
-		return -1;
+		return SB_FALSE;
 	}
 
-	return 1;
+	return SB_TRUE;
 }
 
 static void *sb_network_routine(void *thunk)
@@ -405,9 +410,9 @@ static void *sb_network_routine(void *thunk)
 		int            prefix;
 	} files[2] = {0};
 
-	if (sb_get_paths(files[0].path, sizeof(files[0].path), files[1].path, sizeof(files[1].path)) < 0)
+	if (!sb_get_paths(files[0].path, sizeof(files[0].path), files[1].path, sizeof(files[1].path)))
 		return NULL;
-	if (sb_open_files(&files[0].fd, files[0].path, &files[1].fd, files[1].path) < 0)
+	if (!sb_open_files(&files[0].fd, files[0].path, &files[1].fd, files[1].path))
 		return NULL;
 
 	memset(&start_tp, 0, sizeof(start_tp));
@@ -639,7 +644,7 @@ static void *sb_weather_routine(void *thunk)
 
 
 /* --- WIFI ROUTINE --- */
-static int sb_init_wifi(int *fd, struct iwreq *iwr, char *essid, size_t max_len)
+static SB_BOOL sb_init_wifi(int *fd, struct iwreq *iwr, char *essid, size_t max_len)
 {
 	struct ifaddrs *ifaddrs = NULL;
 	struct ifaddrs *ifap;
@@ -653,13 +658,13 @@ static int sb_init_wifi(int *fd, struct iwreq *iwr, char *essid, size_t max_len)
 	*fd = socket(AF_INET, SOCK_DGRAM, 0);
 	if (*fd < 0) {
 		fprintf(stderr, "Wifi routine: Error opening socket file descriptor\n");
-		return -1;
+		return SB_FALSE;
 	}
 
 	/* get all network interfaces */
 	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
 		fprintf(stderr, "Wifi routine: Error finding interface addresses\n");
-		return -1;
+		return SB_FALSE;
 	}
 	ifap = ifaddrs;
 
@@ -668,14 +673,14 @@ static int sb_init_wifi(int *fd, struct iwreq *iwr, char *essid, size_t max_len)
 		strncpy(iwr->ifr_ifrn.ifrn_name, ifap->ifa_name, IFNAMSIZ);
 		if (ioctl(*fd, SIOCGIWESSID, iwr) >= 0) {
 			freeifaddrs(ifaddrs);
-			return 1;
+			return SB_TRUE;
 		}
 		ifap = ifap->ifa_next;
 	}
 
 	fprintf(stderr, "Wifi routine: Could not find wireless interface\n");
 	freeifaddrs(ifaddrs);
-	return -1;
+	return SB_FALSE;
 }
 
 static void *sb_wifi_routine(void *thunk)
@@ -696,7 +701,7 @@ static void *sb_wifi_routine(void *thunk)
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
-	if (sb_init_wifi(&fd, &iwr, essid, sizeof(essid)) < 0) {
+	if (!sb_init_wifi(&fd, &iwr, essid, sizeof(essid))) {
 		close(fd);
 		return NULL;
 	}
