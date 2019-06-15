@@ -246,7 +246,22 @@ static void *sb_disk_routine(void *thunk)
 /* --- FAN ROUTINE --- */
 static SB_BOOL sb_open_fans(char fans[][512], int fan_count, FILE **fd, size_t fd_size)
 {
+	int i;
+
+	for (i = 0; i < fan_count; i++) {
+		fd[i] = fopen(fans[i], "r");
+		if (fd[i] == NULL) {
+			fprintf(stderr, "Fan routine: Error opening %s", fans[i]);
+			/* close all open file descriptors */
+			for (--i ; i >= 0; i--) {
+				fclose(fd[i]);
+			}
+			break;
+		}
+	}
 	
+	/* cap list will NULL */
+	fd[i] = NULL;
 	return SB_TRUE;
 }
 
