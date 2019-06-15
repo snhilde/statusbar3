@@ -360,6 +360,8 @@ static void *sb_fan_routine(void *thunk)
 	}
 
 	/* close open file descriptors */
+	for (i = 0; i < count; i++)
+		fclose(fd[i]);
 	
 	routine->skip = 1;
 	return NULL;
