@@ -474,7 +474,7 @@ static void *sb_network_routine(void *thunk)
 	long             elapsed_usec;
 
 	int            i;
-	int            error;
+	SB_BOOL        error;
 	int            prefix;
 	char          *unit = "KMGTP";
 	struct {
@@ -498,14 +498,14 @@ static void *sb_network_routine(void *thunk)
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
-		error = 0;
+		error = SB_FALSE;
 		for (i = 0; i < 2 && !error; i++) {
 			if (lseek(fileno(files[i].fd), 0L, SEEK_SET) < 0) {
 				fprintf(stderr, "Network routine: Error resetting file offset\n");
-				error = 1;
+				error = SB_TRUE;
 			} else if (fgets(files[i].buf, sizeof(files[i].buf), files[i].fd) == NULL) {
 				fprintf(stderr, "Network routine: Error reading network file\n");
-				error = 1;
+				error = SB_TRUE;
 			} else {
 				files[i].old_bytes = files[i].new_bytes;
 				files[i].new_bytes = strtoul(files[i].buf, NULL, 10);
