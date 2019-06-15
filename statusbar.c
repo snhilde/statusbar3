@@ -244,7 +244,7 @@ static void *sb_disk_routine(void *thunk)
 
 
 /* --- FAN ROUTINE --- */
-static SB_BOOL sb_open_fans(char fans[][512], int num_fans, FILE **fd, size_t fd_size)
+static SB_BOOL sb_open_fans(char fans[][512], int fan_count, FILE **fd, size_t fd_size)
 {
 	
 	return SB_TRUE;
