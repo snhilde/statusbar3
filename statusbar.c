@@ -244,6 +244,12 @@ static void *sb_disk_routine(void *thunk)
 
 
 /* --- FAN ROUTINE --- */
+static SB_BOOL(sb_find_fans(void))
+{
+	
+	return SB_TRUE;
+}
+
 static void *sb_fan_routine(void *thunk)
 {
 	sb_routine_t    *routine = thunk;
@@ -253,6 +259,9 @@ static void *sb_fan_routine(void *thunk)
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
+
+	if (!sb_find_fans())
+		return NULL;
 
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
