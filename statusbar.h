@@ -5,6 +5,9 @@
 #include <string.h>
 #include <stdlib.h>
 
+/* for fan routine */
+#include <dirent.h>
+
 /* for wifi routine */
 #include <sys/ioctl.h>
 #include <linux/wireless.h>
