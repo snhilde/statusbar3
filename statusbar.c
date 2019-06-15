@@ -246,7 +246,19 @@ static void *sb_disk_routine(void *thunk)
 /* --- FAN ROUTINE --- */
 static SB_BOOL(sb_find_fans(void))
 {
+	DIR           *dir;
+	struct dirent *dirent;
+
+	dir = opendir("/sys/class/hwmon");
+	if (dir == NULL) {
+		fprintf(stderr, "Fan routine: Could not open directory /sys/class/hwmon");
+		return SB_FALSE;
+	}
+
+	for (dirent = readdir(dir); dirent != NULL; dirent = readdir(dir)) {
+	}
 	
+	closedir(dir);
 	return SB_TRUE;
 }
 
