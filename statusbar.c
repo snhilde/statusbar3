@@ -278,6 +278,10 @@ static SB_BOOL(sb_find_fans(char fans[][512], size_t max_len, int *count))
 	}
 	
 	closedir(dir);
+	if (count == 0) {
+		fprintf(stderr, "Fan routine: No fans found\n");
+		return SB_FALSE;
+	}
 	return SB_TRUE;
 }
 
@@ -296,10 +300,6 @@ static void *sb_fan_routine(void *thunk)
 
 	if (!sb_find_fans(fans, sizeof(fans[0]), &count))
 		return NULL;
-	if (count == 0) {
-		fprintf(stderr, "Fan routine: No fans found\n");
-		return NULL;
-	}
 
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
