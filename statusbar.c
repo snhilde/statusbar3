@@ -244,11 +244,12 @@ static void *sb_disk_routine(void *thunk)
 
 
 /* --- FAN ROUTINE --- */
-static SB_BOOL(sb_find_fans(char *path, size_t path_size, int *count))
+static SB_BOOL(sb_find_fans(char fans[][512], size_t max_len, int *count))
 {
 	static const char *base = "/sys/class/hwmon";
 	DIR               *dir;
 	struct dirent     *dirent;
+	char               path[512] = {0};
 	DIR               *device;
 
 	*count = 0;
@@ -260,11 +261,12 @@ static SB_BOOL(sb_find_fans(char *path, size_t path_size, int *count))
 	}
 
 	for (dirent = readdir(dir); dirent != NULL; dirent = readdir(dir)) {
-		snprintf(path, path_size-1, "%s/%s/device", base, dirent->d_name);
+		snprintf(path, sizeof(path)-1, "%s/%s/device", base, dirent->d_name);
 		device = opendir(path);
 		if (device != NULL) {
 			for (dirent = readdir(device); dirent != NULL; dirent = readdir(device)) {
-				if (!strncmp(dirent->d_name, "fan", 3) && !strncmp(dirent->d_name+4, "_input", 6)) {
+				if (!strncmp(dirent->d_name, "fan", 3) && !strncmp(dirent->d_name+4, "_output", 7)) {
+					snprintf(fans[*count], max_len-1, "%s/%s", path, dirent->d_name);
 					(*count)++;
 				}
 			}
@@ -286,14 +288,18 @@ static void *sb_fan_routine(void *thunk)
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
 
-	char             path[512] = {0};
-	int              count;
+	char             fans[64][512];
+	int              count   = 0;
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
-	if (!sb_find_fans(path, sizeof(path), &count))
+	if (!sb_find_fans(fans, sizeof(fans[0]), &count))
 		return NULL;
+	if (count == 0) {
+		fprintf(stderr, "Fan routine: No fans found\n");
+		return NULL;
+	}
 
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
