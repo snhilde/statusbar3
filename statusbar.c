@@ -246,12 +246,14 @@ static void *sb_disk_routine(void *thunk)
 /* --- FAN ROUTINE --- */
 static SB_BOOL sb_open_fans(char fans[][512], int fan_count, FILE **fd)
 {
-	int i;
+	int     i;
+	SB_BOOL ret = SB_TRUE;
 
 	for (i = 0; i < fan_count; i++) {
 		fd[i] = fopen(fans[i], "r");
 		if (fd[i] == NULL) {
 			fprintf(stderr, "Fan routine: Error opening %s", fans[i]);
+			ret = SB_FALSE;
 			/* close all open file descriptors */
 			for (--i ; i >= 0; i--) {
 				fclose(fd[i]);
@@ -262,7 +264,7 @@ static SB_BOOL sb_open_fans(char fans[][512], int fan_count, FILE **fd)
 	
 	/* cap list will NULL */
 	fd[i] = NULL;
-	return SB_TRUE;
+	return ret;
 }
 
 static SB_BOOL sb_find_fans(char fans[][512], size_t max_len, int *count)
@@ -316,19 +318,23 @@ static void *sb_fan_routine(void *thunk)
 	char             fans[64][512];
 	int              count   = 0;
 	FILE            *fd[64];
+	int              i;
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
+	memset(fans, 0, sizeof(fans));
 	if (!sb_find_fans(fans, sizeof(fans[0]), &count))
 		return NULL;
+	memset(fd, 0, sizeof(fd));
 	if (!sb_open_fans(fans, count, fd))
 		return NULL;
 
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
-		/* TODO: run routine */
+		for (i = 0; i < count; i++) {
+		}
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
