@@ -244,7 +244,7 @@ static void *sb_disk_routine(void *thunk)
 
 
 /* --- FAN ROUTINE --- */
-static SB_BOOL sb_open_fans(char fans[][512], int fan_count, FILE **fd, size_t fd_size)
+static SB_BOOL sb_open_fans(char fans[][512], int fan_count, FILE **fd)
 {
 	int i;
 
@@ -322,7 +322,7 @@ static void *sb_fan_routine(void *thunk)
 
 	if (!sb_find_fans(fans, sizeof(fans[0]), &count))
 		return NULL;
-	if (!sb_open_fans(fans, count, fd, sizeof(fd)/sizeof(*fd)))
+	if (!sb_open_fans(fans, count, fd))
 		return NULL;
 
 	while(1) {
