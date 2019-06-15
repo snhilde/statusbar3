@@ -294,12 +294,21 @@ static void *sb_fan_routine(void *thunk)
 
 	char             fans[64][512];
 	int              count   = 0;
+	FILE            *fd[64];
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	if (!sb_find_fans(fans, sizeof(fans[0]), &count))
 		return NULL;
+	if (!sb_open_fans(fans, fd, sizeof(fd)/sizeof(*fd)))
+		return NULL;
+
+	fd = fopen("/proc/loadavg", "r");
+	if (fd == NULL) {
+		fprintf(stderr, "Load routine: Error opening loadavg\n");
+		return NULL;
+	}
 
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
