@@ -244,6 +244,12 @@ static void *sb_disk_routine(void *thunk)
 
 
 /* --- FAN ROUTINE --- */
+static SB_BOOL sb_open_fans(char fans[][512], FILE **fd, size_t fd_size)
+{
+	
+	return SB_TRUE;
+}
+
 static SB_BOOL(sb_find_fans(char fans[][512], size_t max_len, int *count))
 {
 	static const char *base = "/sys/class/hwmon";
@@ -303,12 +309,6 @@ static void *sb_fan_routine(void *thunk)
 		return NULL;
 	if (!sb_open_fans(fans, fd, sizeof(fd)/sizeof(*fd)))
 		return NULL;
-
-	fd = fopen("/proc/loadavg", "r");
-	if (fd == NULL) {
-		fprintf(stderr, "Load routine: Error opening loadavg\n");
-		return NULL;
-	}
 
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
