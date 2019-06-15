@@ -319,6 +319,9 @@ static void *sb_fan_routine(void *thunk)
 	int              count   = 0;
 	FILE            *fd[64];
 	int              i;
+	SB_BOOL          error;
+	char             buf[64] = {0};
+	unsigned long    total;
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
@@ -333,8 +336,21 @@ static void *sb_fan_routine(void *thunk)
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
-		for (i = 0; i < count; i++) {
+		error = SB_FALSE;
+		total = 0;
+		for (i = 0; i < count && !error; i++) {
+			if (lseek(fileno(fd[i]), 0L, SEEK_SET) < 0) {
+				fprintf(stderr, "Fan routine: Error resetting file offset\n");
+				error = SB_TRUE;
+			} else if (fgets(buf, sizeof(buf), fd[i]) == NULL) {
+				fprintf(stderr, "Fan routine: Error reading %s\n", fans[i]);
+				error = SB_TRUE;
+			} else {
+				total += strtoul(buf, NULL, 10);
+			}
 		}
+		if (error)
+			break;
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
@@ -342,6 +358,8 @@ static void *sb_fan_routine(void *thunk)
 			fprintf(stderr, "Fan routine: Error sleeping\n");
 		}
 	}
+
+	/* close open file descriptors */
 	
 	routine->skip = 1;
 	return NULL;
