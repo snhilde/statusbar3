@@ -246,16 +246,23 @@ static void *sb_disk_routine(void *thunk)
 /* --- FAN ROUTINE --- */
 static SB_BOOL(sb_find_fans(void))
 {
-	DIR           *dir;
-	struct dirent *dirent;
+	static const char *base = "/sys/class/hwmon";
+	DIR               *dir;
+	struct dirent     *dirent;
+	char               path[512] = {0};
+	DIR               *device;
 
-	dir = opendir("/sys/class/hwmon");
+	dir = opendir(base);
 	if (dir == NULL) {
 		fprintf(stderr, "Fan routine: Could not open directory /sys/class/hwmon");
 		return SB_FALSE;
 	}
 
 	for (dirent = readdir(dir); dirent != NULL; dirent = readdir(dir)) {
+		snprintf(path, sizeof(path)-1, "%s/%s/device", base, dirent->d_name);
+		device = opendir(path);
+		if (device != NULL) {
+		}
 	}
 	
 	closedir(dir);
