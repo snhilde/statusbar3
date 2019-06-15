@@ -244,13 +244,14 @@ static void *sb_disk_routine(void *thunk)
 
 
 /* --- FAN ROUTINE --- */
-static SB_BOOL(sb_find_fans(void))
+static SB_BOOL(sb_find_fans(char *path, size_t path_size, int *count))
 {
 	static const char *base = "/sys/class/hwmon";
 	DIR               *dir;
 	struct dirent     *dirent;
-	char               path[512] = {0};
 	DIR               *device;
+
+	*count = 0;
 
 	dir = opendir(base);
 	if (dir == NULL) {
@@ -259,9 +260,18 @@ static SB_BOOL(sb_find_fans(void))
 	}
 
 	for (dirent = readdir(dir); dirent != NULL; dirent = readdir(dir)) {
-		snprintf(path, sizeof(path)-1, "%s/%s/device", base, dirent->d_name);
+		snprintf(path, path_size-1, "%s/%s/device", base, dirent->d_name);
 		device = opendir(path);
 		if (device != NULL) {
+			for (dirent = readdir(device); dirent != NULL; dirent = readdir(device)) {
+				if (!strncmp(dirent->d_name, "fan", 3) && !strncmp(dirent->d_name+4, "_input", 6)) {
+					(*count)++;
+				}
+			}
+			closedir(device);
+			if (*count > 0) {
+				break;
+			}
 		}
 	}
 	
@@ -276,10 +286,13 @@ static void *sb_fan_routine(void *thunk)
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
 
+	char             path[512] = {0};
+	int              count;
+
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
-	if (!sb_find_fans())
+	if (!sb_find_fans(path, sizeof(path), &count))
 		return NULL;
 
 	while(1) {
