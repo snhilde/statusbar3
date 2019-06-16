@@ -1,3 +1,4 @@
+/* Which routines to run (and display) and how often (in seconds) they should update. */
 static const struct {
 	enum sb_routine_e routine;
 	time_t            seconds;
@@ -25,8 +26,14 @@ static const struct {
 	{ BRIGHTNESS, 1       },
 };
 
-/* format of the clock (see strftime(3) for conversion specifications) */
+/* Format of the clock (see strftime(3) for conversion specifications). */
 const char *time_format = "%b %d - %I:%M";
 
-/* 1 to display keyboard brightness with screen brightness */
+/* Which mounted filesystems to display for the disk routine. */
+static const char *filesystems[] = {
+	"/",
+	"/home/hilde",
+};
+
+/* Use 1 to display keyboard brightness with screen brightness or 0 to not. */
 #define SHOW_KBD 1
