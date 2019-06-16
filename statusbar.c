@@ -251,7 +251,7 @@ struct sb_fan {
 	FILE *fd;
 };
 
-static SB_BOOL sb_open_fans(char fans[][512], int fan_count, FILE **fd)
+static SB_BOOL sb_open_fans(struct fan *fans, int fan_count)
 {
 	int     i;
 	SB_BOOL ret = SB_TRUE;
