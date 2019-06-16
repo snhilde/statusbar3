@@ -259,18 +259,18 @@ static SB_BOOL sb_open_fans(struct fan *fans, int fan_count)
 	for (i = 0; i < fan_count; i++) {
 		fans[i].fd = fopen(fans[i].path, "r");
 		if (fans[i].fd == NULL) {
-			fprintf(stderr, "Fan routine: Error opening %s", fans[i]);
+			fprintf(stderr, "Fan routine: Error opening %s", fans[i].path);
 			ret = SB_FALSE;
 			/* close all open file descriptors */
 			for (--i ; i >= 0; i--) {
-				fclose(fd[i]);
+				fclose(fans[i].fd);
 			}
 			break;
 		}
 	}
 	
-	/* cap list will NULL */
-	fd[i] = NULL;
+	/* cap list with NULL */
+	fans[i] = NULL;
 	return ret;
 }
 
