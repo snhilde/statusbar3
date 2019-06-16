@@ -251,7 +251,7 @@ struct sb_fan {
 	FILE *fd;
 };
 
-static SB_BOOL sb_open_fans(struct fan *fans, int fan_count)
+static SB_BOOL sb_open_fans(struct sb_fan *fans, int fan_count)
 {
 	int     i;
 	SB_BOOL ret = SB_TRUE;
@@ -297,7 +297,7 @@ static int sb_read_fan_speeds(char *fan, char *condition)
 	return atoi(buf);
 }
 
-static SB_BOOL sb_find_fans(struct fan *fans, int *count)
+static SB_BOOL sb_find_fans(struct sb_fan *fans, int *count)
 {
 	static const char *base = "/sys/class/hwmon";
 	DIR               *dir;
@@ -350,7 +350,7 @@ static void *sb_fan_routine(void *thunk)
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
 
-	struct fan       fans[64];
+	struct sb_fan    fans[64];
 	int              count   = 0;
 	int              i;
 	SB_BOOL          error;
