@@ -292,7 +292,7 @@ static int sb_read_fan_speeds(char *fan, char *condition)
 	}
 	fclose(fd);
 
-	return atoi(buf);
+	return atol(buf);
 }
 
 static SB_BOOL sb_find_fans(struct sb_fan *fans, int *count)
