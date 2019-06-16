@@ -214,16 +214,41 @@ static void *sb_cpu_usage_routine(void *thunk)
 static void *sb_disk_routine(void *thunk)
 {
 	SB_TIMER_VARS;
-	sb_routine_t *routine = thunk;
+	sb_routine_t   *routine     = thunk;
+	size_t          num_filesystems;
+	int             i;
+	struct statvfs  stats;
+	SB_BOOL         error       = SB_FALSE;
+	unsigned long   total_size;
+	unsigned long   available;
+	char            output[512] = {0};
 
 	while(1) {
 		SB_START_TIMER;
 
-		/* TODO: run routine */
-
+		/* In this routine, we're going to lock the mutex for the entire operation so we
+		 * can safely add to the routine's output for the entire loop. */
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "disk: TODO");
+		snprintf(routine->output, sizeof(routine->output)-1, "Disk: ");
+		num_filesystems = sizeof(filesystems) / sizeof(*filesystems);
+		for (i=0; i<num_filesystems; i++) {
+			if (statvfs(filesystems[i].path, &stats) != 0) {
+				fprintf(stderr, "Disk routine: Failed to get stats for %s", filesystems[i].path);
+				error = SB_TRUE;
+				break;
+			}
+			available  = stats.f_bfree  * stats.f_bsize;
+			total_size = stats.f_blocks * stats.f_bsize;
+			snprintf(output, sizeof(output)-1, "%s: %lu/%lu", filesystems[i].path, available, total_size);
+			strncat(routine->output, output, sizeof(routine->output)-strlen(routine->output)-1);
+
+			if (i+1 < num_filesystems)
+				strncat(routine->output, ", ", sizeof(routine->output)-strlen(routine->output)-1);
+		}
 		pthread_mutex_unlock(&(routine->mutex));
+
+		if (error)
+			break;
 
 		SB_STOP_TIMER;
 		SB_SLEEP;
