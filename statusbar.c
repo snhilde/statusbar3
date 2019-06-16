@@ -96,10 +96,10 @@ static void *sb_print_to_sb(void *thunk)
 /* --- BACKUP ROUTINE --- */
 static void *sb_backup_routine(void *thunk)
 {
-	SB_TIMER_VARS
+	SB_TIMER_VARS;
 
 	while(1) {
-		SB_START_TIMER
+		SB_START_TIMER;
 
 		/* TODO: run routine */
 
@@ -107,8 +107,8 @@ static void *sb_backup_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "backup: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		SB_STOP_TIMER
-		SB_SLEEP
+		SB_STOP_TIMER;
+		SB_SLEEP;
 	}
 	
 	routine->skip = 1;
@@ -119,10 +119,10 @@ static void *sb_backup_routine(void *thunk)
 /* --- BATTERY ROUTINE --- */
 static void *sb_battery_routine(void *thunk)
 {
-	SB_TIMER_VARS
+	SB_TIMER_VARS;
 
 	while(1) {
-		SB_START_TIMER
+		SB_START_TIMER;
 
 		/* TODO: run routine */
 
@@ -130,8 +130,8 @@ static void *sb_battery_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "battey: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		SB_STOP_TIMER
-		SB_SLEEP
+		SB_STOP_TIMER;
+		SB_SLEEP;
 	}
 	
 	routine->skip = 1;
@@ -142,10 +142,10 @@ static void *sb_battery_routine(void *thunk)
 /* --- BRIGHTNESS ROUTINE --- */
 static void *sb_brightness_routine(void *thunk)
 {
-	SB_TIMER_VARS
+	SB_TIMER_VARS;
 
 	while(1) {
-		SB_START_TIMER
+		SB_START_TIMER;
 
 		/* TODO: run routine */
 
@@ -153,8 +153,8 @@ static void *sb_brightness_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "brightness: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		SB_STOP_TIMER
-		SB_SLEEP
+		SB_STOP_TIMER;
+		SB_SLEEP;
 	}
 
 	routine->skip = 1;
@@ -165,10 +165,10 @@ static void *sb_brightness_routine(void *thunk)
 /* --- CPU TEMP ROUTINE --- */
 static void *sb_cpu_temp_routine(void *thunk)
 {
-	SB_TIMER_VARS
+	SB_TIMER_VARS;
 
 	while(1) {
-		SB_START_TIMER
+		SB_START_TIMER;
 
 		/* TODO: run routine */
 
@@ -176,8 +176,8 @@ static void *sb_cpu_temp_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "cpu temp: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		SB_STOP_TIMER
-		SB_SLEEP
+		SB_STOP_TIMER;
+		SB_SLEEP;
 	}
 	
 	routine->skip = 1;
@@ -188,10 +188,10 @@ static void *sb_cpu_temp_routine(void *thunk)
 /* --- CPU USAGE ROUTINE --- */
 static void *sb_cpu_usage_routine(void *thunk)
 {
-	SB_TIMER_VARS
+	SB_TIMER_VARS;
 
 	while(1) {
-		SB_START_TIMER
+		SB_START_TIMER;
 
 		/* TODO: run routine */
 
@@ -199,8 +199,8 @@ static void *sb_cpu_usage_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "cpu usage: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		SB_STOP_TIMER
-		SB_SLEEP
+		SB_STOP_TIMER;
+		SB_SLEEP;
 	}
 	
 	routine->skip = 1;
@@ -211,10 +211,10 @@ static void *sb_cpu_usage_routine(void *thunk)
 /* --- DISK ROUTINE --- */
 static void *sb_disk_routine(void *thunk)
 {
-	SB_TIMER_VARS
+	SB_TIMER_VARS;
 
 	while(1) {
-		SB_START_TIMER
+		SB_START_TIMER;
 
 		/* TODO: run routine */
 
@@ -222,8 +222,8 @@ static void *sb_disk_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "disk: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		SB_STOP_TIMER
-		SB_SLEEP
+		SB_STOP_TIMER;
+		SB_SLEEP;
 	}
 	
 	routine->skip = 1;
@@ -331,7 +331,7 @@ static SB_BOOL sb_find_fans(struct sb_fan *fans, int *count)
 
 static void *sb_fan_routine(void *thunk)
 {
-	SB_TIMER_VARS
+	SB_TIMER_VARS;
 
 	struct sb_fan fans[64];
 	int           count   = 0;
@@ -349,7 +349,7 @@ static void *sb_fan_routine(void *thunk)
 		return NULL;
 
 	while(1) {
-		SB_START_TIMER
+		SB_START_TIMER;
 
 		error   = SB_FALSE;
 		average = 0;
@@ -380,8 +380,8 @@ static void *sb_fan_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "fan speed: %ld%%", average / count);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		SB_STOP_TIMER
-		SB_SLEEP
+		SB_STOP_TIMER;
+		SB_SLEEP;
 	}
 
 	/* close open file descriptors */
@@ -396,7 +396,7 @@ static void *sb_fan_routine(void *thunk)
 /* --- LOAD ROUTINE --- */
 static void *sb_load_routine(void *thunk)
 {
-	SB_TIMER_VARS
+	SB_TIMER_VARS;
 
 	FILE   *fd;
 	char    buf[64] = {0};
@@ -409,7 +409,7 @@ static void *sb_load_routine(void *thunk)
 	}
 
 	while(1) {
-		SB_START_TIMER
+		SB_START_TIMER;
 
 		if (lseek(fileno(fd), 0L, SEEK_SET) < 0) {
 			fprintf(stderr, "Load routine: Error resetting file offset\n");
@@ -426,8 +426,8 @@ static void *sb_load_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "load: %.2f, %.2f, %.2f", av[0], av[1], av[2]);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		SB_STOP_TIMER
-		SB_SLEEP
+		SB_STOP_TIMER;
+		SB_SLEEP;
 	}
 	
 	if (fd != NULL)
@@ -504,7 +504,7 @@ static SB_BOOL sb_get_paths(char *rx_path, size_t rx_path_size, char *tx_path, s
 
 static void *sb_network_routine(void *thunk)
 {
-	SB_TIMER_VARS
+	SB_TIMER_VARS;
 
 	int      i;
 	SB_BOOL  error;
@@ -526,7 +526,7 @@ static void *sb_network_routine(void *thunk)
 		return NULL;
 
 	while(1) {
-		SB_START_TIMER
+		SB_START_TIMER;
 
 		error = SB_FALSE;
 		for (i=0; i<2 && !error; i++) {
@@ -553,8 +553,8 @@ static void *sb_network_routine(void *thunk)
 				(files[1].diff >> (10*files[1].prefix)) / 1024.0, unit[files[1].prefix]);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		SB_STOP_TIMER
-		SB_SLEEP
+		SB_STOP_TIMER;
+		SB_SLEEP;
 	}
 	
 	if (files[0].fd != NULL)
@@ -594,7 +594,7 @@ static void *sb_ram_routine(void *thunk)
 	total_bytes_f = ((total_pages*page_size) >> (10*i)) / 1024.0;
 
 	while(1) {
-		SB_START_TIMER
+		SB_START_TIMER;
 
 		/* get available memory */
 		available_bytes = sysconf(_SC_AVPHYS_PAGES) * page_size;
@@ -608,8 +608,8 @@ static void *sb_ram_routine(void *thunk)
 				(available_bytes >> (10*i)) / 1024.0, unit[i], total_bytes_f, unit[i]);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		SB_STOP_TIMER
-		SB_SLEEP
+		SB_STOP_TIMER;
+		SB_SLEEP;
 	}
 	
 	routine->skip = 1;
@@ -620,7 +620,7 @@ static void *sb_ram_routine(void *thunk)
 /* --- TIME ROUTINE --- */
 static void *sb_time_routine(void *thunk)
 {
-	SB_TIMER_VARS
+	SB_TIMER_VARS;
 
 	struct tm tm;
 
@@ -651,10 +651,10 @@ static void *sb_time_routine(void *thunk)
 /* --- TODO ROUTINE --- */
 static void *sb_todo_routine(void *thunk)
 {
-	SB_TIMER_VARS
+	SB_TIMER_VARS;
 
 	while(1) {
-		SB_START_TIMER
+		SB_START_TIMER;
 
 		/* TODO: run routine */
 
@@ -662,8 +662,8 @@ static void *sb_todo_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "todo: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		SB_STOP_TIMER
-		SB_SLEEP
+		SB_STOP_TIMER;
+		SB_SLEEP;
 	}
 	
 	routine->skip = 1;
@@ -674,10 +674,10 @@ static void *sb_todo_routine(void *thunk)
 /* --- VOLUME ROUTINE --- */
 static void *sb_volume_routine(void *thunk)
 {
-	SB_TIMER_VARS
+	SB_TIMER_VARS;
 
 	while(1) {
-		SB_START_TIMER
+		SB_START_TIMER;
 
 		/* TODO: run routine */
 
@@ -685,8 +685,8 @@ static void *sb_volume_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "volume: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		SB_STOP_TIMER
-		SB_SLEEP
+		SB_STOP_TIMER;
+		SB_SLEEP;
 	}
 	
 	routine->skip = 1;
@@ -697,10 +697,10 @@ static void *sb_volume_routine(void *thunk)
 /* --- WEATHER ROUTINE --- */
 static void *sb_weather_routine(void *thunk)
 {
-	SB_TIMER_VARS
+	SB_TIMER_VARS;
 
 	while(1) {
-		SB_START_TIMER
+		SB_START_TIMER;
 
 		/* TODO: run routine */
 
@@ -708,8 +708,8 @@ static void *sb_weather_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "weather: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		SB_STOP_TIMER
-		SB_SLEEP
+		SB_STOP_TIMER;
+		SB_SLEEP;
 	}
 	
 	routine->skip = 1;
@@ -759,7 +759,7 @@ static SB_BOOL sb_init_wifi(int *fd, struct iwreq *iwr, char *essid, size_t max_
 
 static void *sb_wifi_routine(void *thunk)
 {
-	SB_TIMER_VARS
+	SB_TIMER_VARS;
 
 	/* TODO:
 	 * if sb_init_wifi() fails, try again after interval sleep
@@ -775,7 +775,7 @@ static void *sb_wifi_routine(void *thunk)
 	}
 
 	while(1) {
-		SB_START_TIMER
+		SB_START_TIMER;
 
 		memset(essid, 0, sizeof(essid));
 		if (ioctl(fd, SIOCGIWESSID, &iwr) < 0) {
@@ -787,8 +787,8 @@ static void *sb_wifi_routine(void *thunk)
 		strncpy(routine->output, essid, sizeof(routine->output)-1);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		SB_STOP_TIMER
-		SB_SLEEP
+		SB_STOP_TIMER;
+		SB_SLEEP;
 	}
 
 	close(fd);
