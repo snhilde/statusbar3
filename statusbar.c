@@ -251,7 +251,7 @@ struct sb_fan {
 	FILE *fd;
 };
 
-static SB_BOOL sb_read_fan_speeds(char *fan, char *condition)
+static int sb_read_fan_speeds(char *fan, char *condition)
 {
 	char  path[512];
 	FILE *fd;
@@ -261,13 +261,13 @@ static SB_BOOL sb_read_fan_speeds(char *fan, char *condition)
 	fd = fopen(path, "r");
 	if (fd == NULL) {
 		fprintf(stderr, "Fan routine: Failed to open %s", path);
-		return SB_FALSE;
+		return -1;
 	}
 
 	if (fgets(buf, sizeof(buf)-1, fd) == NULL) {
 		fprintf(stderr, "Fan routine: Failed to read %s", path);
 		fclose(fd);
-		return SB_FALSE;
+		return -1;
 	}
 
 	fclose(fd);
