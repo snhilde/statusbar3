@@ -12,6 +12,13 @@
 #define SB_START_TIMER \
 	clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
+#define SB_STOP_TIMER \
+		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp); \
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000); \
+		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) { \
+			fprintf(stderr, "%s routine: Error sleeping\n", routine_names[routine->routine]); \
+		}
+
 typedef enum _SB_BOOL {
 	SB_FALSE = 0,
 	SB_TRUE  = 1
@@ -38,7 +45,7 @@ static void *sb_print_to_sb(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while (*run) {
-		SB_START_TIMER
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		offset  = 0;
 		routine = routine_list;
@@ -98,11 +105,7 @@ static void *sb_backup_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "backup: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
-		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
-			fprintf(stderr, "Backup routine: Error sleeping\n");
-		}
+		SB_STOP_TIMER
 	}
 	
 	routine->skip = 1;
@@ -124,11 +127,7 @@ static void *sb_battery_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "battey: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
-		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
-			fprintf(stderr, "Battery routine: Error sleeping\n");
-		}
+		SB_STOP_TIMER
 	}
 	
 	routine->skip = 1;
@@ -150,11 +149,7 @@ static void *sb_brightness_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "brightness: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
-		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
-			fprintf(stderr, "Brightness routine: Error sleeping\n");
-		}
+		SB_STOP_TIMER
 	}
 
 	routine->skip = 1;
@@ -176,11 +171,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "cpu temp: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
-		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
-			fprintf(stderr, "CPU Temp routine: Error sleeping\n");
-		}
+		SB_STOP_TIMER
 	}
 	
 	routine->skip = 1;
@@ -202,11 +193,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "cpu usage: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
-		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
-			fprintf(stderr, "CPU Usage routine: Error sleeping\n");
-		}
+		SB_STOP_TIMER
 	}
 	
 	routine->skip = 1;
@@ -228,11 +215,7 @@ static void *sb_disk_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "disk: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
-		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
-			fprintf(stderr, "Disk routine: Error sleeping\n");
-		}
+		SB_STOP_TIMER
 	}
 	
 	routine->skip = 1;
@@ -389,11 +372,7 @@ static void *sb_fan_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "fan speed: %ld%%", average / count);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
-		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
-			fprintf(stderr, "Fan routine: Error sleeping\n");
-		}
+		SB_STOP_TIMER
 	}
 
 	/* close open file descriptors */
@@ -438,11 +417,7 @@ static void *sb_load_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "load: %.2f, %.2f, %.2f", av[0], av[1], av[2]);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
-		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
-			fprintf(stderr, "Load routine: Error sleeping\n");
-		}
+		SB_STOP_TIMER
 	}
 	
 	if (fd != NULL)
@@ -568,11 +543,7 @@ static void *sb_network_routine(void *thunk)
 				(files[1].diff >> (10*files[1].prefix)) / 1024.0, unit[files[1].prefix]);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
-		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
-			fprintf(stderr, "Network routine: Error sleeping\n");
-		}
+		SB_STOP_TIMER
 	}
 	
 	if (files[0].fd != NULL)
@@ -626,11 +597,7 @@ static void *sb_ram_routine(void *thunk)
 				(available_bytes >> (10*i)) / 1024.0, unit[i], total_bytes_f, unit[i]);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
-		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
-			fprintf(stderr, "Ram routine: Error sleeping\n");
-		}
+		SB_STOP_TIMER
 	}
 	
 	routine->skip = 1;
@@ -646,7 +613,7 @@ static void *sb_time_routine(void *thunk)
 	struct tm        tm;
 
 	while(1) {
-		SB_START_TIMER
+		clock_gettime(CLOCK_REALTIME, &start_tp);
 
 		/* convert time in seconds since epoch to local time */
 		memset(&tm, 0, sizeof(tm));
@@ -656,7 +623,7 @@ static void *sb_time_routine(void *thunk)
 		strftime(routine->output, sizeof(routine->output)-1, time_format, &tm);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
+		clock_gettime(CLOCK_REALTIME, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
@@ -683,11 +650,7 @@ static void *sb_todo_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "todo: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
-		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
-			fprintf(stderr, "TODO routine: Error sleeping\n");
-		}
+		SB_STOP_TIMER
 	}
 	
 	routine->skip = 1;
@@ -709,11 +672,7 @@ static void *sb_volume_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "volume: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
-		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
-			fprintf(stderr, "Volume routine: Error sleeping\n");
-		}
+		SB_STOP_TIMER
 	}
 	
 	routine->skip = 1;
@@ -735,11 +694,7 @@ static void *sb_weather_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output)-1, "weather: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
-		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
-			fprintf(stderr, "Weather routine: Error sleeping\n");
-		}
+		SB_STOP_TIMER
 	}
 	
 	routine->skip = 1;
@@ -817,11 +772,7 @@ static void *sb_wifi_routine(void *thunk)
 		strncpy(routine->output, essid, sizeof(routine->output)-1);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
-		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
-			fprintf(stderr, "Wifi routine: Error sleeping\n");
-		}
+		SB_STOP_TIMER
 	}
 
 	close(fd);
