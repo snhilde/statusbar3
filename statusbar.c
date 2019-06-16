@@ -251,29 +251,6 @@ struct sb_fan {
 	FILE *fd;
 };
 
-static int sb_read_fan_speeds(char *fan, char *condition)
-{
-	char  path[512];
-	FILE *fd;
-	char  buf[64];
-
-	snprintf(path, sizeof(path)-1, "%/%s", fan, condition);
-	fd = fopen(path, "r");
-	if (fd == NULL) {
-		fprintf(stderr, "Fan routine: Failed to open %s", path);
-		return -1;
-	}
-
-	if (fgets(buf, sizeof(buf)-1, fd) == NULL) {
-		fprintf(stderr, "Fan routine: Failed to read %s", path);
-		fclose(fd);
-		return -1;
-	}
-	fclose(fd);
-
-	return atoi(buf);
-}
-
 static SB_BOOL sb_open_fans(char fans[][512], int fan_count, FILE **fd)
 {
 	int     i;
@@ -295,6 +272,29 @@ static SB_BOOL sb_open_fans(char fans[][512], int fan_count, FILE **fd)
 	/* cap list will NULL */
 	fd[i] = NULL;
 	return ret;
+}
+
+static int sb_read_fan_speeds(char *fan, char *condition)
+{
+	char  path[512];
+	FILE *fd;
+	char  buf[64];
+
+	snprintf(path, sizeof(path)-1, "%/%s", fan, condition);
+	fd = fopen(path, "r");
+	if (fd == NULL) {
+		fprintf(stderr, "Fan routine: Failed to open %s", path);
+		return -1;
+	}
+
+	if (fgets(buf, sizeof(buf)-1, fd) == NULL) {
+		fprintf(stderr, "Fan routine: Failed to read %s", path);
+		fclose(fd);
+		return -1;
+	}
+	fclose(fd);
+
+	return atoi(buf);
 }
 
 static SB_BOOL sb_find_fans(struct fan *fans, int *count)
@@ -319,7 +319,12 @@ static SB_BOOL sb_find_fans(struct fan *fans, int *count)
 		if (device != NULL) {
 			for (dirent = readdir(device); dirent != NULL; dirent = readdir(device)) {
 				if (!strncmp(dirent->d_name, "fan", 3) && !strncmp(dirent->d_name+4, "_output", 7)) {
-					snprintf(fans[*count].path, sizeof(fans[*count].path)-1, "%s/%s", path, dirent->d_name);
+					snprintf(fans[*count].path, sizeof(fans[*count].path)-1, "%s/%.4s", path, dirent->d_name);
+					fans[*count].min = sb_read_fan_speeds(fans[*count].path, "_min");
+					fans[*count].max = sb_read_fan_speeds(fans[*count].path, "_max");
+					if (fans[*count].min < 0 || fans[*count].max < 0)
+						break;
+					strncat(fans[*count].path, sizeof(fans[*count].path)-strlen(fans[*count].path), "_output");
 					(*count)++;
 				}
 			}
