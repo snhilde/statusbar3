@@ -9,7 +9,7 @@
 	struct timespec  finish_tp = {0};   \
 	long             elapsed_usec;
 
-#define SB_START_TIMER
+#define SB_START_TIMER \
 	clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 typedef enum _SB_BOOL {
