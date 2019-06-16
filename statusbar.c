@@ -3,6 +3,12 @@
 
 #define SBLENGTH 10240
 
+#define SB_TIMER_VARS \
+	sb_routine_t    *routine = thunk; \
+	struct timespec  start_tp; \
+	struct timespec  finish_tp;; \
+	long             elapsed_usec; \
+
 typedef enum _SB_BOOL {
 	SB_FALSE = 0,
 	SB_TRUE  = 1
@@ -78,10 +84,7 @@ static void *sb_print_to_sb(void *thunk)
 /* --- BACKUP ROUTINE --- */
 static void *sb_backup_routine(void *thunk)
 {
-	sb_routine_t    *routine = thunk;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;;
-	long             elapsed_usec;
+	SB_TIMER_VARS
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
@@ -110,10 +113,7 @@ static void *sb_backup_routine(void *thunk)
 /* --- BATTERY ROUTINE --- */
 static void *sb_battery_routine(void *thunk)
 {
-	sb_routine_t    *routine = thunk;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;;
-	long             elapsed_usec;
+	SB_TIMER_VARS
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
@@ -142,10 +142,7 @@ static void *sb_battery_routine(void *thunk)
 /* --- BRIGHTNESS ROUTINE --- */
 static void *sb_brightness_routine(void *thunk)
 {
-	sb_routine_t    *routine = thunk;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;;
-	long             elapsed_usec;
+	SB_TIMER_VARS
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
@@ -174,10 +171,7 @@ static void *sb_brightness_routine(void *thunk)
 /* --- CPU TEMP ROUTINE --- */
 static void *sb_cpu_temp_routine(void *thunk)
 {
-	sb_routine_t    *routine = thunk;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;;
-	long             elapsed_usec;
+	SB_TIMER_VARS
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
@@ -206,10 +200,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 /* --- CPU USAGE ROUTINE --- */
 static void *sb_cpu_usage_routine(void *thunk)
 {
-	sb_routine_t    *routine = thunk;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;;
-	long             elapsed_usec;
+	SB_TIMER_VARS
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
@@ -238,10 +229,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 /* --- DISK ROUTINE --- */
 static void *sb_disk_routine(void *thunk)
 {
-	sb_routine_t    *routine = thunk;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;;
-	long             elapsed_usec;
+	SB_TIMER_VARS
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
@@ -367,10 +355,7 @@ static SB_BOOL sb_find_fans(struct sb_fan *fans, int *count)
 
 static void *sb_fan_routine(void *thunk)
 {
-	sb_routine_t    *routine = thunk;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;;
-	long             elapsed_usec;
+	SB_TIMER_VARS
 
 	struct sb_fan    fans[64];
 	int              count   = 0;
@@ -441,10 +426,7 @@ static void *sb_fan_routine(void *thunk)
 /* --- LOAD ROUTINE --- */
 static void *sb_load_routine(void *thunk)
 {
-	sb_routine_t    *routine = thunk;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;;
-	long             elapsed_usec;
+	SB_TIMER_VARS
 
 	FILE            *fd;
 	char             buf[64] = {0};
@@ -558,10 +540,7 @@ static SB_BOOL sb_get_paths(char *rx_path, size_t rx_path_size, char *tx_path, s
 
 static void *sb_network_routine(void *thunk)
 {
-	sb_routine_t    *routine = thunk;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;;
-	long             elapsed_usec;
+	SB_TIMER_VARS
 
 	int              i;
 	SB_BOOL          error;
@@ -632,10 +611,7 @@ static void *sb_network_routine(void *thunk)
 /* --- RAM ROUTINE --- */
 static void *sb_ram_routine(void *thunk)
 {
-	sb_routine_t    *routine = thunk;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;;
-	long             elapsed_usec;
+	SB_TIMER_VARS
 
 	long             page_size;
 	long             total_pages;
@@ -692,10 +668,7 @@ static void *sb_ram_routine(void *thunk)
 /* --- TIME ROUTINE --- */
 static void *sb_time_routine(void *thunk)
 {
-	sb_routine_t    *routine = thunk;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;;
-	long             elapsed_usec;
+	SB_TIMER_VARS
 
 	struct tm        tm;
 
@@ -729,10 +702,7 @@ static void *sb_time_routine(void *thunk)
 /* --- TODO ROUTINE --- */
 static void *sb_todo_routine(void *thunk)
 {
-	sb_routine_t    *routine = thunk;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;;
-	long             elapsed_usec;
+	SB_TIMER_VARS
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
@@ -761,10 +731,7 @@ static void *sb_todo_routine(void *thunk)
 /* --- VOLUME ROUTINE --- */
 static void *sb_volume_routine(void *thunk)
 {
-	sb_routine_t    *routine = thunk;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;;
-	long             elapsed_usec;
+	SB_TIMER_VARS
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
@@ -793,10 +760,7 @@ static void *sb_volume_routine(void *thunk)
 /* --- WEATHER ROUTINE --- */
 static void *sb_weather_routine(void *thunk)
 {
-	sb_routine_t    *routine = thunk;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;;
-	long             elapsed_usec;
+	SB_TIMER_VARS
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
@@ -864,15 +828,12 @@ static SB_BOOL sb_init_wifi(int *fd, struct iwreq *iwr, char *essid, size_t max_
 
 static void *sb_wifi_routine(void *thunk)
 {
+	SB_TIMER_VARS
+
 	/* TODO:
 	 * if sb_init_wifi() fails, try again after interval sleep
 	 * handle break and reattach at a later time
 	 */
-	sb_routine_t    *routine = thunk;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;;
-	long             elapsed_usec;
-
 	int              fd;
 	struct iwreq     iwr;
 	char             essid[IW_ESSID_MAX_SIZE + 1];
