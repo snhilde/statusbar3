@@ -245,7 +245,7 @@ static void *sb_disk_routine(void *thunk)
 
 /* --- FAN ROUTINE --- */
 struct sb_fan {
-	char  fan[512];
+	char  path[512];
 	long  min;
 	long  max;
 	FILE *fd;
@@ -296,7 +296,7 @@ static SB_BOOL sb_find_fans(struct fan *fans, int *count)
 		if (device != NULL) {
 			for (dirent = readdir(device); dirent != NULL; dirent = readdir(device)) {
 				if (!strncmp(dirent->d_name, "fan", 3) && !strncmp(dirent->d_name+4, "_output", 7)) {
-					snprintf(fans[*count], max_len-1, "%s/%s", path, dirent->d_name);
+					snprintf(fans[*count].path, sizeof(fans[*count].path)-1, "%s/%s", path, dirent->d_name);
 					(*count)++;
 				}
 			}
