@@ -750,12 +750,15 @@ static SB_BOOL sb_init_wifi(int *fd, struct iwreq *iwr, char *essid, size_t max_
 	while (ifap != NULL) {
 		strncpy(iwr->ifr_ifrn.ifrn_name, ifap->ifa_name, IFNAMSIZ);
 		if (ioctl(*fd, SIOCGIWESSID, iwr) >= 0) {
+			/* we found a match */
 			freeifaddrs(ifaddrs);
 			return SB_TRUE;
 		}
+		/* no match found, try the next interface */
 		ifap = ifap->ifa_next;
 	}
 
+	/* if we reached here, then we didn't find anything */
 	fprintf(stderr, "Wifi routine: No wireless interfaces found\n");
 	freeifaddrs(ifaddrs);
 	return SB_FALSE;
@@ -766,8 +769,8 @@ static void *sb_wifi_routine(void *thunk)
 	SB_TIMER_VARS;
 
 	/* TODO:
-	 * if sb_init_wifi() fails, try again after interval sleep
-	 * handle break and reattach at a later time
+	 * - if init fails, try again later
+	 * - handle break and reattach at a later time
 	 */
 	int          fd;
 	struct iwreq iwr;
