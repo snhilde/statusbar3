@@ -27,17 +27,15 @@ typedef enum _SB_BOOL {
 
 static void *sb_print_to_sb(void *thunk)
 {
-	int             *run = thunk;
-	Display         *dpy;
-	Window           root;
-	struct timespec  start_tp;
-	struct timespec  finish_tp;
-	long             elapsed_usec;
+	SB_TIMER_VARS
+	int          *run = thunk;
+	Display      *dpy;
+	Window        root;
 
-	char             full_output[SBLENGTH];
-	size_t           offset;
-	sb_routine_t    *routine;
-	size_t           len;
+	char          full_output[SBLENGTH];
+	size_t        offset;
+	sb_routine_t *routine;
+	size_t        len;
 
 	dpy  = XOpenDisplay(NULL);
 	root = RootWindow(dpy, DefaultScreen(dpy));
@@ -46,7 +44,7 @@ static void *sb_print_to_sb(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while (*run) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		SB_START_TIMER;
 
 		offset  = 0;
 		routine = routine_list;
@@ -80,7 +78,7 @@ static void *sb_print_to_sb(void *thunk)
 			break;
 		}
 
-		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
+		SB_STOP_TIMER;
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep(1000000 - elapsed_usec) != 0) {
 			fprintf(stderr, "Print routine: Error sleeping\n");
