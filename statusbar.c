@@ -624,6 +624,9 @@ static void *sb_ram_routine(void *thunk)
 /* --- TIME ROUTINE --- */
 static void *sb_time_routine(void *thunk)
 {
+	/* For this routine, we are not using the SB_START_TIMER and SB_STOP_TIMER
+	 * macros because we need to use CLOCK_REALTIME to get the actual system time.
+	 */
 	SB_TIMER_VARS;
 
 	struct tm tm;
@@ -631,7 +634,7 @@ static void *sb_time_routine(void *thunk)
 	while(1) {
 		clock_gettime(CLOCK_REALTIME, &start_tp);
 
-		/* convert time in seconds since epoch to local time */
+		/* convert time from seconds since epoch to local time */
 		memset(&tm, 0, sizeof(tm));
 		localtime_r(&start_tp.tv_sec, &tm);
 
