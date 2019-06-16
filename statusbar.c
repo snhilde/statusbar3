@@ -251,6 +251,8 @@ struct sb_fan {
 	FILE *fd;
 };
 
+static SB_BOOL sb_read_fan_num(char *fan_path, char *condition)
+
 static SB_BOOL sb_open_fans(char fans[][512], int fan_count, FILE **fd)
 {
 	int     i;
