@@ -269,8 +269,6 @@ static SB_BOOL sb_open_fans(struct sb_fan *fans, int fan_count)
 		}
 	}
 	
-	/* cap list with NULL */
-	fans[i] = NULL;
 	return ret;
 }
 
