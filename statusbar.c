@@ -9,6 +9,9 @@
 	struct timespec  finish_tp = {0};   \
 	long             elapsed_usec;
 
+#define SB_START_TIMER \
+	clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+
 typedef enum _SB_BOOL {
 	SB_FALSE = 0,
 	SB_TRUE  = 1
@@ -35,7 +38,7 @@ static void *sb_print_to_sb(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while (*run) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		SB_START_TIMER
 
 		offset  = 0;
 		routine = routine_list;
@@ -87,7 +90,7 @@ static void *sb_backup_routine(void *thunk)
 	SB_TIMER_VARS
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		SB_START_TIMER
 
 		/* TODO: run routine */
 
@@ -113,7 +116,7 @@ static void *sb_battery_routine(void *thunk)
 	SB_TIMER_VARS
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		SB_START_TIMER
 
 		/* TODO: run routine */
 
@@ -139,7 +142,7 @@ static void *sb_brightness_routine(void *thunk)
 	SB_TIMER_VARS
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		SB_START_TIMER
 
 		/* TODO: run routine */
 
@@ -165,7 +168,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 	SB_TIMER_VARS
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		SB_START_TIMER
 
 		/* TODO: run routine */
 
@@ -191,7 +194,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 	SB_TIMER_VARS
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		SB_START_TIMER
 
 		/* TODO: run routine */
 
@@ -217,7 +220,7 @@ static void *sb_disk_routine(void *thunk)
 	SB_TIMER_VARS
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		SB_START_TIMER
 
 		/* TODO: run routine */
 
@@ -355,7 +358,7 @@ static void *sb_fan_routine(void *thunk)
 		return NULL;
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		SB_START_TIMER
 
 		error   = SB_FALSE;
 		average = 0;
@@ -418,7 +421,7 @@ static void *sb_load_routine(void *thunk)
 	}
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		SB_START_TIMER
 
 		if (lseek(fileno(fd), 0L, SEEK_SET) < 0) {
 			fprintf(stderr, "Load routine: Error resetting file offset\n");
@@ -538,7 +541,7 @@ static void *sb_network_routine(void *thunk)
 		return NULL;
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		SB_START_TIMER
 
 		error = SB_FALSE;
 		for (i=0; i<2 && !error; i++) {
@@ -609,7 +612,7 @@ static void *sb_ram_routine(void *thunk)
 	total_bytes_f = ((total_pages*page_size) >> (10*i)) / 1024.0;
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		SB_START_TIMER
 
 		/* get available memory */
 		available_bytes = sysconf(_SC_AVPHYS_PAGES) * page_size;
@@ -643,7 +646,7 @@ static void *sb_time_routine(void *thunk)
 	struct tm        tm;
 
 	while(1) {
-		clock_gettime(CLOCK_REALTIME, &start_tp);
+		SB_START_TIMER
 
 		/* convert time in seconds since epoch to local time */
 		memset(&tm, 0, sizeof(tm));
@@ -672,7 +675,7 @@ static void *sb_todo_routine(void *thunk)
 	SB_TIMER_VARS
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		SB_START_TIMER
 
 		/* TODO: run routine */
 
@@ -698,7 +701,7 @@ static void *sb_volume_routine(void *thunk)
 	SB_TIMER_VARS
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		SB_START_TIMER
 
 		/* TODO: run routine */
 
@@ -724,7 +727,7 @@ static void *sb_weather_routine(void *thunk)
 	SB_TIMER_VARS
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		SB_START_TIMER
 
 		/* TODO: run routine */
 
@@ -802,7 +805,7 @@ static void *sb_wifi_routine(void *thunk)
 	}
 
 	while(1) {
-		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		SB_START_TIMER
 
 		memset(essid, 0, sizeof(essid));
 		if (ioctl(fd, SIOCGIWESSID, &iwr) < 0) {
