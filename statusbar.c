@@ -14,15 +14,15 @@ static void *sb_print_to_sb(void *thunk)
 	Display         *dpy;
 	Window           root;
 	struct timespec  start_tp;
-	struct timespec  finish_tp;;
+	struct timespec  finish_tp;
 	long             elapsed_usec;
 
 	char             full_output[SBLENGTH];
-	size_t           offset;;
+	size_t           offset;
 	sb_routine_t    *routine;
 	size_t           len;
 
-	dpy = XOpenDisplay(NULL);
+	dpy  = XOpenDisplay(NULL);
 	root = RootWindow(dpy, DefaultScreen(dpy));
 
 	memset(&start_tp, 0, sizeof(start_tp));
@@ -31,7 +31,7 @@ static void *sb_print_to_sb(void *thunk)
 	while (*run) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
-		offset = 0;
+		offset  = 0;
 		routine = routine_list;
 		while (routine != NULL) {
 			if (routine->skip == 1) {
@@ -41,12 +41,12 @@ static void *sb_print_to_sb(void *thunk)
 				
 			pthread_mutex_lock(&(routine->mutex));
 			len = strlen(routine->output);
-			if (offset + len > SBLENGTH - 1) {
+			if (offset+len > SBLENGTH-1) {
 				fprintf(stderr, "Exceeded max output length\n");
 				break;
 			}
 
-			memcpy(full_output + offset, routine->output, len);
+			memcpy(full_output+offset, routine->output, len);
 			offset += len;
 
 			pthread_mutex_unlock(&(routine->mutex));
