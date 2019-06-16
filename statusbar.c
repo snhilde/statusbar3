@@ -251,7 +251,7 @@ struct sb_fan {
 	FILE *fd;
 };
 
-static SB_BOOL sb_read_fan_num(char *fan, char *condition)
+static SB_BOOL sb_read_fan_speeds(char *fan, char *condition)
 {
 	char  path[512];
 	FILE *fd;
