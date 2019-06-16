@@ -4,10 +4,10 @@
 #define SBLENGTH 10240
 
 #define SB_TIMER_VARS \
-	sb_routine_t    *routine = thunk; \
-	struct timespec  start_tp; \
-	struct timespec  finish_tp;; \
-	long             elapsed_usec; \
+	sb_routine_t    *routine   = thunk; \
+	struct timespec  start_tp  = {0};   \
+	struct timespec  finish_tp = {0};   \
+	long             elapsed_usec;
 
 typedef enum _SB_BOOL {
 	SB_FALSE = 0,
@@ -86,9 +86,6 @@ static void *sb_backup_routine(void *thunk)
 {
 	SB_TIMER_VARS
 
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
-
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
@@ -114,9 +111,6 @@ static void *sb_backup_routine(void *thunk)
 static void *sb_battery_routine(void *thunk)
 {
 	SB_TIMER_VARS
-
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
@@ -144,9 +138,6 @@ static void *sb_brightness_routine(void *thunk)
 {
 	SB_TIMER_VARS
 
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
-
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
@@ -172,9 +163,6 @@ static void *sb_brightness_routine(void *thunk)
 static void *sb_cpu_temp_routine(void *thunk)
 {
 	SB_TIMER_VARS
-
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
@@ -202,9 +190,6 @@ static void *sb_cpu_usage_routine(void *thunk)
 {
 	SB_TIMER_VARS
 
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
-
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
@@ -230,9 +215,6 @@ static void *sb_cpu_usage_routine(void *thunk)
 static void *sb_disk_routine(void *thunk)
 {
 	SB_TIMER_VARS
-
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
@@ -366,9 +348,6 @@ static void *sb_fan_routine(void *thunk)
 	long             percent;
 	long             average;
 
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
-
 	memset(fans, 0, sizeof(fans));
 	if (!sb_find_fans(fans, &count))
 		return NULL;
@@ -431,9 +410,6 @@ static void *sb_load_routine(void *thunk)
 	FILE            *fd;
 	char             buf[64] = {0};
 	double           av[3];
-
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	fd = fopen("/proc/loadavg", "r");
 	if (fd == NULL) {
@@ -561,9 +537,6 @@ static void *sb_network_routine(void *thunk)
 	if (!sb_open_files(&files[0].fd, files[0].path, &files[1].fd, files[1].path))
 		return NULL;
 
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
-
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
@@ -621,9 +594,6 @@ static void *sb_ram_routine(void *thunk)
 	char             unit[] = "KMGTP";
 	long             available_bytes;
 
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
-
 	page_size   = sysconf(_SC_PAGESIZE);
 	total_pages = sysconf(_SC_PHYS_PAGES);
 	if (page_size < 0 || total_pages < 0) {
@@ -672,9 +642,6 @@ static void *sb_time_routine(void *thunk)
 
 	struct tm        tm;
 
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
-
 	while(1) {
 		clock_gettime(CLOCK_REALTIME, &start_tp);
 
@@ -704,9 +671,6 @@ static void *sb_todo_routine(void *thunk)
 {
 	SB_TIMER_VARS
 
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
-
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
@@ -733,9 +697,6 @@ static void *sb_volume_routine(void *thunk)
 {
 	SB_TIMER_VARS
 
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
-
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
@@ -761,9 +722,6 @@ static void *sb_volume_routine(void *thunk)
 static void *sb_weather_routine(void *thunk)
 {
 	SB_TIMER_VARS
-
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
@@ -837,9 +795,6 @@ static void *sb_wifi_routine(void *thunk)
 	int              fd;
 	struct iwreq     iwr;
 	char             essid[IW_ESSID_MAX_SIZE + 1];
-
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	if (!sb_init_wifi(&fd, &iwr, essid, sizeof(essid))) {
 		close(fd);
