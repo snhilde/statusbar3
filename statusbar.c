@@ -278,7 +278,7 @@ static int sb_read_fan_speeds(char *fan, char *condition)
 	FILE *fd;
 	char  buf[64];
 
-	snprintf(path, sizeof(path)-1, "%/%s", fan, condition);
+	snprintf(path, sizeof(path)-1, "%s/%s", fan, condition);
 	fd = fopen(path, "r");
 	if (fd == NULL) {
 		fprintf(stderr, "Fan routine: Failed to open %s", path);
