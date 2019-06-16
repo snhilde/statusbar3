@@ -274,7 +274,6 @@ static int sb_read_fan_speeds(char *fan, char *condition)
 	return atoi(buf);
 }
 
-
 static SB_BOOL sb_open_fans(char fans[][512], int fan_count, FILE **fd)
 {
 	int     i;
@@ -351,7 +350,7 @@ static void *sb_fan_routine(void *thunk)
 	int              i;
 	SB_BOOL          error;
 	char             buf[64] = {0};
-	unsigned long    total;
+	long             total;
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
@@ -376,7 +375,7 @@ static void *sb_fan_routine(void *thunk)
 				fprintf(stderr, "Fan routine: Error reading %s\n", fans[i]);
 				error = SB_TRUE;
 			} else {
-				total += strtoul(buf, NULL, 10);
+				total += atol(buf);
 			}
 		}
 		if (error)
@@ -528,13 +527,13 @@ static void *sb_network_routine(void *thunk)
 	int            prefix;
 	char          *unit = "KMGTP";
 	struct {
-		FILE          *fd;
-		char           path[IFNAMSIZ + 64];
-		char           buf[64];
-		unsigned long  old_bytes;
-		unsigned long  new_bytes;
-		unsigned long  diff;
-		int            prefix;
+		FILE *fd;
+		char  path[IFNAMSIZ + 64];
+		char  buf[64];
+		long  old_bytes;
+		long  new_bytes;
+		long  diff;
+		int   prefix;
 	} files[2] = {0};
 
 	if (!sb_get_paths(files[0].path, sizeof(files[0].path), files[1].path, sizeof(files[1].path)))
@@ -558,7 +557,7 @@ static void *sb_network_routine(void *thunk)
 				error = SB_TRUE;
 			} else {
 				files[i].old_bytes = files[i].new_bytes;
-				files[i].new_bytes = strtoul(files[i].buf, NULL, 10);
+				files[i].new_bytes = atol(files[i].buf);
 				files[i].diff      = files[i].new_bytes - files[i].old_bytes;
 				for (prefix = 0; (files[i].diff >> (10 * (prefix+2))) > 0; prefix++);
 				files[i].prefix = prefix;
