@@ -257,8 +257,8 @@ static SB_BOOL sb_open_fans(struct fan *fans, int fan_count)
 	SB_BOOL ret = SB_TRUE;
 
 	for (i = 0; i < fan_count; i++) {
-		fd[i] = fopen(fans[i], "r");
-		if (fd[i] == NULL) {
+		fans[i].fd = fopen(fans[i].path, "r");
+		if (fans[i].fd == NULL) {
 			fprintf(stderr, "Fan routine: Error opening %s", fans[i]);
 			ret = SB_FALSE;
 			/* close all open file descriptors */
