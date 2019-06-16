@@ -353,7 +353,9 @@ static void *sb_fan_routine(void *thunk)
 	int              i;
 	SB_BOOL          error;
 	char             buf[64] = {0};
-	long             total;
+	long             speed;
+	long             percent;
+	long             average;
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
@@ -367,8 +369,8 @@ static void *sb_fan_routine(void *thunk)
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
-		error = SB_FALSE;
-		total = 0;
+		error   = SB_FALSE;
+		average = 0;
 		for (i = 0; i < count && !error; i++) {
 			if (lseek(fileno(fans[i].fd), 0L, SEEK_SET) < 0) {
 				fprintf(stderr, "Fan routine: Error resetting file offset\n");
@@ -376,9 +378,18 @@ static void *sb_fan_routine(void *thunk)
 			} else if (fgets(buf, sizeof(buf), fans[i].fd) == NULL) {
 				fprintf(stderr, "Fan routine: Error reading %s\n", fans[i].path);
 				error = SB_TRUE;
-			} else {
-				total += atol(buf);
 			}
+			speed = atol(buf);
+			if (speed < 0) {
+				fprintf(stderr, "Fan routine: Failed to parse %s\n", fans[i].path);
+				error = SB_TRUE;
+			}
+			percent += ((speed - fans[i].min) * 100) / (fans[i].max - fans[i].min);
+			if (percent < 0)
+				percent = 0;
+			if (percent > 100)
+				percent = 100;
+			average += percent;
 		}
 		if (error)
 			break;
