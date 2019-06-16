@@ -244,6 +244,7 @@ static SB_BOOL sb_open_fans(struct sb_fan_t *fans, int fan_count)
 	int     i;
 	SB_BOOL ret = SB_TRUE;
 
+	/* open every fan and save its file descriptor */
 	for (i=0; i<fan_count; i++) {
 		fans[i].fd = fopen(fans[i].path, "r");
 		if (fans[i].fd == NULL) {
@@ -285,6 +286,12 @@ static int sb_read_fan_speeds(char *fan, char *condition)
 
 static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
 {
+	/* We don't know which hardware monitor we want, so w're going to peek into each
+	 * device listed in /sys/class/hwmon. If there's a device folder, we'll scan that
+	 * for every fan with the name fan#_output, where # is a number between 0 and 9. For
+	 * every fan that we find, we'll save the path to the fan#_output and read the min
+	 * and max values from fan#_min and fan#_max.
+	 * */
 	static const char *base      = "/sys/class/hwmon";
 	DIR               *dir;
 	struct dirent     *dirent;
@@ -299,10 +306,12 @@ static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
 		return SB_FALSE;
 	}
 
+	/* step through each file/directory in the base and try to open a subdirectory called device */
 	for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
 		snprintf(path, sizeof(path)-1, "%s/%s/device", base, dirent->d_name);
 		device = opendir(path);
 		if (device != NULL) {
+			/* step through each file in base/hwmon#/device and find any fans */
 			for (dirent=readdir(device); dirent!=NULL; dirent=readdir(device)) {
 				if (!strncmp(dirent->d_name, "fan", 3) && !strncmp(dirent->d_name+4, "_output", 7)) {
 					snprintf(fans[*count].path, sizeof(fans[*count].path)-1, "%s/%.4s", path, dirent->d_name);
@@ -322,7 +331,7 @@ static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
 	}
 	
 	closedir(dir);
-	if (count == 0) {
+	if (*count == 0) {
 		fprintf(stderr, "Fan routine: No fans found\n");
 		return SB_FALSE;
 	}
@@ -353,6 +362,8 @@ static void *sb_fan_routine(void *thunk)
 
 		error   = SB_FALSE;
 		average = 0;
+		/* go through each fan#_output, get the value, and determine the percentage from
+		 * its max and min */
 		for (i=0; i<count && !error; i++) {
 			if (lseek(fileno(fans[i].fd), 0L, SEEK_SET) < 0) {
 				fprintf(stderr, "Fan routine: Failed to reset file offset for %s\n", fans[i].path);
@@ -570,6 +581,7 @@ static void *sb_network_routine(void *thunk)
 	return NULL;
 }
 
+
 /* --- RAM ROUTINE --- */
 static void *sb_ram_routine(void *thunk)
 {
@@ -590,11 +602,11 @@ static void *sb_ram_routine(void *thunk)
 		return NULL;
 	}
 
-	/* calculate unit of memory */
+	/* calculate unit of memory by determining max bit position */
 	total_bytes = total_pages * page_size;
 	for (i=0; (total_bytes >> (10*(i+2))) > 0; i++);
 
-	/* get total bytes as a decimal */
+	/* get total bytes as a decimal in human-readable format */
 	total_bytes_f = ((total_pages*page_size) >> (10*i)) / 1024.0;
 
 	while(1) {
