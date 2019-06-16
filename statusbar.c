@@ -274,7 +274,7 @@ static SB_BOOL sb_open_fans(char fans[][512], int fan_count, FILE **fd)
 	return ret;
 }
 
-static SB_BOOL sb_find_fans(char fans[][512], size_t max_len, int *count)
+static SB_BOOL sb_find_fans(struct fan *fans, int *count)
 {
 	static const char *base = "/sys/class/hwmon";
 	DIR               *dir;
@@ -322,9 +322,8 @@ static void *sb_fan_routine(void *thunk)
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
 
-	char             fans[64][512];
+	struct fan       fans[64];
 	int              count   = 0;
-	FILE            *fd[64];
 	int              i;
 	SB_BOOL          error;
 	char             buf[64] = {0};
