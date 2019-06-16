@@ -4,7 +4,6 @@
 #define SBLENGTH 10240
 
 #define SB_TIMER_VARS \
-	sb_routine_t    *routine   = thunk; \
 	struct timespec  start_tp  = {0};   \
 	struct timespec  finish_tp = {0};   \
 	long             elapsed_usec;
@@ -97,6 +96,7 @@ static void *sb_print_to_sb(void *thunk)
 static void *sb_backup_routine(void *thunk)
 {
 	SB_TIMER_VARS;
+	sb_routine_t *routine = thunk;
 
 	while(1) {
 		SB_START_TIMER;
@@ -120,6 +120,7 @@ static void *sb_backup_routine(void *thunk)
 static void *sb_battery_routine(void *thunk)
 {
 	SB_TIMER_VARS;
+	sb_routine_t *routine = thunk;
 
 	while(1) {
 		SB_START_TIMER;
@@ -143,6 +144,7 @@ static void *sb_battery_routine(void *thunk)
 static void *sb_brightness_routine(void *thunk)
 {
 	SB_TIMER_VARS;
+	sb_routine_t *routine = thunk;
 
 	while(1) {
 		SB_START_TIMER;
@@ -166,6 +168,7 @@ static void *sb_brightness_routine(void *thunk)
 static void *sb_cpu_temp_routine(void *thunk)
 {
 	SB_TIMER_VARS;
+	sb_routine_t *routine = thunk;
 
 	while(1) {
 		SB_START_TIMER;
@@ -189,6 +192,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 static void *sb_cpu_usage_routine(void *thunk)
 {
 	SB_TIMER_VARS;
+	sb_routine_t *routine = thunk;
 
 	while(1) {
 		SB_START_TIMER;
@@ -212,6 +216,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 static void *sb_disk_routine(void *thunk)
 {
 	SB_TIMER_VARS;
+	sb_routine_t *routine = thunk;
 
 	while(1) {
 		SB_START_TIMER;
@@ -341,15 +346,15 @@ static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
 static void *sb_fan_routine(void *thunk)
 {
 	SB_TIMER_VARS;
-
-	struct sb_fan_t fans[64];
-	int             count   = 0;
-	int             i;
-	SB_BOOL         error;
-	char            buf[64] = {0};
-	long            speed;
-	long            percent;
-	long            average;
+	sb_routine_t    *routine = thunk;
+	struct sb_fan_t  fans[64];
+	int              count   = 0;
+	int              i;
+	SB_BOOL          error;
+	char             buf[64] = {0};
+	long             speed;
+	long             percent;
+	long             average;
 
 	memset(fans, 0, sizeof(fans));
 	if (!sb_find_fans(fans, &count))
@@ -408,9 +413,9 @@ static void *sb_fan_routine(void *thunk)
 static void *sb_load_routine(void *thunk)
 {
 	SB_TIMER_VARS;
-
+	sb_routine_t      *routine = thunk;
 	FILE              *fd;
-	static const char *path = "/proc/loadavg";
+	static const char *path    = "/proc/loadavg";
 	char               buf[64] = {0};
 	double             av[3];
 
@@ -529,7 +534,7 @@ static SB_BOOL sb_get_paths(struct sb_file_t *rx_file, struct sb_file_t *tx_file
 static void *sb_network_routine(void *thunk)
 {
 	SB_TIMER_VARS;
-
+	sb_routine_t     *routine  = thunk;
 	int               i;
 	SB_BOOL           error;
 	int               prefix;
@@ -586,14 +591,14 @@ static void *sb_network_routine(void *thunk)
 static void *sb_ram_routine(void *thunk)
 {
 	SB_TIMER_VARS
-
-	long  page_size;
-	long  total_pages;
-	long  total_bytes;
-	int   i;
-	float total_bytes_f;
-	char  unit[] = "KMGTP";
-	long  available_bytes;
+	sb_routine_t *routine  = thunk;
+	long          page_size;
+	long          total_pages;
+	long          total_bytes;
+	int           i;
+	float         total_bytes_f;
+	char          unit[]   = "KMGTP";
+	long          available_bytes;
 
 	page_size   = sysconf(_SC_PAGESIZE);
 	total_pages = sysconf(_SC_PHYS_PAGES);
@@ -640,8 +645,8 @@ static void *sb_time_routine(void *thunk)
 	 * macros because we need to use CLOCK_REALTIME to get the actual system time.
 	 */
 	SB_TIMER_VARS;
-
-	struct tm tm;
+	sb_routine_t *routine = thunk;
+	struct tm     tm;
 
 	while(1) {
 		clock_gettime(CLOCK_REALTIME, &start_tp);
@@ -671,6 +676,7 @@ static void *sb_time_routine(void *thunk)
 static void *sb_todo_routine(void *thunk)
 {
 	SB_TIMER_VARS;
+	sb_routine_t *routine = thunk;
 
 	while(1) {
 		SB_START_TIMER;
@@ -694,6 +700,7 @@ static void *sb_todo_routine(void *thunk)
 static void *sb_volume_routine(void *thunk)
 {
 	SB_TIMER_VARS;
+	sb_routine_t *routine = thunk;
 
 	while(1) {
 		SB_START_TIMER;
@@ -717,6 +724,7 @@ static void *sb_volume_routine(void *thunk)
 static void *sb_weather_routine(void *thunk)
 {
 	SB_TIMER_VARS;
+	sb_routine_t *routine = thunk;
 
 	while(1) {
 		SB_START_TIMER;
@@ -790,10 +798,10 @@ static void *sb_wifi_routine(void *thunk)
 	 * - handle break and reattach at a later time
 	 */
 	SB_TIMER_VARS;
-
-	int          fd;
-	struct iwreq iwr;
-	char         essid[IW_ESSID_MAX_SIZE + 1];
+	sb_routine_t *routine = thunk;
+	int           fd;
+	struct iwreq  iwr;
+	char          essid[IW_ESSID_MAX_SIZE + 1];
 
 	if (!sb_init_wifi(&fd, &iwr, essid, sizeof(essid))) {
 		close(fd);
