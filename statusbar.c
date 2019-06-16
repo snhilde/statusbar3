@@ -322,7 +322,7 @@ static SB_BOOL sb_find_fans(struct sb_fan *fans, int *count)
 					fans[*count].max = sb_read_fan_speeds(fans[*count].path, "_max");
 					if (fans[*count].min < 0 || fans[*count].max < 0)
 						break;
-					strncat(fans[*count].path, sizeof(fans[*count].path)-strlen(fans[*count].path), "_output");
+					strncat(fans[*count].path, "_output", sizeof(fans[*count].path)-strlen(fans[*count].path));
 					(*count)++;
 				}
 			}
