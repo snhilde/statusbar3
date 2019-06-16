@@ -359,10 +359,9 @@ static void *sb_fan_routine(void *thunk)
 	memset(&finish_tp, 0, sizeof(finish_tp));
 
 	memset(fans, 0, sizeof(fans));
-	if (!sb_find_fans(fans, sizeof(fans[0]), &count))
+	if (!sb_find_fans(fans, &count))
 		return NULL;
-	memset(fd, 0, sizeof(fd));
-	if (!sb_open_fans(fans, count, fd))
+	if (!sb_open_fans(fans, count))
 		return NULL;
 
 	while(1) {
