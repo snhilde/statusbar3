@@ -91,6 +91,10 @@ static void *sb_backup_routine(void *thunk)
 
 		/* TODO: run routine */
 
+		pthread_mutex_lock(&(routine->mutex));
+		snprintf(routine->output, sizeof(routine->output)-1, "backup: TODO");
+		pthread_mutex_unlock(&(routine->mutex));
+
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
@@ -118,6 +122,10 @@ static void *sb_battery_routine(void *thunk)
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
+
+		pthread_mutex_lock(&(routine->mutex));
+		snprintf(routine->output, sizeof(routine->output)-1, "battey: TODO");
+		pthread_mutex_unlock(&(routine->mutex));
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
@@ -147,6 +155,10 @@ static void *sb_brightness_routine(void *thunk)
 
 		/* TODO: run routine */
 
+		pthread_mutex_lock(&(routine->mutex));
+		snprintf(routine->output, sizeof(routine->output)-1, "brightness: TODO");
+		pthread_mutex_unlock(&(routine->mutex));
+
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
@@ -174,6 +186,10 @@ static void *sb_cpu_temp_routine(void *thunk)
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
+
+		pthread_mutex_lock(&(routine->mutex));
+		snprintf(routine->output, sizeof(routine->output)-1, "cpu temp: TODO");
+		pthread_mutex_unlock(&(routine->mutex));
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
@@ -203,6 +219,10 @@ static void *sb_cpu_usage_routine(void *thunk)
 
 		/* TODO: run routine */
 
+		pthread_mutex_lock(&(routine->mutex));
+		snprintf(routine->output, sizeof(routine->output)-1, "cpu usage: TODO");
+		pthread_mutex_unlock(&(routine->mutex));
+
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
@@ -230,6 +250,10 @@ static void *sb_disk_routine(void *thunk)
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
+
+		pthread_mutex_lock(&(routine->mutex));
+		snprintf(routine->output, sizeof(routine->output)-1, "disk: TODO");
+		pthread_mutex_unlock(&(routine->mutex));
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
@@ -718,6 +742,10 @@ static void *sb_todo_routine(void *thunk)
 
 		/* TODO: run routine */
 
+		pthread_mutex_lock(&(routine->mutex));
+		snprintf(routine->output, sizeof(routine->output)-1, "todo: TODO");
+		pthread_mutex_unlock(&(routine->mutex));
+
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
@@ -746,6 +774,10 @@ static void *sb_volume_routine(void *thunk)
 
 		/* TODO: run routine */
 
+		pthread_mutex_lock(&(routine->mutex));
+		snprintf(routine->output, sizeof(routine->output)-1, "volume: TODO");
+		pthread_mutex_unlock(&(routine->mutex));
+
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
@@ -773,6 +805,10 @@ static void *sb_weather_routine(void *thunk)
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		/* TODO: run routine */
+
+		pthread_mutex_lock(&(routine->mutex));
+		snprintf(routine->output, sizeof(routine->output)-1, "weather: TODO");
+		pthread_mutex_unlock(&(routine->mutex));
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
