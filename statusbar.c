@@ -232,14 +232,14 @@ static void *sb_disk_routine(void *thunk)
 
 
 /* --- FAN ROUTINE --- */
-struct sb_fan {
+struct sb_fan_t {
 	char  path[512];
 	long  min;
 	long  max;
 	FILE *fd;
 };
 
-static SB_BOOL sb_open_fans(struct sb_fan *fans, int fan_count)
+static SB_BOOL sb_open_fans(struct sb_fan_t *fans, int fan_count)
 {
 	int     i;
 	SB_BOOL ret = SB_TRUE;
@@ -283,7 +283,7 @@ static int sb_read_fan_speeds(char *fan, char *condition)
 	return atol(buf);
 }
 
-static SB_BOOL sb_find_fans(struct sb_fan *fans, int *count)
+static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
 {
 	static const char *base      = "/sys/class/hwmon";
 	DIR               *dir;
@@ -333,14 +333,14 @@ static void *sb_fan_routine(void *thunk)
 {
 	SB_TIMER_VARS;
 
-	struct sb_fan fans[64];
-	int           count   = 0;
-	int           i;
-	SB_BOOL       error;
-	char          buf[64] = {0};
-	long          speed;
-	long          percent;
-	long          average;
+	struct sb_fan_t fans[64];
+	int             count   = 0;
+	int             i;
+	SB_BOOL         error;
+	char            buf[64] = {0};
+	long            speed;
+	long            percent;
+	long            average;
 
 	memset(fans, 0, sizeof(fans));
 	if (!sb_find_fans(fans, &count))
@@ -439,25 +439,35 @@ static void *sb_load_routine(void *thunk)
 
 
 /* --- NETWORK ROUTINE --- */
-static SB_BOOL sb_open_files(FILE **rxfd, char *rx_path, FILE **txfd, char *tx_path)
+struct sb_file_t {
+	FILE *fd;
+	char  path[IFNAMSIZ+64];
+	char  buf[64];
+	long  old_bytes;
+	long  new_bytes;
+	long  diff;
+	int   prefix;
+};
+
+static SB_BOOL sb_open_files(struct sb_file_t *rx_file, struct sb_file_t *tx_file)
 {
-	*rxfd = fopen(rx_path, "r");
-	if (*rxfd < 0) {
-		fprintf(stderr, "Network routine: Failed to open rx file: %s\n", rx_path);
+	rx_file->fd = fopen(rx_file->path, "r");
+	if (rx_file->fd < 0) {
+		fprintf(stderr, "Network routine: Failed to open rx file: %s\n", rx_file->path);
 		return SB_FALSE;
 	}
 
-	*txfd = fopen(tx_path, "r");
-	if (*txfd < 0) {
-		fprintf(stderr, "Network routine: Failed to open tx file: %s\n", tx_path);
-		fclose(*rxfd);
+	tx_file->fd = fopen(tx_file->path, "r");
+	if (tx_file->fd < 0) {
+		fprintf(stderr, "Network routine: Failed to open tx file: %s\n", tx_file->path);
+		fclose(rx_file->fd);
 		return SB_FALSE;
 	}
 
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_get_paths(char *rx_path, size_t rx_path_size, char *tx_path, size_t tx_path_size)
+static SB_BOOL sb_get_paths(struct sb_file_t *rx_file, struct sb_file_t *tx_file)
 {
 	int             fd;
 	struct ifreq    ifr;
@@ -484,8 +494,10 @@ static SB_BOOL sb_get_paths(char *rx_path, size_t rx_path_size, char *tx_path, s
 		strncpy(ifr.ifr_name, ifap->ifa_name, IFNAMSIZ);
 		if (ioctl(fd, SIOCGIFFLAGS, &ifr) >= 0) {
 			if (ifr.ifr_flags & IFF_RUNNING && !(ifr.ifr_flags & IFF_LOOPBACK)) {
-				snprintf(rx_path, rx_path_size, "/sys/class/net/%s/statistics/rx_bytes", ifap->ifa_name);
-				snprintf(tx_path, tx_path_size, "/sys/class/net/%s/statistics/tx_bytes", ifap->ifa_name);
+				snprintf(rx_file->path, sizeof(rx_file->path)-1,
+						"/sys/class/net/%s/statistics/rx_bytes", ifap->ifa_name);
+				snprintf(tx_file->path, sizeof(tx_file->path)-1,
+						"/sys/class/net/%s/statistics/tx_bytes", ifap->ifa_name);
 				break;
 			}
 		}
@@ -507,23 +519,15 @@ static void *sb_network_routine(void *thunk)
 {
 	SB_TIMER_VARS;
 
-	int      i;
-	SB_BOOL  error;
-	int      prefix;
-	char    *unit = "KMGTP";
-	struct {
-		FILE *fd;
-		char  path[IFNAMSIZ+64];
-		char  buf[64];
-		long  old_bytes;
-		long  new_bytes;
-		long  diff;
-		int   prefix;
-	} files[2]    = {0};
+	int               i;
+	SB_BOOL           error;
+	int               prefix;
+	char             *unit     = "KMGTP";
+	struct sb_file_t  files[2] = {0};
 
-	if (!sb_get_paths(files[0].path, sizeof(files[0].path), files[1].path, sizeof(files[1].path)))
+	if (!sb_get_paths(&files[0], &files[1]))
 		return NULL;
-	if (!sb_open_files(&files[0].fd, files[0].path, &files[1].fd, files[1].path))
+	if (!sb_open_files(&files[0], &files[1]))
 		return NULL;
 
 	while(1) {
@@ -565,7 +569,6 @@ static void *sb_network_routine(void *thunk)
 	routine->skip = 1;
 	return NULL;
 }
-
 
 /* --- RAM ROUTINE --- */
 static void *sb_ram_routine(void *thunk)
