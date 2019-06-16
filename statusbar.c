@@ -370,11 +370,11 @@ static void *sb_fan_routine(void *thunk)
 		error = SB_FALSE;
 		total = 0;
 		for (i = 0; i < count && !error; i++) {
-			if (lseek(fileno(fd[i]), 0L, SEEK_SET) < 0) {
+			if (lseek(fileno(fans[i].fd), 0L, SEEK_SET) < 0) {
 				fprintf(stderr, "Fan routine: Error resetting file offset\n");
 				error = SB_TRUE;
-			} else if (fgets(buf, sizeof(buf), fd[i]) == NULL) {
-				fprintf(stderr, "Fan routine: Error reading %s\n", fans[i]);
+			} else if (fgets(buf, sizeof(buf), fans[i].fd) == NULL) {
+				fprintf(stderr, "Fan routine: Error reading %s\n", fans[i].path);
 				error = SB_TRUE;
 			} else {
 				total += atol(buf);
@@ -392,7 +392,7 @@ static void *sb_fan_routine(void *thunk)
 
 	/* close open file descriptors */
 	for (i = 0; i < count; i++)
-		fclose(fd[i]);
+		fclose(fans[i].fd);
 	
 	routine->skip = 1;
 	return NULL;
