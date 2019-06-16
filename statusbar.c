@@ -769,12 +769,16 @@ static SB_BOOL sb_init_wifi(int *fd, struct iwreq *iwr, char *essid, size_t max_
 
 static void *sb_wifi_routine(void *thunk)
 {
-	SB_TIMER_VARS;
-
-	/* TODO:
+	/* First, we are going to loop through all network interfaces, checking for an SSID.
+	 * When we first find one, we'll break out of the loop and use that interface as
+	 * the wireless network.
+	 *
+	 * TODO:
 	 * - if init fails, try again later
 	 * - handle break and reattach at a later time
 	 */
+	SB_TIMER_VARS;
+
 	int          fd;
 	struct iwreq iwr;
 	char         essid[IW_ESSID_MAX_SIZE + 1];
