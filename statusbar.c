@@ -245,9 +245,10 @@ static void *sb_disk_routine(void *thunk)
 
 /* --- FAN ROUTINE --- */
 struct sb_fan {
-	char fan[512];
-	long min;
-	long max;
+	char  fan[512];
+	long  min;
+	long  max;
+	FILE *fd;
 };
 
 static SB_BOOL sb_open_fans(char fans[][512], int fan_count, FILE **fd)
