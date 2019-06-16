@@ -310,7 +310,7 @@ static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
 					fans[*count].max = sb_read_fan_speeds(fans[*count].path, "_max");
 					if (fans[*count].min < 0 || fans[*count].max < 0)
 						break;
-					strncat(fans[*count].path, "_output", sizeof(fans[*count].path)-strlen(fans[*count].path));
+					strncat(fans[*count].path, "_output", sizeof(fans[*count].path)-strlen(fans[*count].path-1));
 					(*count)++;
 				}
 			}
@@ -357,7 +357,7 @@ static void *sb_fan_routine(void *thunk)
 			if (lseek(fileno(fans[i].fd), 0L, SEEK_SET) < 0) {
 				fprintf(stderr, "Fan routine: Failed to reset file offset for %s\n", fans[i].path);
 				error = SB_TRUE;
-			} else if (fgets(buf, sizeof(buf), fans[i].fd) == NULL) {
+			} else if (fgets(buf, sizeof(buf)-1, fans[i].fd) == NULL) {
 				fprintf(stderr, "Fan routine: Failed to read %s\n", fans[i].path);
 				error = SB_TRUE;
 			}
@@ -415,7 +415,7 @@ static void *sb_load_routine(void *thunk)
 		if (lseek(fileno(fd), 0L, SEEK_SET) < 0) {
 			fprintf(stderr, "Load routine: Failed to reset file offset\n");
 			break;
-		} else if (fgets(buf, sizeof(buf), fd) == NULL) {
+		} else if (fgets(buf, sizeof(buf)-1, fd) == NULL) {
 			fprintf(stderr, "Load routine: Failed to read %s\n", path);
 			break;
 		} else if (sscanf(buf, "%lf %lf %lf", &av[0], &av[1], &av[2]) < 3) {
@@ -538,7 +538,7 @@ static void *sb_network_routine(void *thunk)
 			if (lseek(fileno(files[i].fd), 0L, SEEK_SET) < 0) {
 				fprintf(stderr, "Network routine: Failed to reset file offset for %s\n", files[i].path);
 				error = SB_TRUE;
-			} else if (fgets(files[i].buf, sizeof(files[i].buf), files[i].fd) == NULL) {
+			} else if (fgets(files[i].buf, sizeof(files[i].buf)-1, files[i].fd) == NULL) {
 				fprintf(stderr, "Network routine: Failed to read %s\n", files[i].path);
 				error = SB_TRUE;
 			} else {
