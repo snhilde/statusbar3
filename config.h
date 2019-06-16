@@ -30,9 +30,12 @@ static const struct {
 const char *time_format = "%b %d - %I:%M";
 
 /* Which mounted filesystems to display for the disk routine. */
-static const char *filesystems[] = {
-	"/",
-	"/home/hilde",
+static const struct {
+	const char *path;
+	const char *display_name;
+} filesystems[] = {
+	{ "/"          , "/"    },
+	{ "/home/hilde", "home" },
 };
 
 /* Use 1 to display keyboard brightness with screen brightness or 0 to not. */
