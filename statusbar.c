@@ -251,7 +251,22 @@ struct sb_fan {
 	FILE *fd;
 };
 
-static SB_BOOL sb_read_fan_num(char *fan_path, char *condition)
+static SB_BOOL sb_read_fan_num(char *fan, char *condition)
+{
+	char  path[512];
+	FILE *fd;
+
+	snprintf(path, sizeof(path)-1, "%/%s", fan, condition);
+	fd = fopen(path, "r");
+	if (fd == NULL) {
+		fprintf(stderr, "Fan routine: Failed to open %s", path);
+		return SB_FALSE;
+	}
+
+	fclose(fd);
+	return SB_TRUE;
+}
+
 
 static SB_BOOL sb_open_fans(char fans[][512], int fan_count, FILE **fd)
 {
