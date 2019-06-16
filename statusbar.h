@@ -5,6 +5,9 @@
 #include <string.h>
 #include <stdlib.h>
 
+/* for disk routine */
+#include <sys/statvfs.h>
+
 /* for fan routine */
 #include <dirent.h>
 
