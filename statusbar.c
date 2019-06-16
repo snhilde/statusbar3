@@ -60,7 +60,7 @@ static void *sb_print_to_sb(void *thunk)
 			pthread_mutex_lock(&(routine->mutex));
 			len = strlen(routine->output);
 			if (offset+len > SBLENGTH-1) {
-				fprintf(stderr, "Exceeded max output length\n");
+				fprintf(stderr, "Print: Exceeded max output length\n");
 				break;
 			}
 
@@ -73,11 +73,11 @@ static void *sb_print_to_sb(void *thunk)
 		full_output[offset] = '\0';
 
 		if (!XStoreName(dpy, root, full_output)) {
-			fprintf(stderr, "Failed to set root name\n");
+			fprintf(stderr, "Print: Failed to set root name\n");
 			break;
 		}
 		if (!XFlush(dpy)) {
-			fprintf(stderr, "Failed to flush output buffer\n");
+			fprintf(stderr, "Print: Failed to flush output buffer\n");
 			break;
 		}
 
@@ -247,7 +247,7 @@ static SB_BOOL sb_open_fans(struct sb_fan *fans, int fan_count)
 	for (i=0; i<fan_count; i++) {
 		fans[i].fd = fopen(fans[i].path, "r");
 		if (fans[i].fd == NULL) {
-			fprintf(stderr, "Fan routine: Error opening %s\n", fans[i].path);
+			fprintf(stderr, "Fan routine: Failed to open %s\n", fans[i].path);
 			ret = SB_FALSE;
 			/* close all open file descriptors */
 			for (--i; i>=0; i--) {
@@ -295,7 +295,7 @@ static SB_BOOL sb_find_fans(struct sb_fan *fans, int *count)
 
 	dir = opendir(base);
 	if (dir == NULL) {
-		fprintf(stderr, "Fan routine: Could not open directory /sys/class/hwmon\n");
+		fprintf(stderr, "Fan routine: Failed to open %s\n", base);
 		return SB_FALSE;
 	}
 
@@ -355,10 +355,10 @@ static void *sb_fan_routine(void *thunk)
 		average = 0;
 		for (i=0; i<count && !error; i++) {
 			if (lseek(fileno(fans[i].fd), 0L, SEEK_SET) < 0) {
-				fprintf(stderr, "Fan routine: Error resetting file offset\n");
+				fprintf(stderr, "Fan routine: Failed to reset file offset for %s\n", fans[i].path);
 				error = SB_TRUE;
 			} else if (fgets(buf, sizeof(buf), fans[i].fd) == NULL) {
-				fprintf(stderr, "Fan routine: Error reading %s\n", fans[i].path);
+				fprintf(stderr, "Fan routine: Failed to read %s\n", fans[i].path);
 				error = SB_TRUE;
 			}
 			speed = atol(buf);
@@ -398,13 +398,14 @@ static void *sb_load_routine(void *thunk)
 {
 	SB_TIMER_VARS;
 
-	FILE   *fd;
-	char    buf[64] = {0};
-	double  av[3];
+	FILE              *fd;
+	static const char *path = "/proc/loadavg";
+	char               buf[64] = {0};
+	double             av[3];
 
-	fd = fopen("/proc/loadavg", "r");
+	fd = fopen(path, "r");
 	if (fd == NULL) {
-		fprintf(stderr, "Load routine: Error opening loadavg\n");
+		fprintf(stderr, "Load routine: Failed to open %s\n", path);
 		return NULL;
 	}
 
@@ -412,13 +413,13 @@ static void *sb_load_routine(void *thunk)
 		SB_START_TIMER;
 
 		if (lseek(fileno(fd), 0L, SEEK_SET) < 0) {
-			fprintf(stderr, "Load routine: Error resetting file offset\n");
+			fprintf(stderr, "Load routine: Failed to reset file offset\n");
 			break;
 		} else if (fgets(buf, sizeof(buf), fd) == NULL) {
-			fprintf(stderr, "Load routine: Error reading loadavg file\n");
+			fprintf(stderr, "Load routine: Failed to read %s\n", path);
 			break;
 		} else if (sscanf(buf, "%lf %lf %lf", &av[0], &av[1], &av[2]) < 3) {
-			fprintf(stderr, "Load routine: Error scanning buffer\n");
+			fprintf(stderr, "Load routine: Failed to scan buffer\n");
 			break;
 		}
 
@@ -442,13 +443,13 @@ static SB_BOOL sb_open_files(FILE **rxfd, char *rx_path, FILE **txfd, char *tx_p
 {
 	*rxfd = fopen(rx_path, "r");
 	if (*rxfd < 0) {
-		fprintf(stderr, "Network routine: Error opening rx file: %s\n", rx_path);
+		fprintf(stderr, "Network routine: Failed to open rx file: %s\n", rx_path);
 		return SB_FALSE;
 	}
 
 	*txfd = fopen(tx_path, "r");
 	if (*txfd < 0) {
-		fprintf(stderr, "Network routine: Error opening tx file: %s\n", tx_path);
+		fprintf(stderr, "Network routine: Failed to open tx file: %s\n", tx_path);
 		fclose(*rxfd);
 		return SB_FALSE;
 	}
@@ -466,13 +467,13 @@ static SB_BOOL sb_get_paths(char *rx_path, size_t rx_path_size, char *tx_path, s
 	/* open socket and return file descriptor for it */
 	fd = socket(AF_INET, SOCK_DGRAM, 0);
 	if (fd < 0) {
-		fprintf(stderr, "Network routine: Error opening socket file descriptor\n");
+		fprintf(stderr, "Network routine: Failed to open socket file descriptor\n");
 		return SB_FALSE;
 	}
 
 	/* get all network interfaces */
 	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
-		fprintf(stderr, "Network routine: Error finding interface addresses\n");
+		fprintf(stderr, "Network routine: Failed to find interface addresses\n");
 		close(fd);
 		return SB_FALSE;
 	}
@@ -495,7 +496,7 @@ static SB_BOOL sb_get_paths(char *rx_path, size_t rx_path_size, char *tx_path, s
 	freeifaddrs(ifaddrs);
 
 	if (ifap == NULL) {
-		fprintf(stderr, "Network routine: Could not find wireless interface\n");
+		fprintf(stderr, "Network routine: No wireless interfaces found\n");
 		return SB_FALSE;
 	}
 
@@ -531,10 +532,10 @@ static void *sb_network_routine(void *thunk)
 		error = SB_FALSE;
 		for (i=0; i<2 && !error; i++) {
 			if (lseek(fileno(files[i].fd), 0L, SEEK_SET) < 0) {
-				fprintf(stderr, "Network routine: Error resetting file offset\n");
+				fprintf(stderr, "Network routine: Failed to reset file offset for %s\n", files[i].path);
 				error = SB_TRUE;
 			} else if (fgets(files[i].buf, sizeof(files[i].buf), files[i].fd) == NULL) {
-				fprintf(stderr, "Network routine: Error reading network file\n");
+				fprintf(stderr, "Network routine: Failed to read %s\n", files[i].path);
 				error = SB_TRUE;
 			} else {
 				files[i].old_bytes = files[i].new_bytes;
@@ -582,7 +583,7 @@ static void *sb_ram_routine(void *thunk)
 	page_size   = sysconf(_SC_PAGESIZE);
 	total_pages = sysconf(_SC_PHYS_PAGES);
 	if (page_size < 0 || total_pages < 0) {
-		fprintf(stderr, "Ram routine: Error getting page info\n");
+		fprintf(stderr, "Ram routine: Failed to get page info\n");
 		return NULL;
 	}
 
@@ -599,7 +600,7 @@ static void *sb_ram_routine(void *thunk)
 		/* get available memory */
 		available_bytes = sysconf(_SC_AVPHYS_PAGES) * page_size;
 		if (available_bytes < 0) {
-			fprintf(stderr, "Ram routine: Error getting available bytes\n");
+			fprintf(stderr, "Ram routine: Failed to get available bytes\n");
 			break;
 		}
 
@@ -731,13 +732,13 @@ static SB_BOOL sb_init_wifi(int *fd, struct iwreq *iwr, char *essid, size_t max_
 	/* open socket and return file descriptor for it */
 	*fd = socket(AF_INET, SOCK_DGRAM, 0);
 	if (*fd < 0) {
-		fprintf(stderr, "Wifi routine: Error opening socket file descriptor\n");
+		fprintf(stderr, "Wifi routine: Failed to open socket file descriptor\n");
 		return SB_FALSE;
 	}
 
 	/* get all network interfaces */
 	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
-		fprintf(stderr, "Wifi routine: Error finding interface addresses\n");
+		fprintf(stderr, "Wifi routine: Failed to find interface addresses\n");
 		return SB_FALSE;
 	}
 	ifap = ifaddrs;
@@ -752,7 +753,7 @@ static SB_BOOL sb_init_wifi(int *fd, struct iwreq *iwr, char *essid, size_t max_
 		ifap = ifap->ifa_next;
 	}
 
-	fprintf(stderr, "Wifi routine: Could not find wireless interface\n");
+	fprintf(stderr, "Wifi routine: No wireless interfaces found\n");
 	freeifaddrs(ifaddrs);
 	return SB_FALSE;
 }
@@ -779,7 +780,7 @@ static void *sb_wifi_routine(void *thunk)
 
 		memset(essid, 0, sizeof(essid));
 		if (ioctl(fd, SIOCGIWESSID, &iwr) < 0) {
-			fprintf(stderr, "Wifi routine: Error getting SSID\n");
+			fprintf(stderr, "Wifi routine: Failed to get SSID\n");
 			break;
 		}
 
@@ -873,9 +874,9 @@ int main(int argc, char *argv[])
 			continue;
 
 		if (pthread_join(routine_object->thread, &join_ret) != 0)
-			fprintf(stderr, "%s thread did not exit cleanly (%s)\n", routine_names[index], (char *)join_ret);
+			fprintf(stderr, "%s: Thread did not exit cleanly (%s)\n", routine_names[index], (char *)join_ret);
 		if (pthread_mutex_destroy(&(routine_object->mutex)) != 0)
-			fprintf(stderr, "%s: error destroying mutex\n", routine_names[index]);
+			fprintf(stderr, "%s: Failed to destroy mutex\n", routine_names[index]);
 		routine_object->skip = 1; /* make sure routine is skipped */
 		free(join_ret);
 	}
