@@ -280,13 +280,13 @@ static SB_BOOL sb_open_fans(struct sb_fan *fans, int fan_count)
 	int     i;
 	SB_BOOL ret = SB_TRUE;
 
-	for (i = 0; i < fan_count; i++) {
+	for (i=0; i<fan_count; i++) {
 		fans[i].fd = fopen(fans[i].path, "r");
 		if (fans[i].fd == NULL) {
 			fprintf(stderr, "Fan routine: Error opening %s\n", fans[i].path);
 			ret = SB_FALSE;
 			/* close all open file descriptors */
-			for (--i ; i >= 0; i--) {
+			for (--i; i>=0; i--) {
 				fclose(fans[i].fd);
 			}
 			break;
@@ -321,7 +321,7 @@ static int sb_read_fan_speeds(char *fan, char *condition)
 
 static SB_BOOL sb_find_fans(struct sb_fan *fans, int *count)
 {
-	static const char *base = "/sys/class/hwmon";
+	static const char *base      = "/sys/class/hwmon";
 	DIR               *dir;
 	struct dirent     *dirent;
 	char               path[512] = {0};
@@ -335,11 +335,11 @@ static SB_BOOL sb_find_fans(struct sb_fan *fans, int *count)
 		return SB_FALSE;
 	}
 
-	for (dirent = readdir(dir); dirent != NULL; dirent = readdir(dir)) {
+	for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
 		snprintf(path, sizeof(path)-1, "%s/%s/device", base, dirent->d_name);
 		device = opendir(path);
 		if (device != NULL) {
-			for (dirent = readdir(device); dirent != NULL; dirent = readdir(device)) {
+			for (dirent=readdir(device); dirent!=NULL; dirent=readdir(device)) {
 				if (!strncmp(dirent->d_name, "fan", 3) && !strncmp(dirent->d_name+4, "_output", 7)) {
 					snprintf(fans[*count].path, sizeof(fans[*count].path)-1, "%s/%.4s", path, dirent->d_name);
 					fans[*count].min = sb_read_fan_speeds(fans[*count].path, "_min");
@@ -395,7 +395,7 @@ static void *sb_fan_routine(void *thunk)
 
 		error   = SB_FALSE;
 		average = 0;
-		for (i = 0; i < count && !error; i++) {
+		for (i=0; i<count && !error; i++) {
 			if (lseek(fileno(fans[i].fd), 0L, SEEK_SET) < 0) {
 				fprintf(stderr, "Fan routine: Error resetting file offset\n");
 				error = SB_TRUE;
@@ -430,7 +430,7 @@ static void *sb_fan_routine(void *thunk)
 	}
 
 	/* close open file descriptors */
-	for (i = 0; i < count; i++)
+	for (i=0; i<count; i++)
 		fclose(fans[i].fd);
 	
 	routine->skip = 1;
@@ -446,9 +446,9 @@ static void *sb_load_routine(void *thunk)
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
 
-	FILE   *fd;
-	char    buf[64] = {0};
-	double  av[3];
+	FILE            *fd;
+	char             buf[64] = {0};
+	double           av[3];
 
 	memset(&start_tp, 0, sizeof(start_tp));
 	memset(&finish_tp, 0, sizeof(finish_tp));
@@ -563,19 +563,19 @@ static void *sb_network_routine(void *thunk)
 	struct timespec  finish_tp;;
 	long             elapsed_usec;
 
-	int            i;
-	SB_BOOL        error;
-	int            prefix;
-	char          *unit = "KMGTP";
+	int              i;
+	SB_BOOL          error;
+	int              prefix;
+	char            *unit    = "KMGTP";
 	struct {
 		FILE *fd;
-		char  path[IFNAMSIZ + 64];
+		char  path[IFNAMSIZ+64];
 		char  buf[64];
 		long  old_bytes;
 		long  new_bytes;
 		long  diff;
 		int   prefix;
-	} files[2] = {0};
+	} files[2]               = {0};
 
 	if (!sb_get_paths(files[0].path, sizeof(files[0].path), files[1].path, sizeof(files[1].path)))
 		return NULL;
@@ -589,7 +589,7 @@ static void *sb_network_routine(void *thunk)
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 		error = SB_FALSE;
-		for (i = 0; i < 2 && !error; i++) {
+		for (i=0; i<2 && !error; i++) {
 			if (lseek(fileno(files[i].fd), 0L, SEEK_SET) < 0) {
 				fprintf(stderr, "Network routine: Error resetting file offset\n");
 				error = SB_TRUE;
@@ -600,8 +600,8 @@ static void *sb_network_routine(void *thunk)
 				files[i].old_bytes = files[i].new_bytes;
 				files[i].new_bytes = atol(files[i].buf);
 				files[i].diff      = files[i].new_bytes - files[i].old_bytes;
-				for (prefix = 0; (files[i].diff >> (10 * (prefix+2))) > 0; prefix++);
-				files[i].prefix = prefix;
+				for (prefix=0; (files[i].diff >> (10*(prefix+2))) > 0; prefix++);
+				files[i].prefix    = prefix;
 			}
 		}
 		if (error)
@@ -609,8 +609,8 @@ static void *sb_network_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output)-1, "Down: %.1f %c Up: %.1f %c",
-				(files[0].diff >> (10 * files[0].prefix)) / 1024.0, unit[files[0].prefix],
-				(files[1].diff >> (10 * files[1].prefix)) / 1024.0, unit[files[1].prefix]);
+				(files[0].diff >> (10*files[0].prefix)) / 1024.0, unit[files[0].prefix],
+				(files[1].diff >> (10*files[1].prefix)) / 1024.0, unit[files[1].prefix]);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
@@ -657,10 +657,10 @@ static void *sb_ram_routine(void *thunk)
 
 	/* calculate unit of memory */
 	total_bytes = total_pages * page_size;
-	for (i = 0; (total_bytes >> (10 * (i+2))) > 0; i++);
+	for (i=0; (total_bytes >> (10*(i+2))) > 0; i++);
 
 	/* get total bytes as a decimal */
-	total_bytes_f = ((total_pages * page_size) >> (10 * i)) / 1024.0;
+	total_bytes_f = ((total_pages*page_size) >> (10*i)) / 1024.0;
 
 	while(1) {
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
@@ -674,7 +674,7 @@ static void *sb_ram_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output)-1, "Free: %.1f %c / %.1f %c",
-				(available_bytes >> (10 * i)) / 1024.0, unit[i], total_bytes_f, unit[i]);
+				(available_bytes >> (10*i)) / 1024.0, unit[i], total_bytes_f, unit[i]);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
@@ -950,8 +950,8 @@ int main(int argc, char *argv[])
 	routine_list = routine_array + chosen_routines[0].routine;
 
 	/* step through each routine chosen in config.h and set it up */
-	for (i = 0; i < num_routines; i++) {
-		index = chosen_routines[i].routine;
+	for (i=0; i<num_routines; i++) {
+		index          = chosen_routines[i].routine;
 		routine_object = routine_array + index;
 
 		/* set flag for this routine */
@@ -963,12 +963,12 @@ int main(int argc, char *argv[])
 		/* initialize the routine */
 		routine_object->routine = chosen_routines[i].routine;
 		if (index == DELIMITER) {
-			snprintf(routine_object->output, sizeof(routine_object->output), ";");
+			snprintf(routine_object->output, sizeof(routine_object->output)-1, ";");
 			routine_object->length = 1;
 			continue;
 		}
 		routine_object->thread_func = possible_routines[index].callback;
-		routine_object->interval = chosen_routines[i].seconds;
+		routine_object->interval    = chosen_routines[i].seconds;
 
 		/* create thread */
 		pthread_mutex_init(&(routine_object->mutex), NULL);
@@ -980,8 +980,8 @@ int main(int argc, char *argv[])
 	pthread_create(&print_thread, NULL, sb_print_to_sb, (void *)&run);
 
 	/* block until all threads exit */
-	for (i = 0; i < num_routines; i++) {
-		index = chosen_routines[i].routine;
+	for (i=0; i<num_routines; i++) {
+		index          = chosen_routines[i].routine;
 		routine_object = routine_array + index;
 		if (index == DELIMITER)
 			continue;

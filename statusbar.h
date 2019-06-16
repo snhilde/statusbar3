@@ -14,7 +14,7 @@
 #include <ifaddrs.h>
 
 enum sb_routine_e {
-	BACKUP     = 0,
+	BACKUP = 0,
 	BATTERY   ,
 	BRIGHTNESS,
 	CPU_TEMP  ,
