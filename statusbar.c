@@ -269,9 +269,9 @@ static int sb_read_fan_speeds(char *fan, char *condition)
 		fclose(fd);
 		return -1;
 	}
-
 	fclose(fd);
-	return SB_TRUE;
+
+	return atoi(buf);
 }
 
 
