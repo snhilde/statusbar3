@@ -259,7 +259,7 @@ static SB_BOOL sb_open_fans(struct sb_fan *fans, int fan_count)
 	for (i = 0; i < fan_count; i++) {
 		fans[i].fd = fopen(fans[i].path, "r");
 		if (fans[i].fd == NULL) {
-			fprintf(stderr, "Fan routine: Error opening %s", fans[i].path);
+			fprintf(stderr, "Fan routine: Error opening %s\n", fans[i].path);
 			ret = SB_FALSE;
 			/* close all open file descriptors */
 			for (--i ; i >= 0; i--) {
@@ -281,12 +281,12 @@ static int sb_read_fan_speeds(char *fan, char *condition)
 	snprintf(path, sizeof(path)-1, "%s/%s", fan, condition);
 	fd = fopen(path, "r");
 	if (fd == NULL) {
-		fprintf(stderr, "Fan routine: Failed to open %s", path);
+		fprintf(stderr, "Fan routine: Failed to open %s\n", path);
 		return -1;
 	}
 
 	if (fgets(buf, sizeof(buf)-1, fd) == NULL) {
-		fprintf(stderr, "Fan routine: Failed to read %s", path);
+		fprintf(stderr, "Fan routine: Failed to read %s\n", path);
 		fclose(fd);
 		return -1;
 	}
@@ -307,7 +307,7 @@ static SB_BOOL sb_find_fans(struct sb_fan *fans, int *count)
 
 	dir = opendir(base);
 	if (dir == NULL) {
-		fprintf(stderr, "Fan routine: Could not open directory /sys/class/hwmon");
+		fprintf(stderr, "Fan routine: Could not open directory /sys/class/hwmon\n");
 		return SB_FALSE;
 	}
 
