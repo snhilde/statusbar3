@@ -216,22 +216,53 @@ static void *sb_cpu_temp_routine(void *thunk)
 /* --- CPU USAGE ROUTINE --- */
 static void *sb_cpu_usage_routine(void *thunk)
 {
+	/* TODO: why is sysconf(_SC_NPROCESSORS_ONLN) or num cores not necessary here? */
 	SB_TIMER_VARS;
-	sb_routine_t *routine = thunk;
+	sb_routine_t      *routine = thunk;
+	FILE              *fd;
+	static const char *path    = "/proc/stat";
+	unsigned long      used;
+	unsigned long      total;
+	struct {
+		unsigned long user;
+		unsigned long nice;
+		unsigned long system;
+		unsigned long idle;
+	} old, new;
 
 	while(1) {
 		SB_START_TIMER;
 
-		/* TODO: run routine */
+		fd = fopen(path, "r");
+		if (fd == NULL) {
+			fprintf(stderr, "CPU Usage routine: Failed to open %s\n", path);
+			break;
+		} else if (fscanf(fd, "cpu %lu %lu %lu %lu", &new.user, &new.nice, &new.system, &new.idle) < 4) {
+			fprintf(stderr, "CPU Usage routine: Failed to scan buffer\n");
+			break;
+		} else if (fclose(fd) != 0) {
+			fprintf(stderr, "CPU Usage routine: Failed to close %s\n", path);
+			break;
+		}
+
+		used  = (new.user-old.user) + (new.nice-old.nice) + (new.system-old.system);
+		total = (new.user-old.user) + (new.nice-old.nice) + (new.system-old.system) + (new.idle-old.idle);
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "cpu usage: TODO");
+		snprintf(routine->output, sizeof(routine->output)-1, "CPU usage: %lu%%", (used*100)/total);
 		pthread_mutex_unlock(&(routine->mutex));
+
+		old.user   = new.user;
+		old.nice   = new.nice;
+		old.system = new.system;
+		old.idle   = new.idle;
 
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
 	
+	if (fd != NULL)
+		fclose(fd);
 	routine->skip = 1;
 	return NULL;
 }
@@ -423,7 +454,7 @@ static void *sb_fan_routine(void *thunk)
 		/* go through each fan#_output, get the value, and determine the percentage from
 		 * its max and min */
 		for (i=0; i<count && !error; i++) {
-			if (lseek(fileno(fans[i].fd), 0L, SEEK_SET) < 0) {
+			if (fseek(fans[i].fd, 0L, SEEK_SET) < 0) {
 				fprintf(stderr, "Fan routine: Failed to reset file offset for %s\n", fans[i].path);
 				error = SB_TRUE;
 			} else if (fgets(buf, sizeof(buf)-1, fans[i].fd) == NULL) {
@@ -481,7 +512,7 @@ static void *sb_load_routine(void *thunk)
 	while(1) {
 		SB_START_TIMER;
 
-		if (lseek(fileno(fd), 0L, SEEK_SET) < 0) {
+		if (fseek(fd, 0L, SEEK_SET) < 0) {
 			fprintf(stderr, "Load routine: Failed to reset file offset\n");
 			break;
 		} else if (fgets(buf, sizeof(buf)-1, fd) == NULL) {
@@ -603,7 +634,7 @@ static void *sb_network_routine(void *thunk)
 
 		error = SB_FALSE;
 		for (i=0; i<2 && !error; i++) {
-			if (lseek(fileno(files[i].fd), 0L, SEEK_SET) < 0) {
+			if (fseek(files[i].fd, 0L, SEEK_SET) < 0) {
 				fprintf(stderr, "Network routine: Failed to reset file offset for %s\n", files[i].path);
 				error = SB_TRUE;
 			} else if (fgets(files[i].buf, sizeof(files[i].buf)-1, files[i].fd) == NULL) {
