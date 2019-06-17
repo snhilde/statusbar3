@@ -16,6 +16,7 @@
 #include <linux/wireless.h>
 #include <ifaddrs.h>
 
+
 enum sb_routine_e {
 	BACKUP = 0,
 	BATTERY   ,
@@ -33,24 +34,6 @@ enum sb_routine_e {
 	WEATHER   ,
 	WIFI      ,
 	DELIMITER ,
-};
-
-static const char *routine_names[] = {
-	"Backup",
-	"Battery",
-	"Brightness",
-	"CPU Temp",
-	"CPU Usage",
-	"Disk",
-	"Fan",
-	"Load",
-	"Network",
-	"RAM",
-	"Time",
-	"TODO",
-	"Volume",
-	"Weather",
-	"Wifi"
 };
 
 /* Routine object declaration */
@@ -72,6 +55,24 @@ typedef struct sb_routine {
 	int                skip;        /* 0 (default) means don't skip, 1 means thread has
 									   exited and this routine should not be printed. */
 } sb_routine_t;
+
+static const char *routine_names[] = {
+	"Backup",
+	"Battery",
+	"Brightness",
+	"CPU Temp",
+	"CPU Usage",
+	"Disk",
+	"Fan",
+	"Load",
+	"Network",
+	"RAM",
+	"Time",
+	"TODO",
+	"Volume",
+	"Weather",
+	"Wifi"
+};
 
 /* This array will hold all the routine objects. Because it is global, it is zero'd out on
  * startup. If a user does not chose a particular routine in the config file, that
