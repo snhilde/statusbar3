@@ -473,26 +473,20 @@ static void *sb_load_routine(void *thunk)
 	sb_routine_t      *routine = thunk;
 	FILE              *fd;
 	static const char *path    = "/proc/loadavg";
-	char               buf[64] = {0};
 	double             av[3];
-
-	fd = fopen(path, "r");
-	if (fd == NULL) {
-		fprintf(stderr, "Load routine: Failed to open %s\n", path);
-		return NULL;
-	}
 
 	while(1) {
 		SB_START_TIMER;
 
-		if (fseek(fd, 0L, SEEK_SET) < 0) {
-			fprintf(stderr, "Load routine: Failed to reset file offset\n");
+		fd = fopen(path, "r");
+		if (fd == NULL) {
+			fprintf(stderr, "Load routine: Failed to open %s\n", path);
 			break;
-		} else if (fgets(buf, sizeof(buf)-1, fd) == NULL) {
+		} else if (fscanf(fd, "%lf %lf %lf", &av[0], &av[1], &av[2]) < 3) {
 			fprintf(stderr, "Load routine: Failed to read %s\n", path);
 			break;
-		} else if (sscanf(buf, "%lf %lf %lf", &av[0], &av[1], &av[2]) < 3) {
-			fprintf(stderr, "Load routine: Failed to scan buffer\n");
+		} else if (fclose(fd) != 0) {
+			fprintf(stderr, "Load routine: Failed to close %s\n", path);
 			break;
 		}
 
