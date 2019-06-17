@@ -238,7 +238,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 			fprintf(stderr, "CPU Usage routine: Failed to open %s\n", path);
 			break;
 		} else if (fscanf(fd, "cpu %lu %lu %lu %lu", &new.user, &new.nice, &new.system, &new.idle) < 4) {
-			fprintf(stderr, "CPU Usage routine: Failed to scan buffer\n");
+			fprintf(stderr, "CPU Usage routine: Failed to read %s\n", path);
 			break;
 		} else if (fclose(fd) != 0) {
 			fprintf(stderr, "CPU Usage routine: Failed to close %s\n", path);
@@ -325,30 +325,7 @@ struct sb_fan_t {
 	char  path[512];
 	long  min;
 	long  max;
-	FILE *fd;
 };
-
-static SB_BOOL sb_open_fans(struct sb_fan_t *fans, int fan_count)
-{
-	int     i;
-	SB_BOOL ret = SB_TRUE;
-
-	/* open every fan and save its file descriptor */
-	for (i=0; i<fan_count; i++) {
-		fans[i].fd = fopen(fans[i].path, "r");
-		if (fans[i].fd == NULL) {
-			fprintf(stderr, "Fan routine: Failed to open %s\n", fans[i].path);
-			ret = SB_FALSE;
-			/* close all open file descriptors */
-			for (--i; i>=0; i--) {
-				fclose(fans[i].fd);
-			}
-			break;
-		}
-	}
-	
-	return ret;
-}
 
 static int sb_read_fan_speeds(char *fan, char *condition)
 {
@@ -434,16 +411,14 @@ static void *sb_fan_routine(void *thunk)
 	struct sb_fan_t  fans[64];
 	int              count   = 0;
 	int              i;
+	FILE            *fd;
 	SB_BOOL          error;
-	char             buf[64] = {0};
 	long             speed;
 	long             percent;
 	long             average;
 
 	memset(fans, 0, sizeof(fans));
 	if (!sb_find_fans(fans, &count))
-		return NULL;
-	if (!sb_open_fans(fans, count))
 		return NULL;
 
 	while(1) {
@@ -454,18 +429,18 @@ static void *sb_fan_routine(void *thunk)
 		/* go through each fan#_output, get the value, and determine the percentage from
 		 * its max and min */
 		for (i=0; i<count && !error; i++) {
-			if (fseek(fans[i].fd, 0L, SEEK_SET) < 0) {
-				fprintf(stderr, "Fan routine: Failed to reset file offset for %s\n", fans[i].path);
+			fd = fopen(fans[i].path, "r");
+			if (fd == NULL) {
+				fprintf(stderr, "Fan routine: Failed to open %s\n", fans[i].path);
 				error = SB_TRUE;
-			} else if (fgets(buf, sizeof(buf)-1, fans[i].fd) == NULL) {
+			} else if (fscanf(fd, "%ld", &speed) < 1) {
 				fprintf(stderr, "Fan routine: Failed to read %s\n", fans[i].path);
 				error = SB_TRUE;
-			}
-			speed = atol(buf);
-			if (speed < 0) {
-				fprintf(stderr, "Fan routine: Failed to parse %s\n", fans[i].path);
+			} else if (fclose(fd) != 0) {
+				fprintf(stderr, "Fan routine: Failed to close %s\n", fans[i].path);
 				error = SB_TRUE;
 			}
+
 			percent += ((speed - fans[i].min) * 100) / (fans[i].max - fans[i].min);
 			if (percent < 0)
 				percent = 0;
@@ -484,10 +459,8 @@ static void *sb_fan_routine(void *thunk)
 		SB_SLEEP;
 	}
 
-	/* close open file descriptors */
-	for (i=0; i<count; i++)
-		fclose(fans[i].fd);
-	
+	if (fd != NULL)
+		fclose(fd);
 	routine->skip = 1;
 	return NULL;
 }
