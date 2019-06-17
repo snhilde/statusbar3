@@ -240,7 +240,7 @@ static void *sb_bat_routine(void *thunk)
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "bat speed: %ld%%", average / count);
+		snprintf(routine->output, sizeof(routine->output)-1, "bat: %ld%%", (bat.now * 100) / bat.max);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
