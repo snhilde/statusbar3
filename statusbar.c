@@ -80,7 +80,7 @@ static void *sb_print_to_sb(void *thunk)
 				routine = routine->next;
 				continue;
 			}
-				
+
 			pthread_mutex_lock(&(routine->mutex));
 			len = strlen(routine->output);
 			if (offset+len > SBLENGTH-1) {
@@ -135,13 +135,128 @@ static void *sb_backup_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-	
+
 	routine->skip = 1;
 	return NULL;
 }
 
 
 /* --- BATTERY ROUTINE --- */
+struct sb_bat_t {
+	char path[512];
+	long max;
+	long now;
+};
+
+static long sb_bat_read_max(char *bat, char *file)
+{
+	char  path[512];
+	FILE *fd;
+	char  buf[64];
+
+	snprintf(path, sizeof(path)-1, "%s%s", bat, file);
+	fd = fopen(path, "r");
+	if (fd == NULL) {
+		fprintf(stderr, "Battery routine: Failed to open %s\n", path);
+		return -1;
+	}
+
+	if (fgets(buf, sizeof(buf)-1, fd) == NULL) {
+		fprintf(stderr, "Battery routine: Failed to read %s\n", path);
+		fclose(fd);
+		return -1;
+	}
+	fclose(fd);
+
+	return atol(buf);
+}
+
+static SB_BOOL sb_bat_find_bats(struct sb_bat_t *bat)
+{
+	/* Here, we're going to check each device in /sys/class/power_supply. When we find
+ 	 * a battery, we'll break out of the loop and record some general data.
+	 */
+	static const char *base      = "/sys/class/power_supply";
+	DIR               *dir;
+	struct dirent     *dirent;
+	char               path[512] = {0};
+	SB_BOOL            found_bat = SB_FALSE;
+
+
+	DIR               *device;
+
+	*count = 0;
+
+	dir = opendir(base);
+	if (dir == NULL) {
+		fprintf(stderr, "Battery routine: Failed to open %s\n", base);
+		return SB_FALSE;
+	}
+
+	/* step through each file/directory in the base and try to find a directory starting with BAT */
+	for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
+		if (!strncmp(dirent->name, "BAT", 3)) {
+			snprintf(bat->path, sizeof(bat->path)-1, "%s/%s", base, dirent->d_name);
+			found_bat = SB_TRUE;
+			break;
+		}
+	}
+	closedir(dir);
+
+	if (found_bat) {
+		bat->max = sb_bat_read_max(bat->path, "charge_full");
+		if (bat->max < 0)
+			return SB_FALSE;
+		strncat(bat->path, "charge_now", sizeof(bat->path)-strlen(bat->path)-1);
+	} else {
+		fprintf(stderr, "Battery routine: Failed to find battery");
+		return SB_FALSE;
+	}
+
+	return SB_TRUE;
+}
+
+static void *sb_bat_routine(void *thunk)
+{
+	SB_TIMER_VARS;
+	sb_routine_t    *routine = thunk;
+	struct sb_bat_t  bat;
+	FILE            *fd;
+
+	memset(bats, 0, sizeof(bats));
+	if (!sb_bat_find_bats(&bats))
+		return NULL;
+
+	while(1) {
+		SB_START_TIMER;
+
+		fd = fopen(bats.path, "r");
+		if (fd == NULL) {
+			fprintf(stderr, "Battery routine: Failed to open %s\n", bats[i].path);
+			error = SB_TRUE;
+		} else if (fscanf(fd, "%ld", &speed) < 1) {
+			fprintf(stderr, "Battery routine: Failed to read %s\n", bats[i].path);
+			error = SB_TRUE;
+		} else if (fclose(fd) != 0) {
+			fprintf(stderr, "Battery routine: Failed to close %s\n", bats[i].path);
+			error = SB_TRUE;
+		}
+
+		pthread_mutex_lock(&(routine->mutex));
+		snprintf(routine->output, sizeof(routine->output)-1, "bat speed: %ld%%", average / count);
+		pthread_mutex_unlock(&(routine->mutex));
+
+		SB_STOP_TIMER;
+		SB_SLEEP;
+	}
+
+	if (fd != NULL)
+		fclose(fd);
+	routine->skip = 1;
+	return NULL;
+}
+
+
 static void *sb_battery_routine(void *thunk)
 {
 	SB_TIMER_VARS;
@@ -159,7 +274,7 @@ static void *sb_battery_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-	
+
 	routine->skip = 1;
 	return NULL;
 }
@@ -207,7 +322,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-	
+
 	routine->skip = 1;
 	return NULL;
 }
@@ -260,7 +375,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-	
+
 	if (fd != NULL)
 		fclose(fd);
 	routine->skip = 1;
@@ -314,7 +429,7 @@ static void *sb_disk_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-	
+
 	routine->skip = 1;
 	return NULL;
 }
@@ -327,13 +442,13 @@ struct sb_fan_t {
 	long  max;
 };
 
-static int sb_read_fan_speeds(char *fan, char *condition)
+static long sb_read_fan_speeds(char *fan, char *file)
 {
 	char  path[512];
 	FILE *fd;
 	char  buf[64];
 
-	snprintf(path, sizeof(path)-1, "%s%s", fan, condition);
+	snprintf(path, sizeof(path)-1, "%s%s", fan, file);
 	fd = fopen(path, "r");
 	if (fd == NULL) {
 		fprintf(stderr, "Fan routine: Failed to open %s\n", path);
@@ -395,7 +510,7 @@ static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
 			}
 		}
 	}
-	
+
 	closedir(dir);
 	if (*count == 0) {
 		fprintf(stderr, "Fan routine: No fans found\n");
@@ -497,7 +612,7 @@ static void *sb_load_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-	
+
 	if (fd != NULL)
 		fclose(fd);
 	routine->skip = 1;
@@ -607,7 +722,7 @@ static void *sb_network_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-	
+
 	if (fd != NULL)
 		fclose(fd);
 	routine->skip = 1;
@@ -657,7 +772,7 @@ static void *sb_ram_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-	
+
 	routine->skip = 1;
 	return NULL;
 }
@@ -691,7 +806,7 @@ static void *sb_time_routine(void *thunk)
 			fprintf(stderr, "Time routine: Error sleeping\n");
 		}
 	}
-	
+
 	routine->skip = 1;
 	return NULL;
 }
@@ -715,7 +830,7 @@ static void *sb_todo_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-	
+
 	routine->skip = 1;
 	return NULL;
 }
@@ -739,7 +854,7 @@ static void *sb_volume_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-	
+
 	routine->skip = 1;
 	return NULL;
 }
@@ -763,7 +878,7 @@ static void *sb_weather_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-	
+
 	routine->skip = 1;
 	return NULL;
 }
