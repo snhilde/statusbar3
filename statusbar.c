@@ -246,8 +246,10 @@ static void *sb_disk_routine(void *thunk)
 	int             i;
 	struct statvfs  stats;
 	SB_BOOL         error       = SB_FALSE;
-	unsigned long   total_size;
-	unsigned long   available;
+	float           avail;
+	char            avail_prefix;
+	float           total;
+	char            total_prefix;
 	char            output[512] = {0};
 
 	while(1) {
@@ -264,9 +266,10 @@ static void *sb_disk_routine(void *thunk)
 				error = SB_TRUE;
 				break;
 			}
-			available  = stats.f_bfree  * stats.f_bsize;
-			total_size = stats.f_blocks * stats.f_bsize;
-			snprintf(output, sizeof(output)-1, "%s: %lu/%lu", filesystems[i].path, available, total_size);
+			avail = sb_calc_magnitude(stats.f_bfree *stats.f_bsize, &avail_prefix);
+			total = sb_calc_magnitude(stats.f_blocks*stats.f_bsize, &total_prefix);
+			snprintf(output, sizeof(output)-1, "%s: %.1f%c/%.1f%c",
+					filesystems[i].display_name, avail, avail_prefix, total, total_prefix);
 			strncat(routine->output, output, sizeof(routine->output)-strlen(routine->output)-1);
 
 			if (i+1 < num_filesystems)
