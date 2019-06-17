@@ -233,7 +233,7 @@ static void *sb_bat_routine(void *thunk)
 		fd = fopen(bats.path, "r");
 		if (fd == NULL) {
 			fprintf(stderr, "Battery routine: Failed to open %s\n", bat.path);
-		} else if (fscanf(fd, "%ld", &speed) < 1) {
+		} else if (fscanf(fd, "%ld", &bat.now) < 1) {
 			fprintf(stderr, "Battery routine: Failed to read %s\n", bat.path);
 		} else if (fclose(fd) != 0) {
 			fprintf(stderr, "Battery routine: Failed to close %s\n", bat.path);
