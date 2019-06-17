@@ -146,6 +146,7 @@ struct sb_bat_t {
 	char path[512];
 	long max;
 	long now;
+	int  status; /* -1 = discharging, 0 = full, 1 = charging */
 };
 
 static long sb_bat_read_max(char *bat, char *file)
@@ -179,13 +180,7 @@ static SB_BOOL sb_bat_find_bats(struct sb_bat_t *bat)
 	static const char *base      = "/sys/class/power_supply";
 	DIR               *dir;
 	struct dirent     *dirent;
-	char               path[512] = {0};
 	SB_BOOL            found_bat = SB_FALSE;
-
-
-	DIR               *device;
-
-	*count = 0;
 
 	dir = opendir(base);
 	if (dir == NULL) {
@@ -195,8 +190,8 @@ static SB_BOOL sb_bat_find_bats(struct sb_bat_t *bat)
 
 	/* step through each file/directory in the base and try to find a directory starting with BAT */
 	for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
-		if (!strncmp(dirent->name, "BAT", 3)) {
-			snprintf(bat->path, sizeof(bat->path)-1, "%s/%s", base, dirent->d_name);
+		if (!strncmp(dirent->d_name, "BAT", 3)) {
+			snprintf(bat->path, sizeof(bat->path)-1, "%s/%s/", base, dirent->d_name);
 			found_bat = SB_TRUE;
 			break;
 		}
@@ -216,21 +211,21 @@ static SB_BOOL sb_bat_find_bats(struct sb_bat_t *bat)
 	return SB_TRUE;
 }
 
-static void *sb_bat_routine(void *thunk)
+static void *sb_battery_routine(void *thunk)
 {
 	SB_TIMER_VARS;
 	sb_routine_t    *routine = thunk;
 	struct sb_bat_t  bat;
 	FILE            *fd;
 
-	memset(bats, 0, sizeof(bats));
-	if (!sb_bat_find_bats(&bats))
+	memset(&bat, 0, sizeof(bat));
+	if (!sb_bat_find_bats(&bat))
 		return NULL;
 
 	while(1) {
 		SB_START_TIMER;
 
-		fd = fopen(bats.path, "r");
+		fd = fopen(bat.path, "r");
 		if (fd == NULL) {
 			fprintf(stderr, "Battery routine: Failed to open %s\n", bat.path);
 		} else if (fscanf(fd, "%ld", &bat.now) < 1) {
@@ -249,29 +244,6 @@ static void *sb_bat_routine(void *thunk)
 
 	if (fd != NULL)
 		fclose(fd);
-	routine->skip = 1;
-	return NULL;
-}
-
-
-static void *sb_battery_routine(void *thunk)
-{
-	SB_TIMER_VARS;
-	sb_routine_t *routine = thunk;
-
-	while(1) {
-		SB_START_TIMER;
-
-		/* TODO: run routine */
-
-		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "battey: TODO");
-		pthread_mutex_unlock(&(routine->mutex));
-
-		SB_STOP_TIMER;
-		SB_SLEEP;
-	}
-
 	routine->skip = 1;
 	return NULL;
 }
