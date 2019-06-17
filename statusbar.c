@@ -25,6 +25,33 @@ typedef enum _SB_BOOL {
 	SB_TRUE  = 1
 } SB_BOOL;
 
+/* --- HELPER FUNCTIONS --- */
+static float sb_calc_magnitude(long number, char *prefix)
+{
+	int   i;
+	long  num     = number;
+	char *symbols = "BKMGTP";
+
+	if (number < 1024) {
+		*prefix = 'B';
+		return number * 1.0;
+	}
+
+	/* This will calculate (roughly) how many commas the number would have by
+	 * shifting it 3 places to the right (or, more precisely, dividing by 1024)
+	 * until the number is consumed. We are going to start at 1 because 0 would
+	 * just be skipped (nothing would happen). We are adding 1 to every bitshift
+	 * operation because we need to save a thousandth place for later dividing
+	 * into a floating-point number. If we didn't add the one 1, the number
+	 * would lose its decimal places and precision. */
+	for (i=1; (num >> (10*(i+1))) > 0; i++);
+
+	*prefix = symbols[i];
+	return (number >> (10*(i-1))) / 1024.0;
+}
+
+
+/* --- PRINTING THREAD --- */
 static void *sb_print_to_sb(void *thunk)
 {
 	SB_TIMER_VARS
@@ -479,13 +506,13 @@ static void *sb_load_routine(void *thunk)
 
 /* --- NETWORK ROUTINE --- */
 struct sb_file_t {
-	FILE *fd;
-	char  path[IFNAMSIZ+64];
-	char  buf[64];
-	long  old_bytes;
-	long  new_bytes;
-	long  diff;
-	int   prefix;
+	FILE  *fd;
+	char   path[IFNAMSIZ+64];
+	char   buf[64];
+	long   old_bytes;
+	long   new_bytes;
+	float  reduced;
+	char   prefix;
 };
 
 static SB_BOOL sb_open_files(struct sb_file_t *rx_file, struct sb_file_t *tx_file)
@@ -560,9 +587,8 @@ static void *sb_network_routine(void *thunk)
 	sb_routine_t     *routine  = thunk;
 	int               i;
 	SB_BOOL           error;
-	int               prefix;
-	char             *unit     = "KMGTP";
 	struct sb_file_t  files[2] = {0};
+	long              diff;
 
 	if (!sb_get_paths(&files[0], &files[1]))
 		return NULL;
@@ -583,9 +609,8 @@ static void *sb_network_routine(void *thunk)
 			} else {
 				files[i].old_bytes = files[i].new_bytes;
 				files[i].new_bytes = atol(files[i].buf);
-				files[i].diff      = files[i].new_bytes - files[i].old_bytes;
-				for (prefix=0; (files[i].diff >> (10*(prefix+2))) > 0; prefix++);
-				files[i].prefix    = prefix;
+				diff               = files[i].new_bytes - files[i].old_bytes;
+				files[i].reduced   = sb_calc_magnitude(diff, &files[i].prefix);
 			}
 		}
 		if (error)
@@ -593,8 +618,7 @@ static void *sb_network_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output)-1, "Down: %.1f %c Up: %.1f %c",
-				(files[0].diff >> (10*files[0].prefix)) / 1024.0, unit[files[0].prefix],
-				(files[1].diff >> (10*files[1].prefix)) / 1024.0, unit[files[1].prefix]);
+				files[0].reduced, files[0].prefix, files[1].reduced, files[1].prefix);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
@@ -614,14 +638,14 @@ static void *sb_network_routine(void *thunk)
 static void *sb_ram_routine(void *thunk)
 {
 	SB_TIMER_VARS
-	sb_routine_t *routine  = thunk;
+	sb_routine_t *routine = thunk;
 	long          page_size;
 	long          total_pages;
-	long          total_bytes;
-	int           i;
 	float         total_bytes_f;
-	char          unit[]   = "KMGTP";
-	long          available_bytes;
+	char          total_bytes_prefix;
+	long          avail_bytes;
+	float         avail_bytes_f;
+	char          avail_bytes_prefix;
 
 	page_size   = sysconf(_SC_PAGESIZE);
 	total_pages = sysconf(_SC_PHYS_PAGES);
@@ -630,26 +654,23 @@ static void *sb_ram_routine(void *thunk)
 		return NULL;
 	}
 
-	/* calculate unit of memory by determining max bit position */
-	total_bytes = total_pages * page_size;
-	for (i=0; (total_bytes >> (10*(i+2))) > 0; i++);
-
 	/* get total bytes as a decimal in human-readable format */
-	total_bytes_f = ((total_pages*page_size) >> (10*i)) / 1024.0;
+	total_bytes_f = sb_calc_magnitude(total_pages*page_size, &total_bytes_prefix);
 
 	while(1) {
 		SB_START_TIMER;
 
 		/* get available memory */
-		available_bytes = sysconf(_SC_AVPHYS_PAGES) * page_size;
-		if (available_bytes < 0) {
+		avail_bytes = sysconf(_SC_AVPHYS_PAGES) * page_size;
+		if (avail_bytes < 0) {
 			fprintf(stderr, "Ram routine: Failed to get available bytes\n");
 			break;
 		}
+		avail_bytes_f = sb_calc_magnitude(avail_bytes, &avail_bytes_prefix);
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output)-1, "Free: %.1f %c / %.1f %c",
-				(available_bytes >> (10*i)) / 1024.0, unit[i], total_bytes_f, unit[i]);
+				avail_bytes_f, avail_bytes_prefix, total_bytes_f, total_bytes_prefix);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
