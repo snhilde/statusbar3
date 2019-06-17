@@ -241,16 +241,16 @@ static void *sb_cpu_usage_routine(void *thunk)
 static void *sb_disk_routine(void *thunk)
 {
 	SB_TIMER_VARS;
-	sb_routine_t   *routine     = thunk;
+	sb_routine_t   *routine = thunk;
 	size_t          num_filesystems;
 	int             i;
 	struct statvfs  stats;
-	SB_BOOL         error       = SB_FALSE;
+	SB_BOOL         error   = SB_FALSE;
 	float           avail;
 	char            avail_prefix;
 	float           total;
 	char            total_prefix;
-	char            output[512] = {0};
+	char            output[512];
 
 	while(1) {
 		SB_START_TIMER;
