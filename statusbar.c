@@ -232,11 +232,11 @@ static void *sb_bat_routine(void *thunk)
 
 		fd = fopen(bats.path, "r");
 		if (fd == NULL) {
-			fprintf(stderr, "Battery routine: Failed to open %s\n", bats[i].path);
+			fprintf(stderr, "Battery routine: Failed to open %s\n", bats.path);
 		} else if (fscanf(fd, "%ld", &speed) < 1) {
-			fprintf(stderr, "Battery routine: Failed to read %s\n", bats[i].path);
+			fprintf(stderr, "Battery routine: Failed to read %s\n", bats.path);
 		} else if (fclose(fd) != 0) {
-			fprintf(stderr, "Battery routine: Failed to close %s\n", bats[i].path);
+			fprintf(stderr, "Battery routine: Failed to close %s\n", bats.path);
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
