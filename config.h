@@ -34,8 +34,8 @@ static const struct {
 	const char *path;
 	const char *display_name;
 } filesystems[] = {
-	{ "/"          , "/"    },
-	{ "/home/hilde", "home" },
+	{ "/"    , "root" },
+	{ "/home", "home" },
 };
 
 /* Use 1 to display keyboard brightness with screen brightness or 0 to not. */
