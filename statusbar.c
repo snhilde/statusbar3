@@ -507,32 +507,12 @@ static void *sb_load_routine(void *thunk)
 
 /* --- NETWORK ROUTINE --- */
 struct sb_file_t {
-	FILE  *fd;
 	char   path[IFNAMSIZ+64];
-	char   buf[64];
 	long   old_bytes;
 	long   new_bytes;
 	float  reduced;
 	char   prefix;
 };
-
-static SB_BOOL sb_open_files(struct sb_file_t *rx_file, struct sb_file_t *tx_file)
-{
-	rx_file->fd = fopen(rx_file->path, "r");
-	if (rx_file->fd < 0) {
-		fprintf(stderr, "Network routine: Failed to open rx file: %s\n", rx_file->path);
-		return SB_FALSE;
-	}
-
-	tx_file->fd = fopen(tx_file->path, "r");
-	if (tx_file->fd < 0) {
-		fprintf(stderr, "Network routine: Failed to open tx file: %s\n", tx_file->path);
-		fclose(rx_file->fd);
-		return SB_FALSE;
-	}
-
-	return SB_TRUE;
-}
 
 static SB_BOOL sb_get_paths(struct sb_file_t *rx_file, struct sb_file_t *tx_file)
 {
@@ -589,11 +569,10 @@ static void *sb_network_routine(void *thunk)
 	int               i;
 	SB_BOOL           error;
 	struct sb_file_t  files[2] = {0};
+	FILE             *fd;
 	long              diff;
 
 	if (!sb_get_paths(&files[0], &files[1]))
-		return NULL;
-	if (!sb_open_files(&files[0], &files[1]))
 		return NULL;
 
 	while(1) {
@@ -601,17 +580,20 @@ static void *sb_network_routine(void *thunk)
 
 		error = SB_FALSE;
 		for (i=0; i<2 && !error; i++) {
-			if (fseek(files[i].fd, 0L, SEEK_SET) < 0) {
-				fprintf(stderr, "Network routine: Failed to reset file offset for %s\n", files[i].path);
+			files[i].old_bytes = files[i].new_bytes;
+			fd                 = fopen(files[i].path, "r");
+			if (fd == NULL) {
+				fprintf(stderr, "Network routine: Failed to open %s\n", files[i].path);
 				error = SB_TRUE;
-			} else if (fgets(files[i].buf, sizeof(files[i].buf)-1, files[i].fd) == NULL) {
+			} else if (fscanf(fd, "%ld", &files[i].new_bytes) < 1) {
 				fprintf(stderr, "Network routine: Failed to read %s\n", files[i].path);
 				error = SB_TRUE;
+			} else if (fclose(fd) != 0) {
+				fprintf(stderr, "Network routine: Failed to close %s\n", files[i].path);
+				error = SB_TRUE;
 			} else {
-				files[i].old_bytes = files[i].new_bytes;
-				files[i].new_bytes = atol(files[i].buf);
-				diff               = files[i].new_bytes - files[i].old_bytes;
-				files[i].reduced   = sb_calc_magnitude(diff, &files[i].prefix);
+				diff             = files[i].new_bytes - files[i].old_bytes;
+				files[i].reduced = sb_calc_magnitude(diff, &files[i].prefix);
 			}
 		}
 		if (error)
@@ -626,10 +608,8 @@ static void *sb_network_routine(void *thunk)
 		SB_SLEEP;
 	}
 	
-	if (files[0].fd != NULL)
-		fclose(files[0].fd);
-	if (files[1].fd != NULL)
-		fclose(files[1].fd);
+	if (fd != NULL)
+		fclose(fd);
 	routine->skip = 1;
 	return NULL;
 }
