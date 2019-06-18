@@ -123,6 +123,7 @@ static void *sb_backup_routine(void *thunk)
 	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
 
+	rooutine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -222,6 +223,7 @@ static void *sb_battery_routine(void *thunk)
 	if (!sb_bat_find_bats(&bat))
 		return NULL;
 
+	rooutine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -255,6 +257,7 @@ static void *sb_brightness_routine(void *thunk)
 	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
 
+	rooutine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -279,6 +282,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
 
+	rooutine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -314,6 +318,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		unsigned long idle;
 	} old, new;
 
+	rooutine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -367,6 +372,7 @@ static void *sb_disk_routine(void *thunk)
 	char            total_prefix;
 	char            output[512];
 
+	rooutine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -505,6 +511,7 @@ static void *sb_fan_routine(void *thunk)
 	if (!sb_find_fans(fans, &count))
 		return NULL;
 
+	rooutine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -559,6 +566,7 @@ static void *sb_load_routine(void *thunk)
 	static const char *path    = "/proc/loadavg";
 	double             av[3];
 
+	rooutine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -659,6 +667,7 @@ static void *sb_network_routine(void *thunk)
 	if (!sb_get_paths(&files[0], &files[1]))
 		return NULL;
 
+	rooutine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -722,6 +731,7 @@ static void *sb_ram_routine(void *thunk)
 	/* get total bytes as a decimal in human-readable format */
 	total_bytes_f = sb_calc_magnitude(total_pages*page_size, &total_bytes_prefix);
 
+	rooutine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -757,6 +767,7 @@ static void *sb_time_routine(void *thunk)
 	sb_routine_t *routine = thunk;
 	struct tm     tm;
 
+	rooutine->skip = SB_FALSE;
 	while(1) {
 		clock_gettime(CLOCK_REALTIME, &start_tp);
 
@@ -787,6 +798,7 @@ static void *sb_todo_routine(void *thunk)
 	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
 
+	rooutine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -811,6 +823,7 @@ static void *sb_volume_routine(void *thunk)
 	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
 
+	rooutine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -835,6 +848,7 @@ static void *sb_weather_routine(void *thunk)
 	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
 
+	rooutine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -917,6 +931,7 @@ static void *sb_wifi_routine(void *thunk)
 		return NULL;
 	}
 
+	rooutine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -998,6 +1013,7 @@ int main(int argc, char *argv[])
 		}
 		routine_object->thread_func = possible_routines[index].callback;
 		routine_object->interval    = chosen_routines[i].seconds;
+		routine_object->skip        = SB_TRUE;
 
 		/* create thread */
 		pthread_mutex_init(&(routine_object->mutex), NULL);
