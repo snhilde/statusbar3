@@ -173,7 +173,7 @@ static long sb_bat_read_max(char *bat, char *file)
 	return atol(buf);
 }
 
-static SB_BOOL sb_bat_find_bats(struct sb_bat_t *bat)
+static SB_BOOL sb_bat_find_bat(struct sb_bat_t *bat)
 {
 	/* Here, we're going to check each device in /sys/class/power_supply. When we find
  	 * a battery, we'll break out of the loop and record some general data.
@@ -220,7 +220,7 @@ static void *sb_battery_routine(void *thunk)
 	FILE            *fd;
 
 	memset(&bat, 0, sizeof(bat));
-	if (!sb_bat_find_bats(&bat))
+	if (!sb_bat_find_bat(&bat))
 		return NULL;
 
 	rooutine->skip = SB_FALSE;
