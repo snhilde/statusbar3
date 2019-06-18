@@ -177,6 +177,8 @@ static SB_BOOL sb_bat_find_bat(struct sb_bat_t *bat)
 	DIR               *dir;
 	struct dirent     *dirent;
 	char               path[512];
+	char               buf[512];
+	FILE              *fd;
 	SB_BOOL            found_bat = SB_FALSE;
 
 	dir = opendir(base);
@@ -186,16 +188,22 @@ static SB_BOOL sb_bat_find_bat(struct sb_bat_t *bat)
 	}
 
 	/* step through each device, looking for file "type" with value "battery" */
-	for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
+	for (dirent=readdir(dir); dirent!=NULL && !found_bat; dirent=readdir(dir)) {
+		if (!strcmp(dirent->d_name, ".") || !strcmp(dirent->d_name, ".."))
+			continue;
+
 		snprintf(path, sizeof(path)-1, "%s/%s/type", base, dirent->d_name);
-
-
-
-		if (!strncmp(dirent->d_name, "BAT", 3)) {
+		fd = fopen(path, "r");
+		if (fd == NULL) {
+			fprintf(stderr, "Battery routine: Failed to open %s", path);
+		} else if (fgets(buf, sizeof(buf)-1, fd) == NULL) {
+			fprintf(stderr, "Battery routine: Failed to read %s\n", path);
+		} else if (!strncasecmp(buf, "Battery", 7)) {
 			snprintf(bat->path, sizeof(bat->path)-1, "%s/%s/", base, dirent->d_name);
 			found_bat = SB_TRUE;
-			break;
 		}
+		if (fd != NULL)
+			fclose(fd);
 	}
 	closedir(dir);
 
