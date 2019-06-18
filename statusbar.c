@@ -76,7 +76,7 @@ static void *sb_print_to_sb(void *thunk)
 		offset  = 0;
 		routine = routine_list;
 		while (routine != NULL) {
-			if (routine->skip == 1) {
+			if (routine->skip == SB_TRUE) {
 				routine = routine->next;
 				continue;
 			}
@@ -136,7 +136,7 @@ static void *sb_backup_routine(void *thunk)
 		SB_SLEEP;
 	}
 
-	routine->skip = 1;
+	routine->skip = SB_TRUE;
 	return NULL;
 }
 
@@ -244,7 +244,7 @@ static void *sb_battery_routine(void *thunk)
 
 	if (fd != NULL)
 		fclose(fd);
-	routine->skip = 1;
+	routine->skip = SB_TRUE;
 	return NULL;
 }
 
@@ -268,7 +268,7 @@ static void *sb_brightness_routine(void *thunk)
 		SB_SLEEP;
 	}
 
-	routine->skip = 1;
+	routine->skip = SB_TRUE;
 	return NULL;
 }
 
@@ -292,7 +292,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 		SB_SLEEP;
 	}
 
-	routine->skip = 1;
+	routine->skip = SB_TRUE;
 	return NULL;
 }
 
@@ -347,7 +347,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 
 	if (fd != NULL)
 		fclose(fd);
-	routine->skip = 1;
+	routine->skip = SB_TRUE;
 	return NULL;
 }
 
@@ -399,7 +399,7 @@ static void *sb_disk_routine(void *thunk)
 		SB_SLEEP;
 	}
 
-	routine->skip = 1;
+	routine->skip = SB_TRUE;
 	return NULL;
 }
 
@@ -545,7 +545,7 @@ static void *sb_fan_routine(void *thunk)
 
 	if (fd != NULL)
 		fclose(fd);
-	routine->skip = 1;
+	routine->skip = SB_TRUE;
 	return NULL;
 }
 
@@ -584,7 +584,7 @@ static void *sb_load_routine(void *thunk)
 
 	if (fd != NULL)
 		fclose(fd);
-	routine->skip = 1;
+	routine->skip = SB_TRUE;
 	return NULL;
 }
 
@@ -694,7 +694,7 @@ static void *sb_network_routine(void *thunk)
 
 	if (fd != NULL)
 		fclose(fd);
-	routine->skip = 1;
+	routine->skip = SB_TRUE;
 	return NULL;
 }
 
@@ -742,7 +742,7 @@ static void *sb_ram_routine(void *thunk)
 		SB_SLEEP;
 	}
 
-	routine->skip = 1;
+	routine->skip = SB_TRUE;
 	return NULL;
 }
 
@@ -776,7 +776,7 @@ static void *sb_time_routine(void *thunk)
 		}
 	}
 
-	routine->skip = 1;
+	routine->skip = SB_TRUE;
 	return NULL;
 }
 
@@ -800,7 +800,7 @@ static void *sb_todo_routine(void *thunk)
 		SB_SLEEP;
 	}
 
-	routine->skip = 1;
+	routine->skip = SB_TRUE;
 	return NULL;
 }
 
@@ -824,7 +824,7 @@ static void *sb_volume_routine(void *thunk)
 		SB_SLEEP;
 	}
 
-	routine->skip = 1;
+	routine->skip = SB_TRUE;
 	return NULL;
 }
 
@@ -848,7 +848,7 @@ static void *sb_weather_routine(void *thunk)
 		SB_SLEEP;
 	}
 
-	routine->skip = 1;
+	routine->skip = SB_TRUE;
 	return NULL;
 }
 
@@ -935,7 +935,7 @@ static void *sb_wifi_routine(void *thunk)
 	}
 
 	close(fd);
-	routine->skip = 1;
+	routine->skip = SB_TRUE;
 	return NULL;
 }
 
@@ -1019,7 +1019,7 @@ int main(int argc, char *argv[])
 			fprintf(stderr, "%s: Thread did not exit cleanly (%s)\n", routine_names[index], (char *)join_ret);
 		if (pthread_mutex_destroy(&(routine_object->mutex)) != 0)
 			fprintf(stderr, "%s: Failed to destroy mutex\n", routine_names[index]);
-		routine_object->skip = 1; /* make sure routine is skipped */
+		routine_object->skip = SB_TRUE; /* make sure routine is skipped */
 		free(join_ret);
 	}
 	/* kill print thread */
