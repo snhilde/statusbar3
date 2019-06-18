@@ -36,6 +36,11 @@ enum sb_routine_e {
 	DELIMITER ,
 };
 
+typedef enum _SB_BOOL {
+	SB_FALSE = 0,
+	SB_TRUE  = 1
+} SB_BOOL;
+
 /* Routine object declaration */
 typedef struct sb_routine {
 	enum sb_routine_e  routine;     /* Number assigned to each routine. This is used to

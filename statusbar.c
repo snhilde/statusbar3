@@ -20,11 +20,6 @@
 			fprintf(stderr, "%s routine: Error sleeping\n", routine_names[routine->routine]); \
 		}
 
-typedef enum _SB_BOOL {
-	SB_FALSE = 0,
-	SB_TRUE  = 1
-} SB_BOOL;
-
 /* --- HELPER FUNCTIONS --- */
 static float sb_calc_magnitude(long number, char *prefix)
 {
@@ -123,7 +118,7 @@ static void *sb_backup_routine(void *thunk)
 	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
 
-	rooutine->skip = SB_FALSE;
+	routine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -181,6 +176,7 @@ static SB_BOOL sb_bat_find_bat(struct sb_bat_t *bat)
 	static const char *base      = "/sys/class/power_supply";
 	DIR               *dir;
 	struct dirent     *dirent;
+	char               path[512];
 	SB_BOOL            found_bat = SB_FALSE;
 
 	dir = opendir(base);
@@ -189,7 +185,7 @@ static SB_BOOL sb_bat_find_bat(struct sb_bat_t *bat)
 		return SB_FALSE;
 	}
 
-	/* step through each file/directory in the base and try to find a directory starting with BAT */
+	/* step through each device, looking for file "type" with value "battery" */
 	for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
 		if (!strncmp(dirent->d_name, "BAT", 3)) {
 			snprintf(bat->path, sizeof(bat->path)-1, "%s/%s/", base, dirent->d_name);
@@ -223,7 +219,7 @@ static void *sb_battery_routine(void *thunk)
 	if (!sb_bat_find_bat(&bat))
 		return NULL;
 
-	rooutine->skip = SB_FALSE;
+	routine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -257,7 +253,7 @@ static void *sb_brightness_routine(void *thunk)
 	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
 
-	rooutine->skip = SB_FALSE;
+	routine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -282,7 +278,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
 
-	rooutine->skip = SB_FALSE;
+	routine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -318,7 +314,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		unsigned long idle;
 	} old, new;
 
-	rooutine->skip = SB_FALSE;
+	routine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -372,7 +368,7 @@ static void *sb_disk_routine(void *thunk)
 	char            total_prefix;
 	char            output[512];
 
-	rooutine->skip = SB_FALSE;
+	routine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -511,7 +507,7 @@ static void *sb_fan_routine(void *thunk)
 	if (!sb_find_fans(fans, &count))
 		return NULL;
 
-	rooutine->skip = SB_FALSE;
+	routine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -566,7 +562,7 @@ static void *sb_load_routine(void *thunk)
 	static const char *path    = "/proc/loadavg";
 	double             av[3];
 
-	rooutine->skip = SB_FALSE;
+	routine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -667,7 +663,7 @@ static void *sb_network_routine(void *thunk)
 	if (!sb_get_paths(&files[0], &files[1]))
 		return NULL;
 
-	rooutine->skip = SB_FALSE;
+	routine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -731,7 +727,7 @@ static void *sb_ram_routine(void *thunk)
 	/* get total bytes as a decimal in human-readable format */
 	total_bytes_f = sb_calc_magnitude(total_pages*page_size, &total_bytes_prefix);
 
-	rooutine->skip = SB_FALSE;
+	routine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -767,7 +763,7 @@ static void *sb_time_routine(void *thunk)
 	sb_routine_t *routine = thunk;
 	struct tm     tm;
 
-	rooutine->skip = SB_FALSE;
+	routine->skip = SB_FALSE;
 	while(1) {
 		clock_gettime(CLOCK_REALTIME, &start_tp);
 
@@ -798,7 +794,7 @@ static void *sb_todo_routine(void *thunk)
 	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
 
-	rooutine->skip = SB_FALSE;
+	routine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -823,7 +819,7 @@ static void *sb_volume_routine(void *thunk)
 	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
 
-	rooutine->skip = SB_FALSE;
+	routine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -848,7 +844,7 @@ static void *sb_weather_routine(void *thunk)
 	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
 
-	rooutine->skip = SB_FALSE;
+	routine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -931,7 +927,7 @@ static void *sb_wifi_routine(void *thunk)
 		return NULL;
 	}
 
-	rooutine->skip = SB_FALSE;
+	routine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
