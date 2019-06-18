@@ -145,7 +145,7 @@ struct sb_bat_t {
 	int  status; /* -1 = discharging, 0 = full, 1 = charging */
 };
 
-static long sb_bat_read_max(char *bat, char *file)
+static long sb_bat_read_max(const char *bat, const char *file)
 {
 	char  path[512];
 	FILE *fd;
@@ -425,7 +425,7 @@ struct sb_fan_t {
 	long  max;
 };
 
-static long sb_read_fan_speeds(char *fan, char *file)
+static long sb_read_fan_speeds(const char *fan, const char *file)
 {
 	char  path[512];
 	FILE *fd;
