@@ -1013,7 +1013,7 @@ int main(int argc, char *argv[])
 		}
 		routine_object->thread_func = possible_routines[index].callback;
 		routine_object->interval    = chosen_routines[i].seconds;
-		routine_object->skip        = SB_TRUE;
+		routine_object->skip        = SB_TRUE; /* this will be set to SB_FALSE when routine initializes successfully */
 
 		/* create thread */
 		pthread_mutex_init(&(routine_object->mutex), NULL);
