@@ -187,6 +187,10 @@ static SB_BOOL sb_bat_find_bat(struct sb_bat_t *bat)
 
 	/* step through each device, looking for file "type" with value "battery" */
 	for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
+		snprintf(path, sizeof(path)-1, "%s/%s/type", base, dirent->d_name);
+
+
+
 		if (!strncmp(dirent->d_name, "BAT", 3)) {
 			snprintf(bat->path, sizeof(bat->path)-1, "%s/%s/", base, dirent->d_name);
 			found_bat = SB_TRUE;
