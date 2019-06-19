@@ -816,6 +816,7 @@ static void *sb_todo_routine(void *thunk)
 
 		switch (*line2) {
 			case '\t':
+			case ' ' :
 				break;
 			case '\n':
 				break;
