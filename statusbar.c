@@ -804,7 +804,8 @@ static void *sb_todo_routine(void *thunk)
 	while(1) {
 		SB_START_TIMER;
 
-		/* reset pointer to beginning of line */
+		/* reset pointers to beginning of line */
+		line1_ptr = line1;
 		line2_ptr = line2;
 
 		fd = fopen(path, "r");
