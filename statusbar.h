@@ -20,7 +20,6 @@
 enum sb_routine_e {
 	BACKUP = 0,
 	BATTERY   ,
-	BRIGHTNESS,
 	CPU_TEMP  ,
 	CPU_USAGE ,
 	DISK      ,
@@ -64,7 +63,6 @@ typedef struct sb_routine {
 static const char *routine_names[] = {
 	"Backup",
 	"Battery",
-	"Brightness",
 	"CPU Temp",
 	"CPU Usage",
 	"Disk",
