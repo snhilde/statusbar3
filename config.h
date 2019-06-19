@@ -12,7 +12,7 @@ static const struct {
 
 	/* DELIMITER BETWEEN BARS */
 	{ DELIMITER , 0       },
-	
+
 	/*BOTTOM BAR */
 	{ NETWORK   , 1       },
 	{ DISK      , 5       },
@@ -23,7 +23,6 @@ static const struct {
 	{ FAN       , 1       },
 	{ BATTERY   , 30      },
 	{ VOLUME    , 1       },
-	{ BRIGHTNESS, 1       },
 };
 
 /* Format of the clock (see strftime(3) for conversion specifications). */
