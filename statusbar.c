@@ -825,6 +825,7 @@ static void *sb_todo_routine(void *thunk)
 				separator = " -> ";
 				break;
 			case '\n':
+				l2_empty = SB_TRUE;
 				break;
 			default:
 		}
