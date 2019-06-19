@@ -792,6 +792,7 @@ static void *sb_todo_routine(void *thunk)
 	char          path[512]  = {0};
 	char          line1[512] = {0};
 	char          line2[512] = {0};
+	const char   *line1_ptr;
 	const char   *line2_ptr;
 	SB_BOOL       l1_empty   = SB_FALSE;
 	SB_BOOL       l2_empty   = SB_FALSE;
