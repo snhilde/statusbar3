@@ -784,6 +784,7 @@ static void *sb_todo_routine(void *thunk)
 	char          path[512]  = {0};
 	char          line1[512] = {0};
 	char          line2[512] = {0};
+	SB_BOOL       empty;
 
 	snprintf(path, sizeof(path), "%s/.TODO", getenv("HOME"));
 
@@ -796,11 +797,9 @@ static void *sb_todo_routine(void *thunk)
 			fprintf(stderr, "Todo routine: Failed to open %s\n", path);
 			break;
 		} else if (fgets(line1, sizeof(line1), fd) == NULL) {
-			fprintf(stderr, "Todo routine: Failed to read line 1 in %s\n", path);
-			break;
+			empty = SB_TRUE;
 		} else if (fgets(line2, sizeof(line2), fd) == NULL) {
-			fprintf(stderr, "Todo routine: Failed to read line 2 in %s\n", path);
-			break;
+			/* if this line is empty, do nothing */
 		} else if (fclose(fd) != 0) {
 			fprintf(stderr, "Todo routine: Failed to close %s\n", path);
 			break;
