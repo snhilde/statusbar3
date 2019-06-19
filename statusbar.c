@@ -787,7 +787,7 @@ static void *sb_todo_routine(void *thunk)
 	 * 4. If the second line is not indented, both tasks are equal. Print "line1 | line2".
 	 */
 	SB_TIMER_VARS;
-	sb_routine_t *routine   = thunk;
+	sb_routine_t *routine    = thunk;
 	FILE         *fd;
 	char          path[512]  = {0};
 	char          line1[512] = {0};
