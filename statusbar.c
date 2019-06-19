@@ -779,13 +779,25 @@ static void *sb_time_routine(void *thunk)
 static void *sb_todo_routine(void *thunk)
 {
 	SB_TIMER_VARS;
-	sb_routine_t *routine = thunk;
+	sb_routine_t      *routine = thunk;
+	FILE              *fd;
+	static const char *path    = "/proc/loadavg";
 
 	routine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
-		/* TODO: run routine */
+		fd = fopen(path, "r");
+		if (fd == NULL) {
+			fprintf(stderr, "Todo routine: Failed to open %s\n", path);
+			break;
+		} else if (fgets() == NULL) {
+			fprintf(stderr, "Todo routine: Failed to read %s\n", path);
+			break;
+		} else if (fclose(fd) != 0) {
+			fprintf(stderr, "Todo routine: Failed to close %s\n", path);
+			break;
+		}
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output)-1, "todo: TODO");
@@ -795,6 +807,8 @@ static void *sb_todo_routine(void *thunk)
 		SB_SLEEP;
 	}
 
+	if (fd != NULL)
+		fclose(fd);
 	routine->skip = SB_TRUE;
 	return NULL;
 }
