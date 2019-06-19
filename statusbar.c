@@ -824,6 +824,9 @@ static void *sb_todo_routine(void *thunk)
 		switch (*line1) {
 			case '\t':
 			case ' ' :
+				while (isblank(*line1_ptr) != 0) {
+					line1_ptr++;
+				}
 				break;
 			case '\n':
 				l1_empty = SB_TRUE;
