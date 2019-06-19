@@ -792,7 +792,7 @@ static void *sb_todo_routine(void *thunk)
 	char          path[512]  = {0};
 	char          line1[512] = {0};
 	char          line2[512] = {0};
-	const char   *const_line;
+	const char   *line2_ptr;
 	SB_BOOL       l1_empty   = SB_FALSE;
 	SB_BOOL       l2_empty   = SB_FALSE;
 	const char   *separator;
@@ -804,7 +804,7 @@ static void *sb_todo_routine(void *thunk)
 		SB_START_TIMER;
 
 		/* reset pointer to beginning of line */
-		const_line = line2;
+		line2_ptr = line2;
 
 		fd = fopen(path, "r");
 		if (fd == NULL) {
