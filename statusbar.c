@@ -838,6 +838,9 @@ static void *sb_todo_routine(void *thunk)
 			case '\t':
 			case ' ' :
 				separator = " -> ";
+				while (isblank(*line2_ptr) != 0) {
+					line2_ptr++;
+				}
 				break;
 			case '\n':
 				l2_empty = SB_TRUE;
