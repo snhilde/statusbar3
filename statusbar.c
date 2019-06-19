@@ -259,31 +259,6 @@ static void *sb_battery_routine(void *thunk)
 }
 
 
-/* --- BRIGHTNESS ROUTINE --- */
-static void *sb_brightness_routine(void *thunk)
-{
-	SB_TIMER_VARS;
-	sb_routine_t *routine = thunk;
-
-	routine->skip = SB_FALSE;
-	while(1) {
-		SB_START_TIMER;
-
-		/* TODO: run routine */
-
-		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "brightness: TODO");
-		pthread_mutex_unlock(&(routine->mutex));
-
-		SB_STOP_TIMER;
-		SB_SLEEP;
-	}
-
-	routine->skip = SB_TRUE;
-	return NULL;
-}
-
-
 /* --- CPU TEMP ROUTINE --- */
 static void *sb_cpu_temp_routine(void *thunk)
 {
@@ -969,7 +944,6 @@ static const struct thread_routines_t {
 } possible_routines[] = {
 	{ BACKUP,     sb_backup_routine     },
 	{ BATTERY,    sb_battery_routine    },
-	{ BRIGHTNESS, sb_brightness_routine },
 	{ CPU_TEMP,   sb_cpu_temp_routine   },
 	{ CPU_USAGE,  sb_cpu_usage_routine  },
 	{ DISK,       sb_disk_routine       },
