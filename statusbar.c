@@ -778,6 +778,14 @@ static void *sb_time_routine(void *thunk)
 /* --- TODO ROUTINE --- */
 static void *sb_todo_routine(void *thunk)
 {
+	/* We're going to read in the first two lines of the user's personal TODO
+ 	 * list and print them based on a few rules:
+	 * 1. If the file is empty, print "Finished".
+	 * 2. If the second line is empty, only print the first line.
+	 * 3. If the second line is indented over from the first, then it is a child
+	 *    task of the first. Print "line1 -> line2".
+	 * 4. If the second line is not indented, both tasks are equal. Print "line1 | line2".
+	 */
 	SB_TIMER_VARS;
 	sb_routine_t *routine   = thunk;
 	FILE         *fd;
