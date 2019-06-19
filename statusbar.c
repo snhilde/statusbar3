@@ -785,6 +785,7 @@ static void *sb_todo_routine(void *thunk)
 	char          line1[512] = {0};
 	char          line2[512] = {0};
 	SB_BOOL       empty;
+	const char   *separator;
 
 	snprintf(path, sizeof(path), "%s/.TODO", getenv("HOME"));
 
