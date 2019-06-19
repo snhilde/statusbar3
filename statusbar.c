@@ -806,6 +806,14 @@ static void *sb_todo_routine(void *thunk)
 			break;
 		}
 
+		switch (*line2) {
+			case '\t':
+				break;
+			case '\n':
+				break;
+			default:
+		}
+
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output)-1, "todo: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
