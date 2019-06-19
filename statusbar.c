@@ -819,6 +819,16 @@ static void *sb_todo_routine(void *thunk)
 			break;
 		}
 
+		switch (*line1) {
+			case '\t':
+			case ' ' :
+				break;
+			case '\n':
+				l1_empty = SB_TRUE;
+				break;
+			default:
+		}
+
 		switch (*line2) {
 			case '\t':
 			case ' ' :
