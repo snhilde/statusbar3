@@ -318,7 +318,7 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 				str_len = strlen(dirent->d_name);
 				if (!strncmp(dirent->d_name, "temp", 4) && !strcmp(dirent->d_name+str_len-6, "_input")) {
 					/* we have a match */
-					snprintf(temps[*count]->path, sizeof(temps[*count]->path), "%s/%s", path, dirent->d_name);
+					snprintf(temps[*count].path, sizeof(temps[*count].path), "%s/%s", path, dirent->d_name);
 					*count++;
 				}
 			}
