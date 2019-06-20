@@ -273,6 +273,12 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len)
 	struct dirent *dirent;
 	FILE          *fd;
 
+	dir = opendir(base);
+	if (dir == NULL) {
+		fprintf(stderr, "CPU Temp routine: Failed to open %s\n", base);
+		return SB_FALSE;
+	}
+
 	return SB_TRUE;
 }
 
@@ -282,12 +288,6 @@ static void *sb_cpu_temp_routine(void *thunk)
 	SB_TIMER_VARS;
 	sb_routine_t     *routine = thunk;
 	struct sb_temp_t  temps[64];
-
-	dir = opendir(base);
-	if (dir == NULL) {
-		fprintf(stderr, "Fan routine: Failed to open %s\n", base);
-		return SB_FALSE;
-	}
 
 	routine->skip = SB_FALSE;
 	while(1) {
