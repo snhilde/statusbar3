@@ -277,9 +277,8 @@ static SB_BOOL sb_read_temps(struct sb_temp_t *temps, int count)
 			continue;
 		} else if (fscanf(fd, "%ld", &temps[i].temp) != 1) {
 			fprintf(stderr, "CPU Temp routine: Failed to read %s\n", temps[i].path);
-			fclose(fd);
-			continue;
 		}
+		fclose(fd);
 	}
 
 	return SB_TRUE;
