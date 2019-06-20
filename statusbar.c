@@ -301,6 +301,11 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 			/* we find our monitor, now get all the temps in it */
 			closedir(dir);
 			snprintf(path, sizeof(path)-1, "%s/%s", base, dirent->d_name);
+			dir = opendir(path); /* open new directory stream in coretemp's hwmon */
+			if (dir == NULL) {
+				fprintf(stderr, "CPU Temp routine: Failed to open %s\n", base);
+				return SB_FALSE;
+			}
 
 			fclose(fd);
 			break;
