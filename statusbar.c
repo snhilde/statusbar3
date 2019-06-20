@@ -314,6 +314,8 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
  				 * measure from the end for the second string comparison below */
 				str_len = strlen(dirent->d_name);
 				if (!strncmp(dirent->d_name, "temp", 4) && !strcmp(dirent->d_name+str_len-6, "_input")) {
+					/* we have a match */
+					*count++;
 				}
 			}
 
