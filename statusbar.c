@@ -288,6 +288,7 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len)
 			fprintf(stderr, "CPU Temp routine: Failed to open %s", name);
 			break;
 		}
+		fclose(fd);
 	}
 
 	closedir(dir);
