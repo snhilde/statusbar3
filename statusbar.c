@@ -284,6 +284,10 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len)
 	for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
 		snprintf(name, sizeof(name)-1, "%s/%s/name", base, dirent->d_name);
 		fd = fopen(name);
+		if (fd == NULL) {
+			fprintf(stderr, "CPU Temp routine: Failed to open %s", name);
+			break;
+		}
 	}
 
 	closedir(dir);
