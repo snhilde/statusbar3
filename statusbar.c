@@ -300,6 +300,7 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 		} else if (!strcmp(name, "coretemp")) {
 			/* we find our monitor, now get all the temps in it */
 			closedir(dir);
+			snprintf(path, sizeof(path)-1, "%s/%s", base, dirent->d_name);
 
 			fclose(fd);
 			break;
