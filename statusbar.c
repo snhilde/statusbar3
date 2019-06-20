@@ -260,6 +260,9 @@ static void *sb_battery_routine(void *thunk)
 
 
 /* --- CPU TEMP ROUTINE --- */
+struct {
+} temps;
+
 static void *sb_cpu_temp_routine(void *thunk)
 {
 	SB_TIMER_VARS;
@@ -268,6 +271,12 @@ static void *sb_cpu_temp_routine(void *thunk)
 	DIR           *dir;
 	struct dirent *dirent;
 	FILE          *fd;
+
+	dir = opendir(base);
+	if (dir == NULL) {
+		fprintf(stderr, "Fan routine: Failed to open %s\n", base);
+		return SB_FALSE;
+	}
 
 	routine->skip = SB_FALSE;
 	while(1) {
