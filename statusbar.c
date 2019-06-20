@@ -340,6 +340,8 @@ static void *sb_cpu_temp_routine(void *thunk)
 
 	if (!sb_find_temps(temps, sizeof(temps)/sizeof(*temps), &count))
 		return NULL;
+	if (!sb_get_max(temps, count))
+		return NULL;
 
 	routine->skip = SB_FALSE;
 	while(1) {
