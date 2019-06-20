@@ -264,6 +264,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 {
 	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
+	const char   *base    = "/sys/class/hwmon";
 
 	routine->skip = SB_FALSE;
 	while(1) {
