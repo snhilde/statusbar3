@@ -299,6 +299,8 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 			break;
 		} else if (!strcmp(name, "coretemp")) {
 			/* we find our monitor, now get all the temps in it */
+			closedir(dir);
+
 			fclose(fd);
 			break;
 		}
