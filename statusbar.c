@@ -776,7 +776,7 @@ static void *sb_time_routine(void *thunk)
 
 
 /* --- TODO ROUTINE --- */
-static int sb_count_blanks(const char *line, SB_BOOL &is_blank)
+static int sb_count_blanks(const char *line, SB_BOOL *is_blank)
 {
 	int i = 0;
 
