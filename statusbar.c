@@ -271,6 +271,7 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len)
 	const char    *base = "/sys/class/hwmon";
 	DIR           *dir;
 	struct dirent *dirent;
+	char           name[512];
 	FILE          *fd;
 
 	dir = opendir(base);
@@ -281,9 +282,11 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len)
 
 	/* check the name of each subdirectory here for "coretemp" */
 	for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
-		snprintf(path, sizeof(path)-1, "%s/%s/name", base, dirent->d_name);
+		snprintf(name, sizeof(name)-1, "%s/%s/name", base, dirent->d_name);
+		fd = fopen(name);
 	}
 
+	closedir(dir);
 	return SB_TRUE;
 }
 
