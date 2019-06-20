@@ -298,6 +298,9 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 		} else if (fgets(name, sizeof(name)-1, fd) == NULL) {
 			fprintf(stderr, "CPU Temp routine: Failed to read %s", path);
 			break;
+		} else if (fclose(fd) != 0) {
+			fprintf(stderr, "CPU Temp routine: Failed to close %s", path);
+			break;
 		} else if (!strcmp(name, "coretemp")) {
 			/* we find our monitor, now get all the temps in it */
 			closedir(dir);
@@ -319,12 +322,8 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 					*count++;
 				}
 			}
-
-			fclose(fd);
 			break;
 		}
-
-		fclose(fd);
 	}
 
 	closedir(dir);
