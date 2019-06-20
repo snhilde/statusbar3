@@ -263,9 +263,11 @@ static void *sb_battery_routine(void *thunk)
 static void *sb_cpu_temp_routine(void *thunk)
 {
 	SB_TIMER_VARS;
-	sb_routine_t *routine = thunk;
-	const char   *base    = "/sys/class/hwmon";
-	FILE         *fd;
+	sb_routine_t  *routine = thunk;
+	const char    *base    = "/sys/class/hwmon";
+	DIR           *dir;
+	struct dirent *dirent;
+	FILE          *fd;
 
 	routine->skip = SB_FALSE;
 	while(1) {
