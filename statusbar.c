@@ -266,6 +266,12 @@ struct sb_temp_t {
 	long max;
 };
 
+static SB_BOOL sb_get_max(struct sb_temp_t *temps, int count)
+{
+
+	return SB_TRUE;
+}
+
 static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 {
 	/* We're going to search each listed hardware monitor for one named "coretemp".
