@@ -273,6 +273,10 @@ static SB_BOOL sb_get_max(struct sb_temp_t *temps, int count)
 
 	for (i=0; i<count; i++) {
 		fd = fopen(temps[i].path, "r");
+		if (fd == NULL) {
+			fprintf(stderr, "CPU Temp routine: Failed to open %s\n", temps[i].path);
+			continue;
+		}
 	}
 
 	return SB_TRUE;
