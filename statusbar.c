@@ -288,6 +288,9 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len)
 		if (fd == NULL) {
 			fprintf(stderr, "CPU Temp routine: Failed to open %s", path);
 			break;
+		} else if (fgets(name, sizeof(name)-1, fd) == NULL) {
+			fprintf(stderr, "CPU Temp routine: Failed to read %s", path);
+		} else if (!strcmp(name, "coretemp")) {
 		}
 
 		fclose(fd);
