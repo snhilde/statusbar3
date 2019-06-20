@@ -776,6 +776,26 @@ static void *sb_time_routine(void *thunk)
 
 
 /* --- TODO ROUTINE --- */
+static int sb_count_blanks(const char *line, SB_BOOL &is_blank)
+{
+	int i = 0;
+
+	switch (*line) {
+		case '\t':
+		case ' ' :
+			while (isblank(line[i]) != 0) {
+				i++;
+			}
+			return i;
+		case '\n':
+			*is_blank = SB_TRUE;
+		default:
+			return 0;
+	}
+
+	return 0;
+}
+
 static void *sb_todo_routine(void *thunk)
 {
 	/* We're going to read in the first two lines of the user's personal TODO
