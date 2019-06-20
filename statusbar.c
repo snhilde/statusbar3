@@ -780,6 +780,8 @@ static int sb_count_blanks(const char *line, SB_BOOL &is_blank)
 {
 	int i = 0;
 
+	*is_blank = SB_FALSE;
+
 	switch (*line) {
 		case '\t':
 		case ' ' :
@@ -814,8 +816,8 @@ static void *sb_todo_routine(void *thunk)
 	char          line2[512] = {0};
 	const char   *line1_ptr;
 	const char   *line2_ptr;
-	SB_BOOL       l1_empty   = SB_FALSE;
-	SB_BOOL       l2_empty   = SB_FALSE;
+	SB_BOOL       l1_isempty = SB_FALSE;
+	SB_BOOL       l2_isempty = SB_FALSE;
 	const char   *separator;
 
 	snprintf(path, sizeof(path), "%s/.TODO", getenv("HOME"));
@@ -824,18 +826,14 @@ static void *sb_todo_routine(void *thunk)
 	while(1) {
 		SB_START_TIMER;
 
-		/* reset pointers to beginning of line */
-		line1_ptr = line1;
-		line2_ptr = line2;
-
 		fd = fopen(path, "r");
 		if (fd == NULL) {
 			fprintf(stderr, "Todo routine: Failed to open %s\n", path);
 			break;
 		} else if (fgets(line1, sizeof(line1), fd) == NULL) {
-			l1_empty = SB_TRUE;
+			l1_isempty = SB_TRUE;
 		} else if (fgets(line2, sizeof(line2), fd) == NULL) {
-			l2_empty = SB_TRUE;
+			l2_isempty = SB_TRUE;
 		} else if (fclose(fd) != 0) {
 			fprintf(stderr, "Todo routine: Failed to close %s\n", path);
 			break;
@@ -844,8 +842,11 @@ static void *sb_todo_routine(void *thunk)
 		if (isblank(*line2))
 			separator = " -> ";
 
-		line1_ptr += sb_count_blanks(line1);
-		line2_ptr += sb_count_blanks(line2);
+		/* reset pointers to beginning of line */
+		line1_ptr = line1;
+		line2_ptr = line2;
+		line1_ptr += sb_count_blanks(line1, &l1_isempty);
+		line2_ptr += sb_count_blanks(line2, &l2_isempty);
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output)-1, "todo: TODO");
