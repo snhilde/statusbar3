@@ -290,6 +290,7 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len)
 			break;
 		} else if (fgets(name, sizeof(name)-1, fd) == NULL) {
 			fprintf(stderr, "CPU Temp routine: Failed to read %s", path);
+			break;
 		} else if (!strcmp(name, "coretemp")) {
 		}
 
@@ -305,7 +306,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 {
 	SB_TIMER_VARS;
 	sb_routine_t     *routine = thunk;
-	struct sb_temp_t  temps;
+	struct sb_temp_t  temps[16];
 
 	routine->skip = SB_FALSE;
 	while(1) {
