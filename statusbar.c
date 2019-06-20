@@ -305,7 +305,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 {
 	SB_TIMER_VARS;
 	sb_routine_t     *routine = thunk;
-	struct sb_temp_t  temps[64];
+	struct sb_temp_t  temps;
 
 	routine->skip = SB_FALSE;
 	while(1) {
