@@ -276,6 +276,7 @@ static SB_BOOL sb_get_max(struct sb_temp_t *temps, int count)
 		if (fd == NULL) {
 			fprintf(stderr, "CPU Temp routine: Failed to open %s\n", temps[i].path);
 			continue;
+		} else if (fscanf(fd, "%ld", &temps[i].temp) != 1) {
 		}
 	}
 
