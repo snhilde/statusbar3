@@ -268,6 +268,10 @@ struct sb_temp_t {
 
 static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len)
 {
+	const char    *base = "/sys/class/hwmon";
+	DIR           *dir;
+	struct dirent *dirent;
+	FILE          *fd;
 
 	return SB_TRUE;
 }
@@ -278,10 +282,6 @@ static void *sb_cpu_temp_routine(void *thunk)
 	SB_TIMER_VARS;
 	sb_routine_t     *routine = thunk;
 	struct sb_temp_t  temps[64];
-	const char       *base    = "/sys/class/hwmon";
-	DIR              *dir;
-	struct dirent    *dirent;
-	FILE             *fd;
 
 	dir = opendir(base);
 	if (dir == NULL) {
