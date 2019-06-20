@@ -276,6 +276,9 @@ static SB_BOOL sb_read_temps(struct sb_temp_t *temps, int count)
 			fprintf(stderr, "CPU Temp routine: Failed to open %s\n", temps[i].path);
 			continue;
 		} else if (fscanf(fd, "%ld", &temps[i].temp) != 1) {
+			fprintf(stderr, "CPU Temp routine: Failed to read %s\n", temps[i].path);
+			fclose(fd);
+			continue;
 		}
 	}
 
