@@ -263,7 +263,6 @@ static void *sb_battery_routine(void *thunk)
 struct sb_temp_t {
 	char path[512];
 	long temp;
-	long max;
 };
 
 static SB_BOOL sb_read_temps(struct sb_temp_t *temps, int count)
