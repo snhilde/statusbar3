@@ -307,6 +307,7 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 				return SB_FALSE;
 			}
 
+			/* go through each file/folder, saving the inputs */
 			for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
 			}
 
