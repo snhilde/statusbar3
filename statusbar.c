@@ -261,7 +261,10 @@ static void *sb_battery_routine(void *thunk)
 
 /* --- CPU TEMP ROUTINE --- */
 struct {
-} temps;
+	char path[512];
+	long temp;
+	long max;
+} temps[64];
 
 static void *sb_cpu_temp_routine(void *thunk)
 {
