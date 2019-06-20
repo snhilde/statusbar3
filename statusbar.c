@@ -271,6 +271,7 @@ static SB_BOOL sb_read_temps(struct sb_temp_t *temps, int count)
 	FILE *fd;
 
 	for (i=0; i<count; i++) {
+		temps[i].temp = 0;
 		fd = fopen(temps[i].path, "r");
 		if (fd == NULL) {
 			fprintf(stderr, "CPU Temp routine: Failed to open %s\n", temps[i].path);
