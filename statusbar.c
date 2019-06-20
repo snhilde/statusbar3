@@ -268,6 +268,10 @@ struct sb_temp_t {
 
 static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 {
+	/* We're going to search each listed hardware monitor for one named "coretemp".
+ 	 * If we find that, we'll save the path of every temperature probe in there
+	 * as well as the max for each (max up to len probes).
+	 */
 	const char    *base = "/sys/class/hwmon";
 	DIR           *dir;
 	struct dirent *dirent;
