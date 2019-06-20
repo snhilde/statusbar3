@@ -858,7 +858,8 @@ static void *sb_todo_routine(void *thunk)
 			line2_ptr += sb_count_blanks(line2, &l2_isempty);
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "todo: TODO");
+		snprintf(routine->output, sizeof(routine->output)-1, "todo: %s%s%s",
+				line1_ptr, separator, line2_ptr);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
