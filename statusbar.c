@@ -312,7 +312,7 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 			}
 
 			/* go through each file/folder, saving the inputs */
-			for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
+			for (dirent=readdir(dir); dirent!=NULL && *count<len; dirent=readdir(dir)) {
 				/* we want to grab the length of the name now so we can more easily
  				 * measure from the end for the second string comparison below */
 				str_len = strlen(dirent->d_name);
