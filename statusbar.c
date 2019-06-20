@@ -307,6 +307,9 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 				return SB_FALSE;
 			}
 
+			for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
+			}
+
 			fclose(fd);
 			break;
 		}
