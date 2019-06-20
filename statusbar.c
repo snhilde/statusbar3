@@ -272,6 +272,7 @@ static SB_BOOL sb_get_max(struct sb_temp_t *temps, int count)
 	FILE *fd;
 
 	for (i=0; i<count; i++) {
+		fd = fopen(temps[i].path, "r");
 	}
 
 	return SB_TRUE;
