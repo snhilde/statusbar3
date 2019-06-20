@@ -824,31 +824,8 @@ static void *sb_todo_routine(void *thunk)
 		if (isblank(*line2))
 			separator = " -> ";
 
-		switch (*line1) {
-			case '\t':
-			case ' ' :
-				while (isblank(*line1_ptr) != 0) {
-					line1_ptr++;
-				}
-				break;
-			case '\n':
-				l1_empty = SB_TRUE;
-				break;
-			default:
-		}
-
-		switch (*line2) {
-			case '\t':
-			case ' ' :
-				while (isblank(*line2_ptr) != 0) {
-					line2_ptr++;
-				}
-				break;
-			case '\n':
-				l2_empty = SB_TRUE;
-				break;
-			default:
-		}
+		line1_ptr += sb_count_blanks(line1);
+		line2_ptr += sb_count_blanks(line2);
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output)-1, "todo: TODO");
