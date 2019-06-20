@@ -266,7 +266,7 @@ struct sb_temp_t {
 	long max;
 };
 
-static SB_BOOL sb_get_max(struct sb_temp_t *temps, int count)
+static SB_BOOL sb_read_temps(struct sb_temp_t *temps, int count)
 {
 	int   i;
 	FILE *fd;
@@ -357,7 +357,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 
 	if (!sb_find_temps(temps, sizeof(temps)/sizeof(*temps), &count))
 		return NULL;
-	if (!sb_get_max(temps, count))
+	if (!sb_read_temps(temps, count))
 		return NULL;
 
 	routine->skip = SB_FALSE;
