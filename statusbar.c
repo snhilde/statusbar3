@@ -266,6 +266,13 @@ struct sb_temp_t {
 	long max;
 };
 
+static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len)
+{
+
+	return SB_TRUE;
+}
+
+
 static void *sb_cpu_temp_routine(void *thunk)
 {
 	SB_TIMER_VARS;
