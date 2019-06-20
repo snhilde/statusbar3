@@ -845,8 +845,10 @@ static void *sb_todo_routine(void *thunk)
 		/* reset pointers to beginning of line */
 		line1_ptr = line1;
 		line2_ptr = line2;
-		line1_ptr += sb_count_blanks(line1, &l1_isempty);
-		line2_ptr += sb_count_blanks(line2, &l2_isempty);
+		if (!l1_isempty)
+			line1_ptr += sb_count_blanks(line1, &l1_isempty);
+		if (!l2_isempty)
+			line2_ptr += sb_count_blanks(line2, &l2_isempty);
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output)-1, "todo: TODO");
