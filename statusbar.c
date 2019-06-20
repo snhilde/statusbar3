@@ -852,10 +852,14 @@ static void *sb_todo_routine(void *thunk)
 		line2_ptr = line2;
 
 		/* advance line pointers until they hit the first non-blank character */
-		if (!l1_isempty)
+		if (!l1_isempty) {
+			line1[strlen(line1)-1] = '\0';
 			line1_ptr += sb_count_blanks(line1, &l1_isempty);
-		if (!l2_isempty)
+		}
+		if (!l2_isempty) {
 			line2_ptr += sb_count_blanks(line2, &l2_isempty);
+			line2[strlen(line2)-1] = '\0';
+		}
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output)-1, "todo: %s%s%s",
