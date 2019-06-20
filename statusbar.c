@@ -268,6 +268,11 @@ struct sb_temp_t {
 
 static SB_BOOL sb_get_max(struct sb_temp_t *temps, int count)
 {
+	int   i;
+	FILE *fd;
+
+	for (i=0; i<count; i++) {
+	}
 
 	return SB_TRUE;
 }
