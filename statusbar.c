@@ -839,8 +839,13 @@ static void *sb_todo_routine(void *thunk)
 			break;
 		}
 
-		if (isblank(*line2))
+		if (l1_isempty) {
+			separator = "";
+		} else if (isblank(*line2)) {
 			separator = " -> ";
+			separator = " | ";
+		} else {
+		}
 
 		/* reset pointers to beginning of line */
 		line1_ptr = line1;
