@@ -843,8 +843,8 @@ static void *sb_todo_routine(void *thunk)
 			separator = "";
 		} else if (isblank(*line2)) {
 			separator = " -> ";
-			separator = " | ";
 		} else {
+			separator = " | ";
 		}
 
 		/* reset pointers to beginning of line */
