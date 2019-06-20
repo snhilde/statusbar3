@@ -279,6 +279,11 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len)
 		return SB_FALSE;
 	}
 
+	/* check the name of each subdirectory here for "coretemp" */
+	for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
+		snprintf(path, sizeof(path)-1, "%s/%s/name", base, dirent->d_name);
+	}
+
 	return SB_TRUE;
 }
 
