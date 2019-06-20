@@ -322,6 +322,7 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 					*count++;
 				}
 			}
+			/* if we reached here, then we found our file and all the probes in it */
 			break;
 		}
 	}
