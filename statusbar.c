@@ -331,7 +331,6 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 	return SB_TRUE;
 }
 
-
 static void *sb_cpu_temp_routine(void *thunk)
 {
 	SB_TIMER_VARS;
@@ -339,7 +338,8 @@ static void *sb_cpu_temp_routine(void *thunk)
 	struct sb_temp_t  temps[16];
 	int               count;
 
-	sb_find_temps(temps, sizeof(temps)/sizeof(*temps), &count);
+	if (!sb_find_temps(temps, sizeof(temps)/sizeof(*temps), &count))
+		return NULL;
 
 	routine->skip = SB_FALSE;
 	while(1) {
