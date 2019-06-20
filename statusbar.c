@@ -821,6 +821,9 @@ static void *sb_todo_routine(void *thunk)
 			break;
 		}
 
+		if (isblank(*line2))
+			separator = " -> ";
+
 		switch (*line1) {
 			case '\t':
 			case ' ' :
@@ -837,7 +840,6 @@ static void *sb_todo_routine(void *thunk)
 		switch (*line2) {
 			case '\t':
 			case ' ' :
-				separator = " -> ";
 				while (isblank(*line2_ptr) != 0) {
 					line2_ptr++;
 				}
