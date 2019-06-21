@@ -833,14 +833,19 @@ static void *sb_time_routine(void *thunk)
 	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
 	struct tm     tm;
+	char          time_str[64];
 
 	routine->skip = SB_FALSE;
 	while(1) {
 		clock_gettime(CLOCK_REALTIME, &start_tp);
 
+
 		/* convert time from seconds since epoch to local time */
 		memset(&tm, 0, sizeof(tm));
 		localtime_r(&start_tp.tv_sec, &tm);
+
+		memset(&time_str, 0, sizeof(time_str));
+		strftime(time_str, sizeof(time_str)-1, time_format, &tm);
 
 		pthread_mutex_lock(&(routine->mutex));
 		strftime(routine->output, sizeof(routine->output)-1, time_format, &tm);
