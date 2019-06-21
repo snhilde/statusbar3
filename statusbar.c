@@ -835,6 +835,8 @@ static void *sb_time_routine(void *thunk)
 	struct tm     tm;
 	char          time_str[64];
 	SB_BOOL       blink   = SB_FALSE;
+	int           i;
+	size_t        len;
 
 	routine->skip = SB_FALSE;
 	while(1) {
@@ -847,6 +849,10 @@ static void *sb_time_routine(void *thunk)
 
 		memset(&time_str, 0, sizeof(time_str));
 		strftime(time_str, sizeof(time_str)-1, time_format, &tm);
+
+		if (blink) {
+			blink = SB_TRUE;
+		}
 
 		pthread_mutex_lock(&(routine->mutex));
 		strftime(routine->output, sizeof(routine->output)-1, time_format, &tm);
