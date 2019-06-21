@@ -1103,7 +1103,6 @@ static const struct thread_routines_t {
 	enum sb_routine_e routine;
 	void *(*callback)(void *thunk);
 } possible_routines[] = {
-	{ BACKUP,     sb_backup_routine     },
 	{ BATTERY,    sb_battery_routine    },
 	{ CPU_TEMP,   sb_cpu_temp_routine   },
 	{ CPU_USAGE,  sb_cpu_usage_routine  },
