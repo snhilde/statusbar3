@@ -377,8 +377,8 @@ static void *sb_cpu_temp_routine(void *thunk)
 		for (i=0; i<count; i++) {
 			total += temps[i].temp;
 		}
-		total /= count;
-		total /= 1000;
+		total /= count; /* get average temperature in millicelsius */
+		total /= 1000;  /* convert to celsius */
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output)-1, "cpu temp: TODO");
