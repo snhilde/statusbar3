@@ -862,7 +862,7 @@ static void *sb_time_routine(void *thunk)
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
-		strftime(routine->output, sizeof(routine->output)-1, time_format, &tm);
+		snprintf(routine->output, sizeof(routine->output)-1, "%s", time_str);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		clock_gettime(CLOCK_REALTIME, &finish_tp);
