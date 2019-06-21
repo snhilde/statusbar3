@@ -6,7 +6,6 @@ static const struct {
 	/* TOP BAR */
 	{ TODO      , 5       },
 	{ WEATHER   , 60 * 30 },
-	{ BACKUP    , 5       },
 	{ WIFI      , 5       },
 	{ TIME      , 1       },
 
