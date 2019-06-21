@@ -834,6 +834,7 @@ static void *sb_time_routine(void *thunk)
 	sb_routine_t *routine = thunk;
 	struct tm     tm;
 	char          time_str[64];
+	SB_BOOL       blink   = SB_FALSE;
 
 	routine->skip = SB_FALSE;
 	while(1) {
