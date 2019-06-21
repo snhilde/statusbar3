@@ -361,17 +361,22 @@ static void *sb_cpu_temp_routine(void *thunk)
 	sb_routine_t     *routine = thunk;
 	struct sb_temp_t  temps[16];
 	int               count;
+	int               i;
+	long              total;
 
 	if (!sb_find_temps(temps, sizeof(temps)/sizeof(*temps), &count))
-		return NULL;
-	if (!sb_read_temps(temps, count))
 		return NULL;
 
 	routine->skip = SB_FALSE;
 	while(1) {
 		SB_START_TIMER;
 
-		/* TODO: run routine */
+		total = 0;
+		if (!sb_read_temps(temps, count))
+			break;
+		for (i=0; i<count; i++) {
+			total += temps[i].temp;
+		}
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output)-1, "cpu temp: TODO");
