@@ -851,6 +851,7 @@ static void *sb_time_routine(void *thunk)
 		strftime(time_str, sizeof(time_str)-1, time_format, &tm);
 
 		if (blink) {
+			len = strlen(time_str);
 			blink = SB_TRUE;
 		}
 
