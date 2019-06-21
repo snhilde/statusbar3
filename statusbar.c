@@ -112,31 +112,6 @@ static void *sb_print_to_sb(void *thunk)
 }
 
 
-/* --- BACKUP ROUTINE --- */
-static void *sb_backup_routine(void *thunk)
-{
-	SB_TIMER_VARS;
-	sb_routine_t *routine = thunk;
-
-	routine->skip = SB_FALSE;
-	while(1) {
-		SB_START_TIMER;
-
-		/* TODO: run routine */
-
-		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "backup: TODO");
-		pthread_mutex_unlock(&(routine->mutex));
-
-		SB_STOP_TIMER;
-		SB_SLEEP;
-	}
-
-	routine->skip = SB_TRUE;
-	return NULL;
-}
-
-
 /* --- BATTERY ROUTINE --- */
 struct sb_bat_t {
 	char path[512];
