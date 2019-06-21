@@ -189,7 +189,7 @@ static SB_BOOL sb_bat_find_bat(struct sb_bat_t *bat)
 
 	/* step through each device, looking for file "type" with value "battery" */
 	for (dirent=readdir(dir); dirent!=NULL && !found_bat; dirent=readdir(dir)) {
-		if (!strcmp(dirent->d_name, ".") || !strcmp(dirent->d_name, ".."))
+		if (!strncmp(dirent->d_name, ".", 1) || !strncmp(dirent->d_name, "..", 2))
 			continue;
 
 		snprintf(path, sizeof(path)-1, "%s/%s/type", base, dirent->d_name);
@@ -309,18 +309,21 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 
 	/* check the name of each subdirectory here for "coretemp" */
 	for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
+		if (!strncmp(dirent->d_name, ".", 1) || !strncmp(dirent->d_name, "..", 2))
+			continue;
+
 		snprintf(path, sizeof(path)-1, "%s/%s/name", base, dirent->d_name);
 		fd = fopen(path, "r");
 		if (fd == NULL) {
-			fprintf(stderr, "CPU Temp routine: Failed to open %s", path);
-			break;
+			/* if we can't open it, it's probably not there */
+			continue;
 		} else if (fgets(name, sizeof(name)-1, fd) == NULL) {
 			fprintf(stderr, "CPU Temp routine: Failed to read %s", path);
 			break;
 		} else if (fclose(fd) != 0) {
 			fprintf(stderr, "CPU Temp routine: Failed to close %s", path);
 			break;
-		} else if (!strcmp(name, "coretemp")) {
+		} else if (!strncmp(name, "coretemp", 8)) {
 			/* we find our monitor, now get all the temps in it */
 			closedir(dir);
 			snprintf(path, sizeof(path)-1, "%s/%s", base, dirent->d_name);
@@ -332,10 +335,12 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 
 			/* go through each file/folder, saving the inputs */
 			for (dirent=readdir(dir); dirent!=NULL && *count<len; dirent=readdir(dir)) {
+				if (!strncmp(dirent->d_name, ".", 1) || !strncmp(dirent->d_name, "..", 2))
+					continue;
 				/* we want to grab the length of the name now so we can more easily
  				 * measure from the end for the second string comparison below */
 				str_len = strlen(dirent->d_name);
-				if (!strncmp(dirent->d_name, "temp", 4) && !strcmp(dirent->d_name+str_len-6, "_input")) {
+				if (!strncmp(dirent->d_name, "temp", 4) && !strncmp(dirent->d_name+str_len-6, "_input", 6)) {
 					/* we have a match */
 					snprintf(temps[*count].path, sizeof(temps[*count].path), "%s/%s", path, dirent->d_name);
 					(*count)++;
