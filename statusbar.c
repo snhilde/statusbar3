@@ -377,6 +377,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 		for (i=0; i<count; i++) {
 			total += temps[i].temp;
 		}
+		total /= count;
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output)-1, "cpu temp: TODO");
