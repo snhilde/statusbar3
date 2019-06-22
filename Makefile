@@ -8,8 +8,8 @@ LIBDIR=/usr/lib/x86_64-linux-gnu
 X11INCDIR=/usr/include/X11
 X11LIBDIR=/usr/lib/X11
 
-INCS= -I ${INCDIR} \
-	  -I ${X11INCDIR}
+CFLAGS=-I ${INCDIR} \
+	   -I ${X11INCDIR}
 
 LIBS= -L ${LIBDIR} \
 	  -L ${X11LIBDIR} \
@@ -17,4 +17,4 @@ LIBS= -L ${LIBDIR} \
       -l X11
 
 statusbar: statusbar.c
-	${CC} -g -O0 -o statusbar statusbar.c ${INCS} ${LIBS}
+	${CC} -g -O0 -o statusbar statusbar.c ${LIBS}
