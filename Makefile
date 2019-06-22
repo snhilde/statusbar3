@@ -1,5 +1,6 @@
 VERSION= 3.0
 CC= gcc
+DESTDIR= /usr/local/bin
 
 PROGNAME= statusbar
 
@@ -26,4 +27,4 @@ clean:
 
 .PHONY: install
 install: ${PROGNAME}
-	cp $@ /usr/local/bin/statusbar
+	cp $@ $DESTDIR}/statusbar
