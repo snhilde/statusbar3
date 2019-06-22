@@ -17,4 +17,4 @@ LIBS= -L ${LIBDIR} \
       -l X11
 
 statusbar: statusbar.o
-	${CC} -g -O0 -o statusbar statusbar.o ${LIBS}
+	${CC} -g -O0 -o statusbar statusbar.c ${LIBS}
