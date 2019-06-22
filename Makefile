@@ -19,3 +19,6 @@ LDFLAGS= -L ${LIBDIR} \
 
 ${PROGNAME}: statusbar.h config.h
 	${CC} -g -O0 -o $@ statusbar.c ${LDFLAGS}
+
+clean:
+	rm ${PROGNAME}
