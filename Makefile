@@ -29,5 +29,6 @@ clean:
 install: ${PROGNAME}
 	cp $@ ${DESTDIR}/$@
 
+.PHONY: uninstall
 uninstall:
 	rm -f ${DESTDIR}/${PROGNAME}
