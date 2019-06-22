@@ -27,4 +27,4 @@ clean:
 
 .PHONY: install
 install: ${PROGNAME}
-	cp $@ $DESTDIR}/statusbar
+	cp $@ ${DESTDIR}/statusbar
