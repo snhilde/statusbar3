@@ -28,3 +28,6 @@ clean:
 .PHONY: install
 install: ${PROGNAME}
 	cp $@ ${DESTDIR}/$@
+
+uninstall:
+	rm -f ${DESTDIR}/${PROGNAME}
