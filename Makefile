@@ -28,8 +28,8 @@ clean:
 .PHONY: install
 install: ${PROGNAME}
 	mkdir -p ${DESTDIR}
-	cp $@ ${DESTDIR}/$@
+	cp $^ ${DESTDIR}/$^
 
 .PHONY: uninstall
 uninstall: ${PROGNAME}
-	rm -f ${DESTDIR}/$@
+	rm -f ${DESTDIR}/$^
