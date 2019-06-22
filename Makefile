@@ -11,10 +11,10 @@ X11_LIBDIR= /usr/lib/X11
 CFLAGS= -I ${INCDIR} \
 	    -I ${X11_INCDIR}
 
-LIBS= -L ${LIBDIR} \
-	  -L ${X11_LIBDIR} \
-	  -l pthread \
-      -l X11
+LDFLAGS= -L ${LIBDIR} \
+	     -L ${X11_LIBDIR} \
+	     -l pthread \
+         -l X11
 
 statusbar: statusbar.h config.h
-	${CC} -g -O0 -o $@ statusbar.c ${LIBS}
+	${CC} -g -O0 -o $@ statusbar.c ${LDFLAGS}
