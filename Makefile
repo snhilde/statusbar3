@@ -1,15 +1,15 @@
-VERSION=3.0
+VERSION= 3.0
 
-CC=gcc
+CC= gcc
 
-INCDIR=/usr/include
-LIBDIR=/usr/lib/x86_64-linux-gnu 
+INCDIR= /usr/include
+LIBDIR= /usr/lib/x86_64-linux-gnu
 
-X11INCDIR=/usr/include/X11
-X11LIBDIR=/usr/lib/X11
+X11INCDIR= /usr/include/X11
+X11LIBDIR= /usr/lib/X11
 
-CFLAGS=-I ${INCDIR} \
-	   -I ${X11INCDIR}
+CFLAGS= -I ${INCDIR} \
+	    -I ${X11INCDIR}
 
 LIBS= -L ${LIBDIR} \
 	  -L ${X11LIBDIR} \
