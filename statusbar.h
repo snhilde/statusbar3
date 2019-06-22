@@ -21,20 +21,20 @@
 
 
 enum sb_routine_e {
-	BATTERY   ,
-	CPU_TEMP  ,
-	CPU_USAGE ,
-	DISK      ,
-	FAN       ,
-	LOAD      ,
-	NETWORK   ,
-	RAM       ,
-	TIME      ,
-	TODO      ,
-	VOLUME    ,
-	WEATHER   ,
-	WIFI      ,
-	DELIMITER ,
+	BATTERY  ,
+	CPU_TEMP ,
+	CPU_USAGE,
+	DISK     ,
+	FAN      ,
+	LOAD     ,
+	NETWORK  ,
+	RAM      ,
+	TIME     ,
+	TODO     ,
+	VOLUME   ,
+	WEATHER  ,
+	WIFI     ,
+	DELIMITER,
 };
 
 typedef enum _SB_BOOL {
