@@ -25,5 +25,5 @@ clean:
 	rm ${PROGNAME}
 
 .PHONY: install
-install:
-	cp statusbar /usr/local/bin/statusbar
+install: ${PROGNAME}
+	cp $@ /usr/local/bin/statusbar
