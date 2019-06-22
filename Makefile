@@ -17,4 +17,4 @@ LIBS= -L ${LIBDIR} \
       -l X11
 
 statusbar: statusbar.h config.h
-	${CC} -g -O0 -o statusbar statusbar.c ${LIBS}
+	${CC} -g -O0 -o $@ statusbar.c ${LIBS}
