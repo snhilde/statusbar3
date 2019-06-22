@@ -2,17 +2,17 @@ VERSION= 3.0
 
 CC= gcc
 
-INCDIR= /usr/include
-LIBDIR= /usr/lib/x86_64-linux-gnu
+INCDIR=     /usr/include
+X11_INCDIR= /usr/include/X11
 
-X11INCDIR= /usr/include/X11
-X11LIBDIR= /usr/lib/X11
+LIBDIR=     /usr/lib/x86_64-linux-gnu
+X11_LIBDIR= /usr/lib/X11
 
 CFLAGS= -I ${INCDIR} \
-	    -I ${X11INCDIR}
+	    -I ${X11_INCDIR}
 
 LIBS= -L ${LIBDIR} \
-	  -L ${X11LIBDIR} \
+	  -L ${X11_LIBDIR} \
 	  -l pthread \
       -l X11
 
