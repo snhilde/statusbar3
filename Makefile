@@ -23,3 +23,6 @@ ${PROGNAME}: statusbar.h config.h
 .PHONY: clean
 clean:
 	rm ${PROGNAME}
+
+install:
+	cp statusbar /usr/local/bin/statusbar
