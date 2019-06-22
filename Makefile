@@ -27,6 +27,7 @@ clean:
 
 .PHONY: install
 install: ${PROGNAME}
+	mkdir -p ${DESTDIR}
 	cp $@ ${DESTDIR}/$@
 
 .PHONY: uninstall
