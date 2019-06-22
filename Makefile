@@ -16,5 +16,5 @@ LIBS= -L ${LIBDIR} \
 	  -l pthread \
       -l X11
 
-statusbar: statusbar.o
+statusbar: statusbar.h config.h
 	${CC} -g -O0 -o statusbar statusbar.c ${LIBS}
