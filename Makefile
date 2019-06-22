@@ -1,6 +1,7 @@
 VERSION= 3.0
-
 CC= gcc
+
+PROGNAME= statusbar
 
 INCDIR=     /usr/include
 X11_INCDIR= /usr/include/X11
@@ -16,5 +17,5 @@ LDFLAGS= -L ${LIBDIR} \
 	     -l pthread \
          -l X11
 
-statusbar: statusbar.h config.h
+${PROGNAME}: statusbar.h config.h
 	${CC} -g -O0 -o $@ statusbar.c ${LDFLAGS}
