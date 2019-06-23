@@ -4,8 +4,8 @@
 #define SBLENGTH 10240
 
 #define SB_TIMER_VARS \
-	struct timespec  start_tp  = {0};   \
-	struct timespec  finish_tp = {0};   \
+	struct timespec  start_tp  = {0}; \
+	struct timespec  finish_tp = {0}; \
 	long             elapsed_usec;
 
 #define SB_START_TIMER \
@@ -113,6 +113,7 @@ static void *sb_print_to_sb(void *thunk)
 
 
 /* --- BATTERY ROUTINE --- */
+#ifdef BUILD_BATTERY
 struct sb_bat_t {
 	char path[512];
 	long max;
@@ -194,11 +195,14 @@ static SB_BOOL sb_bat_find_bat(struct sb_bat_t *bat)
 
 	return SB_TRUE;
 }
+#endif
 
 static void *sb_battery_routine(void *thunk)
 {
-	SB_TIMER_VARS;
 	sb_routine_t    *routine = thunk;
+
+#ifdef BUILD_BATTERY
+	SB_TIMER_VARS;
 	struct sb_bat_t  bat;
 	FILE            *fd;
 
@@ -229,12 +233,15 @@ static void *sb_battery_routine(void *thunk)
 
 	if (fd != NULL)
 		fclose(fd);
+#endif
+
 	routine->skip = SB_TRUE;
 	return NULL;
 }
 
 
 /* --- CPU TEMP ROUTINE --- */
+#ifdef BUILD_CPU_TEMP
 struct sb_temp_t {
 	char path[512];
 	long temp;
@@ -329,11 +336,14 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 	closedir(dir);
 	return SB_TRUE;
 }
+#endif
 
 static void *sb_cpu_temp_routine(void *thunk)
 {
-	SB_TIMER_VARS;
 	sb_routine_t     *routine = thunk;
+
+#ifdef BUILD_CPU_TEMP
+	SB_TIMER_VARS;
 	struct sb_temp_t  temps[16];
 	int               count;
 	int               i;
@@ -362,6 +372,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
+#endif
 
 	routine->skip = SB_TRUE;
 	return NULL;
@@ -372,8 +383,10 @@ static void *sb_cpu_temp_routine(void *thunk)
 static void *sb_cpu_usage_routine(void *thunk)
 {
 	/* TODO: why is sysconf(_SC_NPROCESSORS_ONLN) or num cores not necessary here? */
-	SB_TIMER_VARS;
 	sb_routine_t      *routine = thunk;
+
+#ifdef BUILD_CPU_USAGE
+	SB_TIMER_VARS;
 	FILE              *fd;
 	static const char *path    = "/proc/stat";
 	unsigned long      used;
@@ -419,6 +432,8 @@ static void *sb_cpu_usage_routine(void *thunk)
 
 	if (fd != NULL)
 		fclose(fd);
+#endif
+
 	routine->skip = SB_TRUE;
 	return NULL;
 }
@@ -427,9 +442,10 @@ static void *sb_cpu_usage_routine(void *thunk)
 /* --- DISK ROUTINE --- */
 static void *sb_disk_routine(void *thunk)
 {
-	SB_TIMER_VARS;
 	sb_routine_t   *routine = thunk;
-#if BUILD_DISK
+
+#ifdef BUILD_DISK
+	SB_TIMER_VARS;
 	size_t          num_filesystems;
 	int             i;
 	struct statvfs  stats;
@@ -472,14 +488,15 @@ static void *sb_disk_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-
 #endif
+
 	routine->skip = SB_TRUE;
 	return NULL;
 }
 
 
 /* --- FAN ROUTINE --- */
+#ifdef BUILD_FAN
 struct sb_fan_t {
 	char  path[512];
 	long  min;
@@ -562,11 +579,14 @@ static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
 	}
 	return SB_TRUE;
 }
+#endif
 
 static void *sb_fan_routine(void *thunk)
 {
-	SB_TIMER_VARS;
 	sb_routine_t    *routine = thunk;
+
+#ifdef BUILD_FAN
+	SB_TIMER_VARS;
 	struct sb_fan_t  fans[64];
 	int              count   = 0;
 	int              i;
@@ -621,6 +641,8 @@ static void *sb_fan_routine(void *thunk)
 
 	if (fd != NULL)
 		fclose(fd);
+#endif
+
 	routine->skip = SB_TRUE;
 	return NULL;
 }
@@ -629,8 +651,10 @@ static void *sb_fan_routine(void *thunk)
 /* --- LOAD ROUTINE --- */
 static void *sb_load_routine(void *thunk)
 {
-	SB_TIMER_VARS;
 	sb_routine_t      *routine = thunk;
+
+#ifdef BUILD_LOAD
+	SB_TIMER_VARS;
 	FILE              *fd;
 	static const char *path    = "/proc/loadavg";
 	double             av[3];
@@ -661,12 +685,15 @@ static void *sb_load_routine(void *thunk)
 
 	if (fd != NULL)
 		fclose(fd);
+#endif
+
 	routine->skip = SB_TRUE;
 	return NULL;
 }
 
 
 /* --- NETWORK ROUTINE --- */
+#ifdef BUILD_NETWORK
 struct sb_file_t {
 	char   path[IFNAMSIZ+64];
 	long   old_bytes;
@@ -722,11 +749,14 @@ static SB_BOOL sb_get_paths(struct sb_file_t *rx_file, struct sb_file_t *tx_file
 
 	return SB_TRUE;
 }
+#endif
 
 static void *sb_network_routine(void *thunk)
 {
-	SB_TIMER_VARS;
 	sb_routine_t     *routine  = thunk;
+
+#ifdef BUILD_NETWORK
+	SB_TIMER_VARS;
 	int               i;
 	SB_BOOL           error;
 	struct sb_file_t  files[2] = {0};
@@ -772,6 +802,8 @@ static void *sb_network_routine(void *thunk)
 
 	if (fd != NULL)
 		fclose(fd);
+#endif
+
 	routine->skip = SB_TRUE;
 	return NULL;
 }
@@ -780,8 +812,10 @@ static void *sb_network_routine(void *thunk)
 /* --- RAM ROUTINE --- */
 static void *sb_ram_routine(void *thunk)
 {
-	SB_TIMER_VARS
 	sb_routine_t *routine = thunk;
+
+#ifdef BUILD_RAM
+	SB_TIMER_VARS
 	long          page_size;
 	long          total_pages;
 	float         total_bytes_f;
@@ -820,6 +854,7 @@ static void *sb_ram_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
+#endif
 
 	routine->skip = SB_TRUE;
 	return NULL;
@@ -832,8 +867,10 @@ static void *sb_time_routine(void *thunk)
 	/* For this routine, we are not using the SB_START_TIMER and SB_STOP_TIMER
 	 * macros because we need to use CLOCK_REALTIME to get the actual system time.
 	 */
-	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
+
+#ifdef BUILD_TIME
+	SB_TIMER_VARS;
 	struct tm     tm;
 	char          time_str[64];
 	SB_BOOL       blink   = SB_FALSE;
@@ -874,6 +911,7 @@ static void *sb_time_routine(void *thunk)
 			fprintf(stderr, "Time routine: Error sleeping\n");
 		}
 	}
+#endif
 
 	routine->skip = SB_TRUE;
 	return NULL;
@@ -881,7 +919,7 @@ static void *sb_time_routine(void *thunk)
 
 
 /* --- TODO ROUTINE --- */
-#if BUILD_TODO
+#ifdef BUILD_TODO
 static int sb_count_blanks(const char *line, SB_BOOL *is_blank)
 {
 	int i = 0;
@@ -915,10 +953,10 @@ static void *sb_todo_routine(void *thunk)
 	 *    task of the first. Print "line1 -> line2".
 	 * 4. If the second line is not indented, both tasks are equal. Print "line1 | line2".
 	 */
-	SB_TIMER_VARS;
 	sb_routine_t *routine    = thunk;
 
-#if BUILD_TODO
+#ifdef BUILD_TODO
+	SB_TIMER_VARS;
 	FILE         *fd;
 	char          path[512]  = {0};
 	char          line1[512] = {0};
@@ -981,8 +1019,8 @@ static void *sb_todo_routine(void *thunk)
 
 	if (fd != NULL)
 		fclose(fd);
-
 #endif
+
 	routine->skip = SB_TRUE;
 	return NULL;
 }
@@ -991,8 +1029,10 @@ static void *sb_todo_routine(void *thunk)
 /* --- VOLUME ROUTINE --- */
 static void *sb_volume_routine(void *thunk)
 {
-	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
+
+#ifdef BUILD_VOLUME
+	SB_TIMER_VARS;
 
 	routine->skip = SB_FALSE;
 	while(1) {
@@ -1007,6 +1047,7 @@ static void *sb_volume_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
+#endif
 
 	routine->skip = SB_TRUE;
 	return NULL;
@@ -1016,8 +1057,10 @@ static void *sb_volume_routine(void *thunk)
 /* --- WEATHER ROUTINE --- */
 static void *sb_weather_routine(void *thunk)
 {
-	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
+
+#ifdef BUILD_WEATHER
+	SB_TIMER_VARS;
 
 	routine->skip = SB_FALSE;
 	while(1) {
@@ -1032,6 +1075,7 @@ static void *sb_weather_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
+#endif
 
 	routine->skip = SB_TRUE;
 	return NULL;
@@ -1039,7 +1083,7 @@ static void *sb_weather_routine(void *thunk)
 
 
 /* --- WIFI ROUTINE --- */
-#if BUILD_WIFI
+#ifdef BUILD_WIFI
 static SB_BOOL sb_init_wifi(int *fd, struct iwreq *iwr, char *essid, size_t max_len)
 {
 	struct ifaddrs *ifaddrs = NULL;
@@ -1093,10 +1137,10 @@ static void *sb_wifi_routine(void *thunk)
 	 * - if init fails, try again later
 	 * - handle break and reattach at a later time
 	 */
-	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
 
-#if BUILD_WIFI
+#ifdef BUILD_WIFI
+	SB_TIMER_VARS;
 	int           fd;
 	struct iwreq  iwr;
 	char          essid[IW_ESSID_MAX_SIZE + 1];
@@ -1125,8 +1169,8 @@ static void *sb_wifi_routine(void *thunk)
 	}
 
 	close(fd);
-
 #endif
+
 	routine->skip = SB_TRUE;
 	return NULL;
 }
