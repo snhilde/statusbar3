@@ -16,3 +16,5 @@ LDFLAGS= -L ${LIBDIR} \
 	     -L ${X11_LIBDIR} \
 	     -l pthread \
          -l X11
+
+bin_PROGRAMS= statusbar
