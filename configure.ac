@@ -53,7 +53,7 @@ AC_CHECK_HEADERS([linux/wireless.h sys/ioctl.h ifaddrs.h],
 				 [net_headers="no";
 				  AC_MSG_NOTICE([Missing a header, not running network of wifi routines]);
 				  break])
-AC_CHECK_HEADERS([alsa/mixer.h],
+AC_CHECK_HEADERS([alsa/asoundlib.h],
 				 [volume_headers="yes"],
 				 [AC_MSG_NOTICE([Missing <alsa/mixer.h>, not running volume routine])])
 
