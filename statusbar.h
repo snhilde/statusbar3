@@ -38,6 +38,7 @@
 
 /* for volume routine */
 #ifdef HAVE_ALSA_MIXER_H
+  #include <alsa/mixer.h>
   #define BUILD_VOLUME
 #endif
 
