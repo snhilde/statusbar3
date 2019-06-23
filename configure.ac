@@ -59,7 +59,7 @@ AC_CHECK_HEADERS([linux/wireless.h sys/ioctl.h ifaddrs.h],
 				 [AC_MSG_NOTICE([Missing HH, not running network of wifi routines])])
 # headers for volume routine
 AC_CHECK_HEADERS([alsa/mixer.h],
-				 [],
+				 [AC_DEFINE([BUILD_VOLUME])],
 				 [AC_MSG_NOTICE([Missing <alsa/mixer.h>, not running volume routine])])
 
 # Check for typedefs, structures, and compiler characteristics.
