@@ -55,12 +55,14 @@ AC_CHECK_HEADERS([ctype.h],
 				 [AC_MSG_NOTICE([Missing <ctype.h>, not running TODO routine])])
 # headers for network and wifi routines
 AC_CHECK_HEADERS([linux/wireless.h sys/ioctl.h ifaddrs.h],
-				 [],
-				 [AC_MSG_NOTICE([Missing HH, not running network of wifi routines])])
+				 [build_network="yes"],
+				 [build_network="no"; AC_MSG_NOTICE([Missing HH, not running network of wifi routines]); break])
 # headers for volume routine
 AC_CHECK_HEADERS([alsa/mixer.h],
 				 [AC_DEFINE([BUILD_VOLUME])],
 				 [AC_MSG_NOTICE([Missing <alsa/mixer.h>, not running volume routine])])
+
+AS_IF([test "$build_network" = "yes"], [AC_DEFINE([BUILD_NETWORK]) AC_DEFINE([BUILD_WIFI])])
 
 # Check for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
