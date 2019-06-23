@@ -1036,6 +1036,9 @@ static void *sb_volume_routine(void *thunk)
 
 #ifdef BUILD_VOLUME
 	SB_TIMER_VARS;
+	snd_mixer_elem_t *snd_elem;
+
+	snd_elem = sb_get_snd_elem();
 
 	routine->skip = SB_FALSE;
 	while(1) {
