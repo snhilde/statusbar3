@@ -26,10 +26,10 @@ clean:
 	rm ${PROGNAME}
 
 .PHONY: install
-install: ${PROGNAME}
+install:
 	mkdir -p ${DESTDIR}
-	cp $^ ${DESTDIR}/$^
+	cp ${PROGNAME} ${DESTDIR}/${PROGNAME}
 
 .PHONY: uninstall
-uninstall: ${PROGNAME}
-	rm -f ${DESTDIR}/$^
+uninstall:
+	rm -f ${DESTDIR}/${PROGNAME}
