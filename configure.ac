@@ -46,6 +46,9 @@ AC_CHECK_HEADERS([sys/ioctl.h],
 AC_CHECK_HEADERS([ifaddrs.h],
 				 [],
 				 [AC_MSG_NOTICE([Missing <ifaddrs.h>, not running network or wifi routine])])
+AC_CHECK_HEADERS([alsa/mixer.h],
+				 [],
+				 [AC_MSG_NOTICE([Missing <ifaddrs.h>, not running network or wifi routine])])
 
 # Check for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
