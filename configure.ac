@@ -17,7 +17,7 @@ AC_CHECK_LIB([X11], [XStoreName],
 			 [],
 			 [AC_MSG_ERROR([X11 library is required for this program])])
 AC_CHECK_LIB([asound], [snd_mixer_open],
-			 [volume_lib="yes"],
+			 [],
 			 [volume_lib="no"; AC_MSG_NOTICE([libasound check failed, not running volume routine])])
 
 # Check for standard header files.
@@ -58,10 +58,9 @@ AC_CHECK_HEADERS([linux/wireless.h sys/ioctl.h ifaddrs.h],
 				 [net_headers="no";
 				  AC_MSG_NOTICE([Missing a header, not running network of wifi routines]);
 				  break])
-AC_CHECK_HEADERS([alsa/mixer.h],
+AC_CHECK_HEADERS([alsa/asoundlib.h],
 				 [volume_headers="yes"],
-				 [AC_MSG_NOTICE([Missing <alsa/mixer.h>, not running volume routine])],
-				 [#include <alsa/asoundlib.h>])
+				 [AC_MSG_NOTICE([Missing <alsa/asoundlib.h>, not running volume routine])])
 
 # Check for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
