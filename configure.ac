@@ -36,8 +36,10 @@ AC_CHECK_HEADERS([linux/wireless.h], [], [],
 				 [AC_MSG_NOTICE([Missing <linux/wireless.h>, not running wifi routine])])
 
 # headers for network and wifi routines
-AC_CHECK_HEADERS([sys/ioctl.h], [], [], [])
-AC_CHECK_HEADERS([ifaddrs.h], [], [], [])
+AC_CHECK_HEADERS([sys/ioctl.h], [], [],
+				 [AC_MSG_NOTICE([Missing <sys/ioctl.h>, not running network or wifi routine])])
+AC_CHECK_HEADERS([ifaddrs.h], [], [],
+				 [AC_MSG_NOTICE([Missing <ifaddrs.h>, not running network or wifi routine])])
 
 # Check for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
