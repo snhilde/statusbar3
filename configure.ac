@@ -47,7 +47,7 @@ AC_CHECK_HEADERS([dirent.h],
 # Check for specific header files.
 # headers for disk routine
 AC_CHECK_HEADERS([sys/statvfs.h],
-				 [],
+				 [AC_DEFINE([BUILD_DISK])],
 				 [AC_MSG_NOTICE([Missing <sys/statvfs.h>, not running disk routine])])
 # headers for todo routine
 AC_CHECK_HEADERS([ctype.h],
