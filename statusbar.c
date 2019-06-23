@@ -1027,6 +1027,9 @@ static void *sb_todo_routine(void *thunk)
 
 
 /* --- VOLUME ROUTINE --- */
+#ifdef BUILD_VOLUME
+#endif
+
 static void *sb_volume_routine(void *thunk)
 {
 	sb_routine_t *routine = thunk;
