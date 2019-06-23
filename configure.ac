@@ -51,7 +51,7 @@ AC_CHECK_HEADERS([sys/statvfs.h],
 				 [AC_MSG_NOTICE([Missing <sys/statvfs.h>, not running disk routine])])
 # headers for todo routine
 AC_CHECK_HEADERS([ctype.h],
-				 [],
+				 [AC_DEFINE([BUILD_TODO])],
 				 [AC_MSG_NOTICE([Missing <ctype.h>, not running TODO routine])])
 # headers for network and wifi routines
 AC_CHECK_HEADERS([linux/wireless.h sys/ioctl.h ifaddrs.h],
@@ -59,10 +59,8 @@ AC_CHECK_HEADERS([linux/wireless.h sys/ioctl.h ifaddrs.h],
 				 [AC_MSG_NOTICE([Missing HH, not running network of wifi routines])])
 # headers for volume routine
 AC_CHECK_HEADERS([alsa/mixer.h],
-				 [build_volume="yes"],
+				 [],
 				 [AC_MSG_NOTICE([Missing <alsa/mixer.h>, not running volume routine])])
-
-AM_CONDITIONAL(BUILD_VOLUME, test "$build_volume" = "yes")
 
 # Check for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
