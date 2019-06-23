@@ -1072,8 +1072,12 @@ static void *sb_volume_routine(void *thunk)
 	SB_TIMER_VARS;
 	snd_mixer_elem_t *snd_elem;
 	snd_mixer_t      *mixer;
+	long              min;
+	long              max;
 
 	if (!sb_get_snd_elem(&snd_elem, &mixer))
+		return NULL;
+	if (!sb_get_volume_range(snd_elem, &min, &max))
 		return NULL;
 
 	routine->skip = SB_FALSE;
