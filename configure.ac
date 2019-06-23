@@ -52,7 +52,9 @@ AC_CHECK_HEADERS([ctype.h],
 				 [AC_MSG_NOTICE([Missing <ctype.h>, not running TODO routine])])
 AC_CHECK_HEADERS([linux/wireless.h sys/ioctl.h ifaddrs.h],
 				 [build_network="yes"],
-				 [build_network="no"; AC_MSG_NOTICE([Missing a header, not running network of wifi routines]); break])
+				 [build_network="no";
+				  AC_MSG_NOTICE([Missing a header, not running network of wifi routines]);
+				  break])
 AC_CHECK_HEADERS([alsa/mixer.h],
 				 [build_volume="yes"],
 				 [AC_MSG_NOTICE([Missing <alsa/mixer.h>, not running volume routine])])
