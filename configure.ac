@@ -72,7 +72,7 @@ AC_CHECK_FUNCS([memset])
 AC_CHECK_FUNCS([socket])
 AC_CHECK_FUNCS([strncasecmp])
 
-AS_IF([test "$volume_headers" = "yes" && test "$volume_lib" = "yes"], [AC_DEFINE([BUILD_VOLUME])])
+AS_IF([test "$volume_headers" = "yes" && test "$volume_lib" != "no"], [AC_DEFINE([BUILD_VOLUME])])
 AS_IF([test "$disk_headers"   = "yes"], [AC_DEFINE([BUILD_DISK])])
 AS_IF([test "$todo_headers"   = "yes"], [AC_DEFINE([BUILD_TODO])])
 AS_IF([test "$net_headers"    = "yes"], [AC_DEFINE([BUILD_NETWORK]) AC_DEFINE([BUILD_WIFI])])
