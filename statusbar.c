@@ -1263,5 +1263,5 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "print thread did not exit cleanly (%s)\n", (char *)join_ret);
 	free(join_ret);
 
-	return 0;
+	return EXIT_SUCCESS;
 }
