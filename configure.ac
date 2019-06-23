@@ -44,20 +44,15 @@ AC_CHECK_HEADERS([dirent.h],
 				 [],
 				 [AC_MSG_ERROR([Missing <dirent.h>])])
 
-# Check for specific header files.
-# headers for disk routine
 AC_CHECK_HEADERS([sys/statvfs.h],
 				 [build_disk="yes"],
 				 [AC_MSG_NOTICE([Missing <sys/statvfs.h>, not running disk routine])])
-# headers for todo routine
 AC_CHECK_HEADERS([ctype.h],
 				 [build_todo="yes"],
 				 [AC_MSG_NOTICE([Missing <ctype.h>, not running TODO routine])])
-# headers for network and wifi routines
 AC_CHECK_HEADERS([linux/wireless.h sys/ioctl.h ifaddrs.h],
 				 [build_network="yes"],
 				 [build_network="no"; AC_MSG_NOTICE([Missing a header, not running network of wifi routines]); break])
-# headers for volume routine
 AC_CHECK_HEADERS([alsa/mixer.h],
 				 [build_volume="yes"],
 				 [AC_MSG_NOTICE([Missing <alsa/mixer.h>, not running volume routine])])
