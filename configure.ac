@@ -45,18 +45,18 @@ AC_CHECK_HEADERS([dirent.h],
 				 [AC_MSG_ERROR([Missing <dirent.h>])])
 
 AC_CHECK_HEADERS([sys/statvfs.h],
-				 [build_disk="yes"],
+				 [disk_headers="yes"],
 				 [AC_MSG_NOTICE([Missing <sys/statvfs.h>, not running disk routine])])
 AC_CHECK_HEADERS([ctype.h],
-				 [build_todo="yes"],
+				 [todo_headers="yes"],
 				 [AC_MSG_NOTICE([Missing <ctype.h>, not running TODO routine])])
 AC_CHECK_HEADERS([linux/wireless.h sys/ioctl.h ifaddrs.h],
-				 [build_network="yes"],
-				 [build_network="no";
+				 [net_headers="yes"],
+				 [net_headers="no";
 				  AC_MSG_NOTICE([Missing a header, not running network of wifi routines]);
 				  break])
 AC_CHECK_HEADERS([alsa/mixer.h],
-				 [build_volume="yes"],
+				 [volume_headers="yes"],
 				 [AC_MSG_NOTICE([Missing <alsa/mixer.h>, not running volume routine])])
 
 # Check for typedefs, structures, and compiler characteristics.
@@ -69,10 +69,10 @@ AC_CHECK_FUNCS([memset])
 AC_CHECK_FUNCS([socket])
 AC_CHECK_FUNCS([strncasecmp])
 
-AS_IF([test "$build_volume"  = "yes"], [AC_DEFINE([BUILD_VOLUME])])
-AS_IF([test "$build_disk"    = "yes"], [AC_DEFINE([BUILD_DISK])])
-AS_IF([test "$build_todo"    = "yes"], [AC_DEFINE([BUILD_TODO])])
-AS_IF([test "$build_network" = "yes"], [AC_DEFINE([BUILD_NETWORK]) AC_DEFINE([BUILD_WIFI])])
+AS_IF([test "$volume_headers" = "yes"], [AC_DEFINE([BUILD_VOLUME])])
+AS_IF([test "$disk_headers"   = "yes"], [AC_DEFINE([BUILD_DISK])])
+AS_IF([test "$todo_headers"   = "yes"], [AC_DEFINE([BUILD_TODO])])
+AS_IF([test "$net_headers"    = "yes"], [AC_DEFINE([BUILD_NETWORK]) AC_DEFINE([BUILD_WIFI])])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
