@@ -26,12 +26,10 @@
 #endif
 
 /* for network and wifi routines */
-#if defined HAVE_SYS_IOCTL_H && defined HAVE_IFADDRS_H && defined HAVE_LINUX_WIRELESS_H
+#if defined BUILD_NETWORK && defined BUILD_WIFI
   #include <sys/ioctl.h>
   #include <ifaddrs.h>
   #include <linux/wireless.h>
-  #define BUILD_NETWORK
-  #define BUILD_WIFI
 #endif
 
 /* for volume routine */
