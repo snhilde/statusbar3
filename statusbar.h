@@ -13,7 +13,6 @@
 #define BUILD_LOAD
 #define BUILD_RAM
 #define BUILD_TIME
-#define BUILD_VOLUME
 #define BUILD_WEATHER
 
 /* for disk routine */
@@ -35,6 +34,11 @@
   #include <linux/wireless.h>
   #define BUILD_NETWORK
   #define BUILD_WIFI
+#endif
+
+/* for volume routine */
+#ifdef HAVE_ALSA_MIXER_H
+  #define BUILD_VOLUME
 #endif
 
 enum sb_routine_e {
