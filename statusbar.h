@@ -1,27 +1,32 @@
-#include <stdio.h>
 #include <pthread.h>
 #include <X11/Xlib.h>
-#include <unistd.h>
-#include <string.h>
 #include <stdlib.h>
-
-/* for todo routine */
-#include <ctype.h>
-
-/* for disk routine */
-#include <sys/statvfs.h>
-
-/* for fan routine */
+#include <unistd.h>
+#include <stdio.h>
+#include <string.h>
 #include <dirent.h>
 
+/* for disk routine */
+#if BUILD_DISK
+#include <sys/statvfs.h>
+#endif
+
+/* for fan routine */
+
+/* for todo routine */
+#if BUILD_TODO
+#include <ctype.h>
+#endif
+
 /* for wifi routine */
+#if BUILD_WIFI
 #include <sys/ioctl.h>
 #include <linux/wireless.h>
 #include <ifaddrs.h>
-
+#endif
 
 enum sb_routine_e {
-	BATTERY  ,
+	BATTERY   ,
 	CPU_TEMP ,
 	CPU_USAGE,
 	DISK     ,
