@@ -6,23 +6,35 @@
 #include <string.h>
 #include <dirent.h>
 
-/* for disk routine */
-#if BUILD_DISK
-#include <sys/statvfs.h>
-#endif
+#define BUILD_BATTERY
+#define BUILD_CPU_TEMP
+#define BUILD_CPU_USAGE
+#define BUILD_FAN
+#define BUILD_LOAD
+#define BUILD_RAM
+#define BUILD_TIME
+#define BUILD_VOLUME
+#define BUILD_WEATHER
 
-/* for fan routine */
+/* for disk routine */
+#ifdef HAVE_SYS_STATVFS_H
+  #include <sys/statvfs.h>
+  #define BUILD_DISK
+#endif
 
 /* for todo routine */
-#if BUILD_TODO
-#include <ctype.h>
+#ifdef HAVE_CTYPE_H
+  #include <ctype.h>
+  #define BUILD_TODO
 #endif
 
-/* for wifi routine */
-#if BUILD_WIFI
-#include <sys/ioctl.h>
-#include <linux/wireless.h>
-#include <ifaddrs.h>
+/* for network and wifi routines */
+#if defined HAVE_SYS_IOCTL_H && defined HAVE_IFADDRS_H && defined HAVE_LINUX_WIRELESS_H
+  #include <sys/ioctl.h>
+  #include <ifaddrs.h>
+  #include <linux/wireless.h>
+  #define BUILD_NETWORK
+  #define BUILD_WIFI
 #endif
 
 enum sb_routine_e {
