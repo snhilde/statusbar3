@@ -16,15 +16,13 @@
 #define BUILD_WEATHER
 
 /* for disk routine */
-#ifdef HAVE_SYS_STATVFS_H
+#ifdef BUILD_DISK
   #include <sys/statvfs.h>
-  #define BUILD_DISK
 #endif
 
 /* for todo routine */
-#ifdef HAVE_CTYPE_H
+#ifdef BUILD_TODO
   #include <ctype.h>
-  #define BUILD_TODO
 #endif
 
 /* for network and wifi routines */
