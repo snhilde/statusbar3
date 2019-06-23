@@ -28,7 +28,6 @@ AC_CHECK_HEADERS([X11/Xlib.h],
 AC_CHECK_HEADERS([dirent.h],
 				 [],
 				 [AC_MSG_ERROR([Missing <dirent.h>])])
-
 # headers for disk routine
 AC_CHECK_HEADERS([sys/statvfs.h],
 				 [],
@@ -37,12 +36,10 @@ AC_CHECK_HEADERS([sys/statvfs.h],
 AC_CHECK_HEADERS([ctype.h],
 				 [],
 				 [AC_MSG_NOTICE([Missing <ctype.h>, not running TODO routine])])
-# headers for wifi routine
+# headers for network and wifi routines
 AC_CHECK_HEADERS([linux/wireless.h],
 				 [],
-				 [AC_MSG_NOTICE([Missing <linux/wireless.h>, not running wifi routine])])
-
-# headers for network and wifi routines
+				 [AC_MSG_NOTICE([Missing <linux/wireless.h>, not running network or wifi routine])])
 AC_CHECK_HEADERS([sys/ioctl.h],
 				 [],
 				 [AC_MSG_NOTICE([Missing <sys/ioctl.h>, not running network or wifi routine])])
