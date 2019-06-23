@@ -1048,7 +1048,7 @@ static SB_BOOL sb_get_snd_elem(snd_mixer_elem_t **snd_elem, snd_mixer_t **mixer)
 	} else {
 		snd_mixer_selem_id_set_name(snd_id, "Master");
 		*snd_elem = snd_mixer_find_selem(*mixer, snd_id);
-		if (*snd_elem != NULL) {
+		if (*snd_elem != NULL && snd_mixer_selem_has_playback_volume(*snd_elem) != 0) {
 			snd_mixer_selem_id_free(snd_id);
 			return SB_TRUE;
 		}
@@ -1086,7 +1086,7 @@ static void *sb_volume_routine(void *thunk)
 	while(1) {
 		SB_START_TIMER;
 
-		/* TODO: run routine */
+		snd_mixer_handle_events(mixer); /* reloads mixer */
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output)-1, "volume: TODO");
