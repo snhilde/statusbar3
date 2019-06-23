@@ -429,6 +429,7 @@ static void *sb_disk_routine(void *thunk)
 {
 	SB_TIMER_VARS;
 	sb_routine_t   *routine = thunk;
+#if BUILD_DISK
 	size_t          num_filesystems;
 	int             i;
 	struct statvfs  stats;
@@ -472,6 +473,7 @@ static void *sb_disk_routine(void *thunk)
 		SB_SLEEP;
 	}
 
+#endif
 	routine->skip = SB_TRUE;
 	return NULL;
 }
@@ -879,6 +881,7 @@ static void *sb_time_routine(void *thunk)
 
 
 /* --- TODO ROUTINE --- */
+#if BUILD_TODO
 static int sb_count_blanks(const char *line, SB_BOOL *is_blank)
 {
 	int i = 0;
@@ -900,6 +903,7 @@ static int sb_count_blanks(const char *line, SB_BOOL *is_blank)
 
 	return 0;
 }
+#endif
 
 static void *sb_todo_routine(void *thunk)
 {
@@ -913,6 +917,8 @@ static void *sb_todo_routine(void *thunk)
 	 */
 	SB_TIMER_VARS;
 	sb_routine_t *routine    = thunk;
+
+#if BUILD_TODO
 	FILE         *fd;
 	char          path[512]  = {0};
 	char          line1[512] = {0};
@@ -975,6 +981,8 @@ static void *sb_todo_routine(void *thunk)
 
 	if (fd != NULL)
 		fclose(fd);
+
+#endif
 	routine->skip = SB_TRUE;
 	return NULL;
 }
@@ -1031,6 +1039,7 @@ static void *sb_weather_routine(void *thunk)
 
 
 /* --- WIFI ROUTINE --- */
+#if BUILD_WIFI
 static SB_BOOL sb_init_wifi(int *fd, struct iwreq *iwr, char *essid, size_t max_len)
 {
 	struct ifaddrs *ifaddrs = NULL;
@@ -1072,6 +1081,7 @@ static SB_BOOL sb_init_wifi(int *fd, struct iwreq *iwr, char *essid, size_t max_
 	freeifaddrs(ifaddrs);
 	return SB_FALSE;
 }
+#endif
 
 static void *sb_wifi_routine(void *thunk)
 {
@@ -1085,6 +1095,8 @@ static void *sb_wifi_routine(void *thunk)
 	 */
 	SB_TIMER_VARS;
 	sb_routine_t *routine = thunk;
+
+#if BUILD_WIFI
 	int           fd;
 	struct iwreq  iwr;
 	char          essid[IW_ESSID_MAX_SIZE + 1];
@@ -1113,6 +1125,8 @@ static void *sb_wifi_routine(void *thunk)
 	}
 
 	close(fd);
+
+#endif
 	routine->skip = SB_TRUE;
 	return NULL;
 }
