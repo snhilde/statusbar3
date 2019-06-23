@@ -1028,6 +1028,10 @@ static void *sb_todo_routine(void *thunk)
 
 /* --- VOLUME ROUTINE --- */
 #ifdef BUILD_VOLUME
+static snd_mixer_elem_t *sb_get_snd_elem(void)
+{
+
+}
 #endif
 
 static void *sb_volume_routine(void *thunk)
