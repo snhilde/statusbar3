@@ -34,7 +34,7 @@
 
 /* for volume routine */
 #ifdef BUILD_VOLUME
-  #include <alsa/mixer.h>
+  #include <alsa/asoundlib.h>
 #endif
 
 enum sb_routine_e {
