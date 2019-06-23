@@ -1028,9 +1028,39 @@ static void *sb_todo_routine(void *thunk)
 
 /* --- VOLUME ROUTINE --- */
 #ifdef BUILD_VOLUME
-static snd_mixer_elem_t *sb_get_snd_elem(void)
+static SB_BOOL sb_get_snd_elem(snd_mixer_elem_t **snd_elem, snd_mixer_t **mixer)
 {
+	snd_mixer_selem_id_t *snd_id = NULL;
 
+	*snd_elem = NULL;
+	*mixer    = NULL;
+
+	if (snd_mixer_open(mixer, 0) != 0) {
+		fprintf(stderr, "Volume routine: Failed to open mixer\n");
+	} else if (snd_mixer_attach(*mixer, "default") != 0) {
+		fprintf(stderr, "Volume routine: Failed to attach mixer\n");
+	} else if (snd_mixer_selem_register(*mixer, NULL, NULL) != 0) {
+		fprintf(stderr, "Volume routine: Failed to register mixer\n");
+	} else if (snd_mixer_load(*mixer) != 0) {
+		fprintf(stderr, "Volume routine: Failed to load mixer\n");
+	} else if (snd_mixer_selem_id_malloc(&snd_id) != 0) {
+		fprintf(stderr, "Volume routine: Failed to allocate snd_id\n");
+	} else {
+		snd_mixer_selem_id_set_name(snd_id, "Master");
+		*snd_elem = snd_mixer_find_selem(*mixer, snd_id);
+		if (*snd_elem != NULL) {
+			snd_mixer_selem_id_free(snd_id);
+			return SB_TRUE;
+		}
+		fprintf(stderr, "Volume routine: Failed to find element\n");
+	}
+
+	if (snd_id != NULL)
+		snd_mixer_selem_id_free(snd_id);
+	if (*mixer != NULL)
+		snd_mixer_close(*mixer);
+
+	return SB_FALSE;
 }
 #endif
 
@@ -1041,8 +1071,10 @@ static void *sb_volume_routine(void *thunk)
 #ifdef BUILD_VOLUME
 	SB_TIMER_VARS;
 	snd_mixer_elem_t *snd_elem;
+	snd_mixer_t      *mixer;
 
-	snd_elem = sb_get_snd_elem();
+	if (!sb_get_snd_elem(&snd_elem, &mixer))
+		return NULL;
 
 	routine->skip = SB_FALSE;
 	while(1) {
