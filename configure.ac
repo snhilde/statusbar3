@@ -57,11 +57,6 @@ AC_CHECK_HEADERS([alsa/mixer.h],
 				 [build_volume="yes"],
 				 [AC_MSG_NOTICE([Missing <alsa/mixer.h>, not running volume routine])])
 
-AS_IF([test "$build_volume"  = "yes"], [AC_DEFINE([BUILD_VOLUME])])
-AS_IF([test "$build_disk"    = "yes"], [AC_DEFINE([BUILD_DISK])])
-AS_IF([test "$build_todo"    = "yes"], [AC_DEFINE([BUILD_TODO])])
-AS_IF([test "$build_network" = "yes"], [AC_DEFINE([BUILD_NETWORK]) AC_DEFINE([BUILD_WIFI])])
-
 # Check for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
 
@@ -71,6 +66,11 @@ AC_CHECK_FUNCS([localtime_r])
 AC_CHECK_FUNCS([memset])
 AC_CHECK_FUNCS([socket])
 AC_CHECK_FUNCS([strncasecmp])
+
+AS_IF([test "$build_volume"  = "yes"], [AC_DEFINE([BUILD_VOLUME])])
+AS_IF([test "$build_disk"    = "yes"], [AC_DEFINE([BUILD_DISK])])
+AS_IF([test "$build_todo"    = "yes"], [AC_DEFINE([BUILD_TODO])])
+AS_IF([test "$build_network" = "yes"], [AC_DEFINE([BUILD_NETWORK]) AC_DEFINE([BUILD_WIFI])])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
