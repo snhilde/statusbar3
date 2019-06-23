@@ -13,9 +13,6 @@ CFLAGS= -Wall \
 	    -I ${X11_INCDIR}
 
 LDFLAGS= -L ${LIBDIR} \
-	     -L ${X11_LIBDIR} \
-	     -l pthread \
-         -l X11 \
-		 -l asound
+	     -L ${X11_LIBDIR}
 
 bin_PROGRAMS= statusbar
