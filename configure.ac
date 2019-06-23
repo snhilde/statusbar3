@@ -10,12 +10,10 @@ AM_INIT_AUTOMAKE
 AC_PROG_CC
 
 # Check for libraries.
-AC_CHECK_LIB([pthread], [pthread_create], [], [
-		echo "pthread library is required for this program"
-		exit -1])
-AC_CHECK_LIB([X11], [XStoreName], [], [
-		echo "X11 library is required for this program"
-		exit -1])
+AC_CHECK_LIB([pthread], [pthread_create], [],
+			 [AC_MSG_ERROR([pthread library is required for this program])])
+AC_CHECK_LIB([X11], [XStoreName], [],
+			 [AC_MSG_ERROR([X11 library is required for this program])])
 
 # Check for standard header files.
 AC_PATH_X
