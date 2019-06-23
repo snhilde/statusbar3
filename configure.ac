@@ -17,7 +17,7 @@ AC_CHECK_LIB([X11], [XStoreName], [], [
 		echo "X11 library is required for this program"
 		exit -1])
 
-# Check for header files.
+# Check for standard header files.
 AC_PATH_X
 AC_CHECK_HEADERS([pthread.h],
 				 [],
@@ -28,6 +28,23 @@ AC_CHECK_HEADERS([X11/Xlib.h],
 AC_CHECK_HEADERS([dirent.h],
 				 [],
 				 [AC_MSG_ERROR([Missing <dirent.h>])])
+AC_CHECK_HEADERS([stdlib.h],
+				 [],
+				 [AC_MSG_ERROR([Missing <stdlib.h>])])
+AC_CHECK_HEADERS([unistd.h],
+				 [],
+				 [AC_MSG_ERROR([Missing <unistd.h>])])
+AC_CHECK_HEADERS([stdio.h],
+				 [],
+				 [AC_MSG_ERROR([Missing <stdio.h>])])
+AC_CHECK_HEADERS([string.h],
+				 [],
+				 [AC_MSG_ERROR([Missing <string.h>])])
+AC_CHECK_HEADERS([dirent.h],
+				 [],
+				 [AC_MSG_ERROR([Missing <dirent.h>])])
+
+# Check for specific header files.
 # headers for disk routine
 AC_CHECK_HEADERS([sys/statvfs.h],
 				 [],
