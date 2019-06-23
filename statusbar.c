@@ -107,8 +107,8 @@ static void *sb_print_to_sb(void *thunk)
 		}
 	}
 
-	/* TODO: exit program here */
-	return NULL;
+	fprintf(stderr, "Closing print_thread, exiting program...\n");
+	exit(EXIT_FAILURE);
 }
 
 
