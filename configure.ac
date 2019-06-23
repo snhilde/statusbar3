@@ -26,20 +26,18 @@ AC_CHECK_HEADERS([dirent.h],
 				 [AC_MSG_ERROR([Missing <dirent.h>])])
 
 # headers for disk routine
-AC_CHECK_HEADERS([sys/statvfs.h],
-				 [AC_DEFINE([BUILD_DISK], 1)],
-				 [AC_DEFINE([BUILD_DISK], 0),
-				  AC_MSG_NOTICE([Missing <sys/statvfs.h>, not building support for disk usage])])
+AC_CHECK_HEADERS([sys/statvfs.h], [], [],
+				 [AC_MSG_NOTICE([Missing <sys/statvfs.h>, not running disk routine])])
 # headers for todo routine
-AC_CHECK_HEADERS([ctype.h],
-				 [AC_DEFINE([BUILD_TODO], 1)],
-				 [AC_DEFINE([BUILD_TODO], 0),
-				  AC_MSG_NOTICE([Missing <ctype.h>, not building support for reading TODO file])])
+AC_CHECK_HEADERS([ctype.h], [], [],
+				 [AC_MSG_NOTICE([Missing <ctype.h>, not running TODO routine])])
 # headers for wifi routine
-AC_CHECK_HEADERS([sys/ioctl.h linux/wireless.h ifaddrs.h],
-				 [AC_DEFINE([BUILD_WIFI], 1)],
-				 [AC_DEFINE([BUILD_WIFI], 0),
-				  AC_MSG_NOTICE([Not building wireless support]); break])
+AC_CHECK_HEADERS([linux/wireless.h], [], [],
+				 [AC_MSG_NOTICE([Missing <linux/wireless.h>, not running wifi routine])])
+
+# headers for network and wifi routines
+AC_CHECK_HEADERS([sys/ioctl.h], [], [], [])
+AC_CHECK_HEADERS([ifaddrs.h], [], [], [])
 
 # Check for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
