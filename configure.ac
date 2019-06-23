@@ -10,10 +10,15 @@ AM_INIT_AUTOMAKE
 AC_PROG_CC
 
 # Check for libraries.
-AC_CHECK_LIB([pthread], [pthread_create], [],
+AC_CHECK_LIB([pthread], [pthread_create],
+			 [],
 			 [AC_MSG_ERROR([pthread library is required for this program])])
-AC_CHECK_LIB([X11], [XStoreName], [],
+AC_CHECK_LIB([X11], [XStoreName],
+			 [],
 			 [AC_MSG_ERROR([X11 library is required for this program])])
+AC_CHECK_LIB([asound], [snd_mixer_open],
+			 [volume_lib="yes"],
+			 [volume_lib="no"; AC_MSG_NOTICE([libasound check failed, not running volume routine])])
 
 # Check for standard header files.
 AC_PATH_X
@@ -53,9 +58,10 @@ AC_CHECK_HEADERS([linux/wireless.h sys/ioctl.h ifaddrs.h],
 				 [net_headers="no";
 				  AC_MSG_NOTICE([Missing a header, not running network of wifi routines]);
 				  break])
-AC_CHECK_HEADERS([alsa/asoundlib.h],
+AC_CHECK_HEADERS([alsa/mixer.h],
 				 [volume_headers="yes"],
-				 [AC_MSG_NOTICE([Missing <alsa/mixer.h>, not running volume routine])])
+				 [AC_MSG_NOTICE([Missing <alsa/mixer.h>, not running volume routine])],
+				 [#include <alsa/asoundlib.h>])
 
 # Check for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
@@ -67,7 +73,7 @@ AC_CHECK_FUNCS([memset])
 AC_CHECK_FUNCS([socket])
 AC_CHECK_FUNCS([strncasecmp])
 
-AS_IF([test "$volume_headers" = "yes"], [AC_DEFINE([BUILD_VOLUME])])
+AS_IF([test "$volume_headers" = "yes" && test "$volume_lib" = "yes"], [AC_DEFINE([BUILD_VOLUME])])
 AS_IF([test "$disk_headers"   = "yes"], [AC_DEFINE([BUILD_DISK])])
 AS_IF([test "$todo_headers"   = "yes"], [AC_DEFINE([BUILD_TODO])])
 AS_IF([test "$net_headers"    = "yes"], [AC_DEFINE([BUILD_NETWORK]) AC_DEFINE([BUILD_WIFI])])
