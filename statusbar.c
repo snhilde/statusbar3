@@ -1062,6 +1062,14 @@ static SB_BOOL sb_get_snd_elem(snd_mixer_elem_t **snd_elem, snd_mixer_t **mixer)
 
 	return SB_FALSE;
 }
+
+static SB_BOOL sb_get_volume_range(snd_mixer_elem_t *snd_elem, long *min, long *max)
+{
+	*min = 0;
+	*max = 0;
+
+	return SB_TRUE;
+}
 #endif
 
 static void *sb_volume_routine(void *thunk)
