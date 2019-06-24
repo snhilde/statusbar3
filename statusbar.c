@@ -1113,7 +1113,7 @@ static void *sb_volume_routine(void *thunk)
 		} else {
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output)-1,
-					"volume: %ld", (volume - min) * 100 / (max - min));
+					"volume: %ld%%", (volume - min) * 100 / (max - min));
 			pthread_mutex_unlock(&(routine->mutex));
 		}
 
