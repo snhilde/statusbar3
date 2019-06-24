@@ -1028,31 +1028,39 @@ static void *sb_todo_routine(void *thunk)
 
 /* --- VOLUME ROUTINE --- */
 #ifdef BUILD_VOLUME
-static SB_BOOL sb_get_snd_elem(snd_mixer_elem_t **snd_elem, snd_mixer_t **mixer)
+static SB_BOOL sb_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **snd_elem)
 {
+	static const char    *card   = "default";
 	snd_mixer_selem_id_t *snd_id = NULL;
+	static const int      index  = 0;
+	static const char    *name   = "Master";
 
 	*snd_elem = NULL;
 	*mixer    = NULL;
 
-	if (snd_mixer_open(mixer, 0) != 0) {
+	if (snd_mixer_open(mixer, 0) < 0) {
 		fprintf(stderr, "Volume routine: Failed to open mixer\n");
-	} else if (snd_mixer_attach(*mixer, "default") != 0) {
+	} else if (snd_mixer_attach(*mixer, card) < 0) {
 		fprintf(stderr, "Volume routine: Failed to attach mixer\n");
-	} else if (snd_mixer_selem_register(*mixer, NULL, NULL) != 0) {
+	} else if (snd_mixer_selem_register(*mixer, NULL, NULL) < 0) {
 		fprintf(stderr, "Volume routine: Failed to register mixer\n");
-	} else if (snd_mixer_load(*mixer) != 0) {
+	} else if (snd_mixer_load(*mixer) < 0) {
 		fprintf(stderr, "Volume routine: Failed to load mixer\n");
+
 	} else if (snd_mixer_selem_id_malloc(&snd_id) != 0) {
 		fprintf(stderr, "Volume routine: Failed to allocate snd_id\n");
 	} else {
-		snd_mixer_selem_id_set_name(snd_id, "Master");
+		snd_mixer_selem_id_set_index(snd_id, index);
+		snd_mixer_selem_id_set_name(snd_id, name);
 		*snd_elem = snd_mixer_find_selem(*mixer, snd_id);
-		if (*snd_elem != NULL && snd_mixer_selem_has_playback_volume(*snd_elem) != 0) {
+		if (*snd_elem == NULL) {
+			fprintf(stderr, "Volume routine: Failed to find element\n");
+		} else if (snd_mixer_selem_has_playback_volume(*snd_elem) == 0) {
+			fprintf(stderr, "Volume routine: Element does not have playback volume\n");
+		} else {
 			snd_mixer_selem_id_free(snd_id);
 			return SB_TRUE;
 		}
-		fprintf(stderr, "Volume routine: Failed to find element\n");
 	}
 
 	if (snd_id != NULL)
@@ -1070,15 +1078,18 @@ static void *sb_volume_routine(void *thunk)
 
 #ifdef BUILD_VOLUME
 	SB_TIMER_VARS;
-	snd_mixer_elem_t *snd_elem;
 	snd_mixer_t      *mixer;
+	snd_mixer_elem_t *snd_elem;
 	long              min;
 	long              max;
+	int               mute = 0;
+	long              volume;
 
-	if (!sb_get_snd_elem(&snd_elem, &mixer))
+	if (!sb_get_snd_elem(&mixer, &snd_elem))
 		return NULL;
 	if (snd_mixer_selem_get_playback_volume_range(snd_elem, &min, &max) != 0) {
 		fprintf(stderr, "Volume routine: Failed to get volume range\n");
+		snd_mixer_close(mixer);
 		return NULL;
 	}
 
@@ -1086,15 +1097,31 @@ static void *sb_volume_routine(void *thunk)
 	while(1) {
 		SB_START_TIMER;
 
-		snd_mixer_handle_events(mixer); /* reloads mixer */
-
-		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "volume: TODO");
-		pthread_mutex_unlock(&(routine->mutex));
+		mute = 1;
+		if (snd_mixer_handle_events(mixer) < 0) {
+			fprintf(stderr, "Volume routine: Failed to clear mixer\n");
+			break;
+		} else if (snd_mixer_selem_get_playback_switch(snd_elem, SND_MIXER_SCHN_MONO, &mute) != 0) {
+			fprintf(stderr, "Volume routine: Failed to get mute state\n");
+			break;
+		} else if (mute == 0) {
+			pthread_mutex_lock(&(routine->mutex));
+			snprintf(routine->output, sizeof(routine->output)-1, "volume: mute");
+			pthread_mutex_unlock(&(routine->mutex));
+		} else if (snd_mixer_selem_get_playback_volume(snd_elem, SND_MIXER_SCHN_MONO, &volume) != 0) {
+			fprintf(stderr, "Volume routine: Failed to get volume\n");
+			break;
+		} else {
+			printf("min: %ld\n", min);
+			printf("max: %ld\n", max);
+			printf("vol: %ld\n", volume);
+			printf("per: %ld\n", (volume - min) * 100 / (max - min));
+		}
 
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
+	snd_mixer_close(mixer);
 #endif
 
 	routine->skip = SB_TRUE;
