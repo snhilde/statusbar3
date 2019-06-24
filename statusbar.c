@@ -1112,10 +1112,10 @@ static void *sb_volume_routine(void *thunk)
 			fprintf(stderr, "Volume routine: Failed to get volume\n");
 			break;
 		} else {
-			printf("min: %ld\n", min);
-			printf("max: %ld\n", max);
-			printf("vol: %ld\n", volume);
-			printf("per: %ld\n", (volume - min) * 100 / (max - min));
+			pthread_mutex_lock(&(routine->mutex));
+			snprintf(routine->output, sizeof(routine->output)-1,
+					"volume: %ld", (volume - min) * 100 / (max - min));
+			pthread_mutex_unlock(&(routine->mutex));
 		}
 
 		SB_STOP_TIMER;
