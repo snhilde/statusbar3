@@ -1097,7 +1097,6 @@ static void *sb_volume_routine(void *thunk)
 	while(1) {
 		SB_START_TIMER;
 
-		mute = 1;
 		if (snd_mixer_handle_events(mixer) < 0) {
 			fprintf(stderr, "Volume routine: Failed to clear mixer\n");
 			break;
