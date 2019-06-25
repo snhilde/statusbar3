@@ -798,12 +798,8 @@ static void *sb_network_routine(void *thunk)
 			break;
 
 		pthread_mutex_lock(&(routine->mutex));
-		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^Down: %.1f %c Up: %.1f %c",
-					routine->color, files[0].reduced, files[0].prefix, files[1].reduced, files[1].prefix);
-		else
-			snprintf(routine->output, sizeof(routine->output)-1, "Down: %.1f %c Up: %.1f %c",
-					files[0].reduced, files[0].prefix, files[1].reduced, files[1].prefix);
+		snprintf(routine->output, sizeof(routine->output)-1, "Down: %.1f %c Up: %.1f %c",
+				files[0].reduced, files[0].prefix, files[1].reduced, files[1].prefix);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
