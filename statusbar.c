@@ -1139,15 +1139,20 @@ static void *sb_volume_routine(void *thunk)
 			break;
 		} else if (mute == 0) {
 			pthread_mutex_lock(&(routine->mutex));
-			snprintf(routine->output, sizeof(routine->output)-1, "volume: mute");
+			if (color_text)
+				snprintf(routine->output, sizeof(routine->output)-1, "^c%s^volume: mute^d^", routine->color);
+			else
+				snprintf(routine->output, sizeof(routine->output)-1, "volume: mute");
 			pthread_mutex_unlock(&(routine->mutex));
 		} else if (snd_mixer_selem_get_playback_volume(snd_elem, SND_MIXER_SCHN_MONO, &volume) != 0) {
 			fprintf(stderr, "Volume routine: Failed to get volume\n");
 			break;
 		} else {
 			pthread_mutex_lock(&(routine->mutex));
-			snprintf(routine->output, sizeof(routine->output)-1,
-					"volume: %ld%%", (volume - min) * 100 / (max - min));
+			if (color_text)
+				snprintf(routine->output, sizeof(routine->output)-1, "^c%s^volume: %ld%%^d^", routine->color, (volume - min) * 100 / (max - min));
+			else
+				snprintf(routine->output, sizeof(routine->output)-1, "volume: %ld%%", (volume - min) * 100 / (max - min));
 			pthread_mutex_unlock(&(routine->mutex));
 		}
 
