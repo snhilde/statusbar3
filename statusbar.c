@@ -930,7 +930,10 @@ static void *sb_time_routine(void *thunk)
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "%s", time_str);
+		if (color_text)
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^%s^d^", routine->color, time_str);
+		else
+			snprintf(routine->output, sizeof(routine->output)-1, "%s", time_str);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		clock_gettime(CLOCK_REALTIME, &finish_tp);
