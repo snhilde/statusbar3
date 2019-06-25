@@ -1277,7 +1277,10 @@ static void *sb_wifi_routine(void *thunk)
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
-		strncpy(routine->output, essid, sizeof(routine->output)-1);
+		if (color_text)
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^wifi: %s^d^", routine->color, essid);
+		else
+			snprintf(routine->output, sizeof(routine->output)-1, "wifi: %s", essid);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
