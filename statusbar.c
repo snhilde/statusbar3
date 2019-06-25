@@ -638,12 +638,7 @@ static void *sb_fan_routine(void *thunk)
 			break;
 
 		pthread_mutex_lock(&(routine->mutex));
-		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^fan speed: %ld%%",
-					routine->color, average / count);
-		else
-			snprintf(routine->output, sizeof(routine->output)-1, "fan speed: %ld%%",
-					average / count);
+		snprintf(routine->output, sizeof(routine->output)-1, "fan speed: %ld%%", average / count);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
