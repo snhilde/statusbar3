@@ -423,12 +423,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		total = (new.user-old.user) + (new.nice-old.nice) + (new.system-old.system) + (new.idle-old.idle);
 
 		pthread_mutex_lock(&(routine->mutex));
-		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^CPU usage: %lu%%",
-					routine->color, (used*100)/total);
-		else
-			snprintf(routine->output, sizeof(routine->output)-1, "CPU usage: %lu%%",
-					(used*100)/total);
+		snprintf(routine->output, sizeof(routine->output)-1, "CPU usage: %lu%%", (used*100)/total);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		old.user   = new.user;
