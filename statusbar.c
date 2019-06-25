@@ -229,12 +229,7 @@ static void *sb_battery_routine(void *thunk)
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
-		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^bat: %ld%%",
-					routine->color, (bat.now * 100) / bat.max);
-		else
-			snprintf(routine->output, sizeof(routine->output)-1, "bat: %ld%%",
-					(bat.now * 100) / bat.max);
+		snprintf(routine->output, sizeof(routine->output)-1, "bat: %ld%%", (bat.now * 100) / bat.max);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
