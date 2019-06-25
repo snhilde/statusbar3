@@ -1,27 +1,28 @@
 /* Which routines to run (and display) and how often (in seconds) they should update. */
 static const struct {
-	enum sb_routine_e routine;
-	time_t            seconds;
+	enum sb_routine_e  routine;
+	time_t             seconds;
+	const char        *color;
 } chosen_routines[] = {
 	/* TOP BAR */
-	{ TODO      , 5       },
-	{ WEATHER   , 60 * 30 },
-	{ WIFI      , 5       },
-	{ TIME      , 1       },
+	{ TODO     , 5      , "#FFFFFF" },
+	{ WEATHER  , 60 * 30, "#FFFFFF" },
+	{ WIFI     , 5      , "#FFFFFF" },
+	{ TIME     , 1      , "#FFFFFF" },
 
 	/* DELIMITER BETWEEN BARS */
-	{ DELIMITER , 0       },
+	{ DELIMITER, 0      , NULL      },
 
 	/*BOTTOM BAR */
-	{ NETWORK   , 1       },
-	{ DISK      , 5       },
-	{ RAM       , 1       },
-	{ LOAD      , 1       },
-	{ CPU_USAGE , 1       },
-	{ CPU_TEMP  , 1       },
-	{ FAN       , 1       },
-	{ BATTERY   , 30      },
-	{ VOLUME    , 1       },
+	{ NETWORK  , 1      , "#FFFFFF" },
+	{ DISK     , 5      , "#FFFFFF" },
+	{ RAM      , 1      , "#FFFFFF" },
+	{ LOAD     , 1      , "#FFFFFF" },
+	{ CPU_USAGE, 1      , "#FFFFFF" },
+	{ CPU_TEMP , 1      , "#FFFFFF" },
+	{ FAN      , 1      , "#FFFFFF" },
+	{ BATTERY  , 30     , "#FFFFFF" },
+	{ VOLUME   , 1      , "#FFFFFF" },
 };
 
 /* Format of the clock (see strftime(3) for conversion specifications). */
