@@ -853,11 +853,7 @@ static void *sb_ram_routine(void *thunk)
 		avail_bytes_f = sb_calc_magnitude(avail_bytes, &avail_bytes_prefix);
 
 		pthread_mutex_lock(&(routine->mutex));
-		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^Free: %.1f %c / %.1f %c",
-					routine->color, avail_bytes_f, avail_bytes_prefix, total_bytes_f, total_bytes_prefix);
-		else
-			snprintf(routine->output, sizeof(routine->output)-1, "Free: %.1f %c / %.1f %c",
+		snprintf(routine->output, sizeof(routine->output)-1, "Free: %.1f %c / %.1f %c",
 				avail_bytes_f, avail_bytes_prefix, total_bytes_f, total_bytes_prefix);
 		pthread_mutex_unlock(&(routine->mutex));
 
