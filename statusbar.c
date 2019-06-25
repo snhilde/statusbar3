@@ -369,7 +369,10 @@ static void *sb_cpu_temp_routine(void *thunk)
 		total /= 1000;  /* convert to celsius */
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "cpu temp: %3ld degC", total);
+		if (color_text)
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^cpu temp: %3ld degC^d^", routine->color, total);
+		else
+			snprintf(routine->output, sizeof(routine->output)-1, "cpu temp: %3ld degC", total);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
