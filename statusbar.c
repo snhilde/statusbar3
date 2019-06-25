@@ -225,9 +225,11 @@ static void *sb_battery_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^bat: %ld%%^d^", routine->color, (bat.now * 100) / bat.max);
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^bat: %ld%%^d^",
+					routine->color, (bat.now * 100) / bat.max);
 		else
-			snprintf(routine->output, sizeof(routine->output)-1, "bat: %ld%%", (bat.now * 100) / bat.max);
+			snprintf(routine->output, sizeof(routine->output)-1, "bat: %ld%%",
+					(bat.now * 100) / bat.max);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
@@ -370,9 +372,11 @@ static void *sb_cpu_temp_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^cpu temp: %3ld degC^d^", routine->color, total);
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^cpu temp: %3ld degC^d^",
+					routine->color, total);
 		else
-			snprintf(routine->output, sizeof(routine->output)-1, "cpu temp: %3ld degC", total);
+			snprintf(routine->output, sizeof(routine->output)-1, "cpu temp: %3ld degC",
+					total);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
@@ -425,9 +429,11 @@ static void *sb_cpu_usage_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^CPU usage: %lu%%^d^", routine->color, (used*100)/total);
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^CPU usage: %lu%%^d^",
+					routine->color, (used*100)/total);
 		else
-			snprintf(routine->output, sizeof(routine->output)-1, "CPU usage: %lu%%", (used*100)/total);
+			snprintf(routine->output, sizeof(routine->output)-1, "CPU usage: %lu%%",
+					(used*100)/total);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		old.user   = new.user;
@@ -648,9 +654,11 @@ static void *sb_fan_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^fan speed: %ld%%^d^", routine->color, average / count);
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^fan speed: %ld%%^d^",
+					routine->color, average / count);
 		else
-			snprintf(routine->output, sizeof(routine->output)-1, "fan speed: %ld%%", average / count);
+			snprintf(routine->output, sizeof(routine->output)-1, "fan speed: %ld%%",
+					average / count);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
@@ -695,9 +703,11 @@ static void *sb_load_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^load: %.2f, %.2f, %.2f^d^", routine->color, av[0], av[1], av[2]);
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^load: %.2f, %.2f, %.2f^d^",
+					routine->color, av[0], av[1], av[2]);
 		else
-			snprintf(routine->output, sizeof(routine->output)-1, "load: %.2f, %.2f, %.2f", av[0], av[1], av[2]);
+			snprintf(routine->output, sizeof(routine->output)-1, "load: %.2f, %.2f, %.2f",
+					av[0], av[1], av[2]);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
@@ -814,11 +824,11 @@ static void *sb_network_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^Down: %.1f %c Up: %.1f %c^d^", routine->color,
-				files[0].reduced, files[0].prefix, files[1].reduced, files[1].prefix);
-					else
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^Down: %.1f %c Up: %.1f %c^d^",
+					routine->color, files[0].reduced, files[0].prefix, files[1].reduced, files[1].prefix);
+		else
 			snprintf(routine->output, sizeof(routine->output)-1, "Down: %.1f %c Up: %.1f %c",
-				files[0].reduced, files[0].prefix, files[1].reduced, files[1].prefix);
+					files[0].reduced, files[0].prefix, files[1].reduced, files[1].prefix);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
@@ -873,9 +883,9 @@ static void *sb_ram_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^Free: %.1f %c / %.1f %c^d^", routine->color,
-				avail_bytes_f, avail_bytes_prefix, total_bytes_f, total_bytes_prefix);
-					else
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^Free: %.1f %c / %.1f %c^d^",
+					routine->color, avail_bytes_f, avail_bytes_prefix, total_bytes_f, total_bytes_prefix);
+		else
 			snprintf(routine->output, sizeof(routine->output)-1, "Free: %.1f %c / %.1f %c",
 				avail_bytes_f, avail_bytes_prefix, total_bytes_f, total_bytes_prefix);
 		pthread_mutex_unlock(&(routine->mutex));
@@ -931,9 +941,11 @@ static void *sb_time_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^%s^d^", routine->color, time_str);
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^%s^d^",
+					routine->color, time_str);
 		else
-			snprintf(routine->output, sizeof(routine->output)-1, "%s", time_str);
+			snprintf(routine->output, sizeof(routine->output)-1, "%s",
+					time_str);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		clock_gettime(CLOCK_REALTIME, &finish_tp);
@@ -1042,9 +1054,11 @@ static void *sb_todo_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^todo: %s%s%s^d^", routine->color, line1_ptr, separator, line2_ptr);
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^todo: %s%s%s^d^",
+					routine->color, line1_ptr, separator, line2_ptr);
 		else
-			snprintf(routine->output, sizeof(routine->output)-1, "todo: %s%s%s", line1_ptr, separator, line2_ptr);
+			snprintf(routine->output, sizeof(routine->output)-1, "todo: %s%s%s",
+					line1_ptr, separator, line2_ptr);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
@@ -1150,9 +1164,11 @@ static void *sb_volume_routine(void *thunk)
 		} else {
 			pthread_mutex_lock(&(routine->mutex));
 			if (color_text)
-				snprintf(routine->output, sizeof(routine->output)-1, "^c%s^volume: %ld%%^d^", routine->color, (volume - min) * 100 / (max - min));
+				snprintf(routine->output, sizeof(routine->output)-1, "^c%s^volume: %ld%%^d^",
+						routine->color, (volume - min) * 100 / (max - min));
 			else
-				snprintf(routine->output, sizeof(routine->output)-1, "volume: %ld%%", (volume - min) * 100 / (max - min));
+				snprintf(routine->output, sizeof(routine->output)-1, "volume: %ld%%",
+						(volume - min) * 100 / (max - min));
 			pthread_mutex_unlock(&(routine->mutex));
 		}
 
@@ -1278,9 +1294,11 @@ static void *sb_wifi_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^wifi: %s^d^", routine->color, essid);
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^wifi: %s^d^",
+					routine->color, essid);
 		else
-			snprintf(routine->output, sizeof(routine->output)-1, "wifi: %s", essid);
+			snprintf(routine->output, sizeof(routine->output)-1, "wifi: %s",
+					essid);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
