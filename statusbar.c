@@ -1182,7 +1182,10 @@ static void *sb_weather_routine(void *thunk)
 		/* TODO: run routine */
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "weather: TODO");
+		if (color_text)
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^weather: TODO^d^", routine->color);
+		else
+			snprintf(routine->output, sizeof(routine->output)-1, "weather: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
