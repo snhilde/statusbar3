@@ -88,6 +88,11 @@ static void *sb_print_to_sb(void *thunk)
 
 			pthread_mutex_unlock(&(routine->mutex));
 			routine = routine->next;
+
+			if (color_text) {
+				memcpy(full_output+offset, "^d^", 3);
+				offset += 3;
+			}
 		}
 		full_output[offset] = '\0';
 
@@ -225,7 +230,7 @@ static void *sb_battery_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^bat: %ld%%^d^",
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^bat: %ld%%",
 					routine->color, (bat.now * 100) / bat.max);
 		else
 			snprintf(routine->output, sizeof(routine->output)-1, "bat: %ld%%",
@@ -372,7 +377,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^cpu temp: %3ld degC^d^",
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^cpu temp: %3ld degC",
 					routine->color, total);
 		else
 			snprintf(routine->output, sizeof(routine->output)-1, "cpu temp: %3ld degC",
@@ -429,7 +434,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^CPU usage: %lu%%^d^",
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^CPU usage: %lu%%",
 					routine->color, (used*100)/total);
 		else
 			snprintf(routine->output, sizeof(routine->output)-1, "CPU usage: %lu%%",
@@ -499,8 +504,6 @@ static void *sb_disk_routine(void *thunk)
 			if (i+1 < num_filesystems)
 				strncat(routine->output, ", ", sizeof(routine->output)-strlen(routine->output)-1);
 		}
-		if (color_text)
-			strncat(routine->output, "^d^", sizeof(routine->output)-strlen(routine->output)-1);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		if (error)
@@ -654,7 +657,7 @@ static void *sb_fan_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^fan speed: %ld%%^d^",
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^fan speed: %ld%%",
 					routine->color, average / count);
 		else
 			snprintf(routine->output, sizeof(routine->output)-1, "fan speed: %ld%%",
@@ -703,7 +706,7 @@ static void *sb_load_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^load: %.2f, %.2f, %.2f^d^",
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^load: %.2f, %.2f, %.2f",
 					routine->color, av[0], av[1], av[2]);
 		else
 			snprintf(routine->output, sizeof(routine->output)-1, "load: %.2f, %.2f, %.2f",
@@ -824,7 +827,7 @@ static void *sb_network_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^Down: %.1f %c Up: %.1f %c^d^",
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^Down: %.1f %c Up: %.1f %c",
 					routine->color, files[0].reduced, files[0].prefix, files[1].reduced, files[1].prefix);
 		else
 			snprintf(routine->output, sizeof(routine->output)-1, "Down: %.1f %c Up: %.1f %c",
@@ -883,7 +886,7 @@ static void *sb_ram_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^Free: %.1f %c / %.1f %c^d^",
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^Free: %.1f %c / %.1f %c",
 					routine->color, avail_bytes_f, avail_bytes_prefix, total_bytes_f, total_bytes_prefix);
 		else
 			snprintf(routine->output, sizeof(routine->output)-1, "Free: %.1f %c / %.1f %c",
@@ -941,7 +944,7 @@ static void *sb_time_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^%s^d^",
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^%s",
 					routine->color, time_str);
 		else
 			snprintf(routine->output, sizeof(routine->output)-1, "%s",
@@ -1054,7 +1057,7 @@ static void *sb_todo_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^todo: %s%s%s^d^",
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^todo: %s%s%s",
 					routine->color, line1_ptr, separator, line2_ptr);
 		else
 			snprintf(routine->output, sizeof(routine->output)-1, "todo: %s%s%s",
@@ -1154,7 +1157,7 @@ static void *sb_volume_routine(void *thunk)
 		} else if (mute == 0) {
 			pthread_mutex_lock(&(routine->mutex));
 			if (color_text)
-				snprintf(routine->output, sizeof(routine->output)-1, "^c%s^volume: mute^d^", routine->color);
+				snprintf(routine->output, sizeof(routine->output)-1, "^c%s^volume: mute", routine->color);
 			else
 				snprintf(routine->output, sizeof(routine->output)-1, "volume: mute");
 			pthread_mutex_unlock(&(routine->mutex));
@@ -1164,7 +1167,7 @@ static void *sb_volume_routine(void *thunk)
 		} else {
 			pthread_mutex_lock(&(routine->mutex));
 			if (color_text)
-				snprintf(routine->output, sizeof(routine->output)-1, "^c%s^volume: %ld%%^d^",
+				snprintf(routine->output, sizeof(routine->output)-1, "^c%s^volume: %ld%%",
 						routine->color, (volume - min) * 100 / (max - min));
 			else
 				snprintf(routine->output, sizeof(routine->output)-1, "volume: %ld%%",
@@ -1199,7 +1202,7 @@ static void *sb_weather_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^weather: TODO^d^", routine->color);
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^weather: TODO", routine->color);
 		else
 			snprintf(routine->output, sizeof(routine->output)-1, "weather: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
@@ -1294,7 +1297,7 @@ static void *sb_wifi_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^wifi: %s^d^",
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^wifi: %s",
 					routine->color, essid);
 		else
 			snprintf(routine->output, sizeof(routine->output)-1, "wifi: %s",
