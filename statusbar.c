@@ -1015,12 +1015,8 @@ static void *sb_todo_routine(void *thunk)
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
-		if (color_text)
-			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^todo: %s%s%s",
-					routine->color, line1_ptr, separator, line2_ptr);
-		else
-			snprintf(routine->output, sizeof(routine->output)-1, "todo: %s%s%s",
-					line1_ptr, separator, line2_ptr);
+		snprintf(routine->output, sizeof(routine->output)-1, "todo: %s%s%s",
+				line1_ptr, separator, line2_ptr);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
