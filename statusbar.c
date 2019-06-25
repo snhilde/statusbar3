@@ -472,7 +472,11 @@ static void *sb_disk_routine(void *thunk)
 		/* In this routine, we're going to lock the mutex for the entire operation so we
 		 * can safely add to the routine's output for the entire loop. */
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "Disk: ");
+		if (color_text)
+			snprintf(routine->output, sizeof(routine->output)-1, "^c%s^Disk: ", routine->color);
+		else
+			snprintf(routine->output, sizeof(routine->output)-1, "Disk: ");
+
 		num_filesystems = sizeof(filesystems) / sizeof(*filesystems);
 		for (i=0; i<num_filesystems; i++) {
 			if (statvfs(filesystems[i].path, &stats) != 0) {
@@ -489,6 +493,8 @@ static void *sb_disk_routine(void *thunk)
 			if (i+1 < num_filesystems)
 				strncat(routine->output, ", ", sizeof(routine->output)-strlen(routine->output)-1);
 		}
+		if (color_text)
+			strncat(routine->output, "^d^", sizeof(routine->output)-strlen(routine->output)-1);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		if (error)
