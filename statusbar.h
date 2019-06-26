@@ -38,7 +38,7 @@
 #endif
 
 enum sb_routine_e {
-	BATTERY   ,
+	BATTERY  ,
 	CPU_TEMP ,
 	CPU_USAGE,
 	DISK     ,
