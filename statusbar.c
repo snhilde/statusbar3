@@ -84,11 +84,11 @@ static void *sb_print_to_sb(void *thunk)
 			}
 
 			if (color_text && routine->routine != DELIMITER) {
-				strncpy(full_output+offset, "^c", SBLENGTH-offset);
+				strcpy(full_output+offset, "^c");
 				offset += 2;
-				strncpy(full_output+offset, routine->color, SBLENGTH-offset);
+				strcpy(full_output+offset, routine->color);
 				offset += 7;
-				strncpy(full_output+offset, "^", SBLENGTH-offset);
+				strcpy(full_output+offset, "^");
 				offset += 1;
 			}
 
@@ -96,7 +96,7 @@ static void *sb_print_to_sb(void *thunk)
 			offset += len;
 
 			if (color_text && routine->routine != DELIMITER) {
-				strncpy(full_output+offset, "^d^", SBLENGTH-offset);
+				strcpy(full_output+offset, "^d^");
 				offset += 3;
 			}
 
