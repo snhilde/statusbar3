@@ -78,21 +78,30 @@ static void *sb_print_to_sb(void *thunk)
 
 			pthread_mutex_lock(&(routine->mutex));
 			len = strlen(routine->output);
-			if (offset+len > SBLENGTH-1) {
+			if (offset+len > SBLENGTH - 1 + (color_text?10:0)) {
 				fprintf(stderr, "Print: Exceeded max output length\n");
 				break;
+			}
+
+			if (color_text && routine->routine != DELIMITER) {
+				strncpy(full_output+offset, "^c", SBLENGTH-offset);
+				offset += 2;
+				strncpy(full_output+offset, routine->color, SBLENGTH-offset);
+				offset += 7;
+				strncpy(full_output+offset, "^", SBLENGTH-offset);
+				offset += 1;
 			}
 
 			memcpy(full_output+offset, routine->output, len);
 			offset += len;
 
-			pthread_mutex_unlock(&(routine->mutex));
-			routine = routine->next;
-
-			if (color_text) {
-				memcpy(full_output+offset, "^d^", 3);
+			if (color_text && routine->routine != DELIMITER) {
+				strncpy(full_output+offset, "^d^", SBLENGTH-offset);
 				offset += 3;
 			}
+
+			pthread_mutex_unlock(&(routine->mutex));
+			routine = routine->next;
 		}
 		full_output[offset] = '\0';
 
