@@ -83,6 +83,7 @@ static void *sb_print_to_sb(void *thunk)
 				break;
 			}
 
+			/* Print opening status2d color code. */
 			if (color_text && routine->routine != DELIMITER) {
 				strcpy(full_output+offset, "^c");
 				offset += 2;
@@ -95,6 +96,7 @@ static void *sb_print_to_sb(void *thunk)
 			memcpy(full_output+offset, routine->output, len);
 			offset += len;
 
+			/* Print status2d terminator code. */
 			if (color_text && routine->routine != DELIMITER) {
 				strcpy(full_output+offset, "^d^");
 				offset += 3;
