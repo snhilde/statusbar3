@@ -440,7 +440,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		total = (new.user-old.user) + (new.nice-old.nice) + (new.system-old.system) + (new.idle-old.idle);
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "CPU usage: %2lu%%", (used*100)/total);
+		snprintf(routine->output, sizeof(routine->output)-1, "cpu usage: %2lu%%", (used*100)/total);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		old.user   = new.user;
