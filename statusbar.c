@@ -897,8 +897,6 @@ static void *sb_time_routine(void *thunk)
 	struct tm     tm;
 	char          time_str[64];
 	SB_BOOL       blink   = SB_FALSE;
-	int           i;
-	size_t        len;
 
 	routine->skip = SB_FALSE;
 	while(1) {
@@ -913,11 +911,7 @@ static void *sb_time_routine(void *thunk)
 		strftime(time_str, sizeof(time_str)-1, time_format, &tm);
 
 		if (blink) {
-			len = strlen(time_str);
-			for (i=0; i<len; i++) {
-				if (time_str[i] == ':')
-					time_str[i] = ' ';
-			}
+			*strchr(time_str, ':') = ' ';
 			blink = SB_FALSE;
 		} else {
 			blink = SB_TRUE;
