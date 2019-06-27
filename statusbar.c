@@ -83,6 +83,10 @@ static void *sb_print_to_sb(void *thunk)
 				break;
 			}
 
+			/* add space between routines */
+			memcpy(full_output+offset, "  ", 2);
+			offset += 2;
+
 			/* Print opening status2d color code. */
 			if (color_text && routine->routine != DELIMITER) {
 				strcpy(full_output+offset, "^c");
