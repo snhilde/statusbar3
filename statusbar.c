@@ -850,7 +850,7 @@ static void *sb_ram_routine(void *thunk)
 	page_size   = sysconf(_SC_PAGESIZE);
 	total_pages = sysconf(_SC_PHYS_PAGES);
 	if (page_size < 0 || total_pages < 0) {
-		fprintf(stderr, "Ram routine: Failed to get page info\n");
+		fprintf(stderr, "RAM routine: Failed to get page info\n");
 		return NULL;
 	}
 
@@ -864,13 +864,13 @@ static void *sb_ram_routine(void *thunk)
 		/* get available memory */
 		avail_bytes = sysconf(_SC_AVPHYS_PAGES) * page_size;
 		if (avail_bytes < 0) {
-			fprintf(stderr, "Ram routine: Failed to get available bytes\n");
+			fprintf(stderr, "RAM routine: Failed to get available bytes\n");
 			break;
 		}
 		avail_bytes_f = sb_calc_magnitude(avail_bytes, &avail_bytes_prefix);
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "Ram: %3.1f%c/%3.1f%c",
+		snprintf(routine->output, sizeof(routine->output)-1, "ram: %3.1f%c/%3.1f%c",
 				avail_bytes_f, avail_bytes_prefix, total_bytes_f, total_bytes_prefix);
 		pthread_mutex_unlock(&(routine->mutex));
 
