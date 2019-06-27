@@ -718,11 +718,11 @@ static void *sb_load_routine(void *thunk)
 /* --- NETWORK ROUTINE --- */
 #ifdef BUILD_NETWORK
 struct sb_file_t {
-	char   path[IFNAMSIZ+64];
-	long   old_bytes;
-	long   new_bytes;
-	float  reduced;
-	char   prefix;
+	char path[IFNAMSIZ+64];
+	long old_bytes;
+	long new_bytes;
+	long reduced;
+	char prefix;
 };
 
 static SB_BOOL sb_get_paths(struct sb_file_t *rx_file, struct sb_file_t *tx_file)
@@ -808,14 +808,14 @@ static void *sb_network_routine(void *thunk)
 				error = SB_TRUE;
 			} else {
 				diff             = files[i].new_bytes - files[i].old_bytes;
-				files[i].reduced = sb_calc_magnitude(diff, &files[i].prefix);
+				files[i].reduced = (long)sb_calc_magnitude(diff, &files[i].prefix);
 			}
 		}
 		if (error)
 			break;
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "Down: %.1f %c Up: %.1f %c",
+		snprintf(routine->output, sizeof(routine->output)-1, "Down: %ld %c Up: %ld %c",
 				files[0].reduced, files[0].prefix, files[1].reduced, files[1].prefix);
 		pthread_mutex_unlock(&(routine->mutex));
 
