@@ -144,7 +144,7 @@ static void *sb_battery_routine(void *thunk)
 	if (!sb_bat_find_bat(&bat))
 		return NULL;
 
-	routine->skip = SB_FALSE;
+	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -171,7 +171,7 @@ static void *sb_battery_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		fprintf(stderr, "Battery routine: Failed to destroy mutex\n");
-	routine->skip = SB_TRUE;
+	routine->print = SB_FALSE;
 	return NULL;
 }
 
@@ -288,7 +288,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 	if (!sb_find_temps(temps, sizeof(temps)/sizeof(*temps), &count))
 		return NULL;
 
-	routine->skip = SB_FALSE;
+	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -312,7 +312,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		fprintf(stderr, "CPU Temp routine: Failed to destroy mutex\n");
-	routine->skip = SB_TRUE;
+	routine->print = SB_FALSE;
 	return NULL;
 }
 
@@ -336,7 +336,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		unsigned long idle;
 	} old, new;
 
-	routine->skip = SB_FALSE;
+	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -374,7 +374,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		fprintf(stderr, "CPU Usage routine: Failed to destroy mutex\n");
-	routine->skip = SB_TRUE;
+	routine->print = SB_FALSE;
 	return NULL;
 }
 
@@ -396,7 +396,7 @@ static void *sb_disk_routine(void *thunk)
 	char           total_prefix;
 	char           output[512];
 
-	routine->skip = SB_FALSE;
+	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -433,7 +433,7 @@ static void *sb_disk_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		fprintf(stderr, "Disk routine: Failed to destroy mutex\n");
-	routine->skip = SB_TRUE;
+	routine->print = SB_FALSE;
 	return NULL;
 }
 
@@ -543,7 +543,7 @@ static void *sb_fan_routine(void *thunk)
 	if (!sb_find_fans(fans, &count))
 		return NULL;
 
-	routine->skip = SB_FALSE;
+	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -588,7 +588,7 @@ static void *sb_fan_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		fprintf(stderr, "Fan routine: Failed to destroy mutex\n");
-	routine->skip = SB_TRUE;
+	routine->print = SB_FALSE;
 	return NULL;
 }
 
@@ -604,7 +604,7 @@ static void *sb_load_routine(void *thunk)
 	static const char *path = "/proc/loadavg";
 	double             av[3];
 
-	routine->skip = SB_FALSE;
+	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -634,7 +634,7 @@ static void *sb_load_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		fprintf(stderr, "Load routine: Failed to destroy mutex\n");
-	routine->skip = SB_TRUE;
+	routine->print = SB_FALSE;
 	return NULL;
 }
 
@@ -713,7 +713,7 @@ static void *sb_network_routine(void *thunk)
 	if (!sb_get_paths(&files[0], &files[1]))
 		return NULL;
 
-	routine->skip = SB_FALSE;
+	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -753,7 +753,7 @@ static void *sb_network_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		fprintf(stderr, "Network routine: Failed to destroy mutex\n");
-	routine->skip = SB_TRUE;
+	routine->print = SB_FALSE;
 	return NULL;
 }
 
@@ -783,7 +783,7 @@ static void *sb_ram_routine(void *thunk)
 	/* get total bytes as a decimal in human-readable format */
 	total_bytes_f = sb_calc_magnitude(total_pages*page_size, &total_bytes_prefix);
 
-	routine->skip = SB_FALSE;
+	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -807,7 +807,7 @@ static void *sb_ram_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		fprintf(stderr, "RAM routine: Failed to destroy mutex\n");
-	routine->skip = SB_TRUE;
+	routine->print = SB_FALSE;
 	return NULL;
 }
 
@@ -826,7 +826,7 @@ static void *sb_time_routine(void *thunk)
 	char      time_str[64];
 	SB_BOOL   blink = SB_FALSE;
 
-	routine->skip = SB_FALSE;
+	routine->print = SB_TRUE;
 	while(1) {
 		clock_gettime(CLOCK_REALTIME, &start_tp);
 
@@ -860,7 +860,7 @@ static void *sb_time_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		fprintf(stderr, "Time routine: Failed to destroy mutex\n");
-	routine->skip = SB_TRUE;
+	routine->print = SB_FALSE;
 	return NULL;
 }
 
@@ -916,7 +916,7 @@ static void *sb_todo_routine(void *thunk)
 
 	snprintf(path, sizeof(path), "%s/.TODO", getenv("HOME"));
 
-	routine->skip = SB_FALSE;
+	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -970,7 +970,7 @@ static void *sb_todo_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		fprintf(stderr, "TODO routine: Failed to destroy mutex\n");
-	routine->skip = SB_TRUE;
+	routine->print = SB_FALSE;
 	return NULL;
 }
 
@@ -1042,7 +1042,7 @@ static void *sb_volume_routine(void *thunk)
 		return NULL;
 	}
 
-	routine->skip = SB_FALSE;
+	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -1074,7 +1074,7 @@ static void *sb_volume_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		fprintf(stderr, "Volume routine: Failed to destroy mutex\n");
-	routine->skip = SB_TRUE;
+	routine->print = SB_FALSE;
 	return NULL;
 }
 
@@ -1087,7 +1087,7 @@ static void *sb_weather_routine(void *thunk)
 #ifdef BUILD_WEATHER
 	SB_TIMER_VARS;
 
-	routine->skip = SB_FALSE;
+	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -1104,7 +1104,7 @@ static void *sb_weather_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		fprintf(stderr, "Weather routine: Failed to destroy mutex\n");
-	routine->skip = SB_TRUE;
+	routine->print = SB_FALSE;
 	return NULL;
 }
 
@@ -1177,7 +1177,7 @@ static void *sb_wifi_routine(void *thunk)
 		return NULL;
 	}
 
-	routine->skip = SB_FALSE;
+	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
@@ -1200,7 +1200,7 @@ static void *sb_wifi_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		fprintf(stderr, "Wifi routine: Failed to destroy mutex\n");
-	routine->skip = SB_TRUE;
+	routine->print = SB_FALSE;
 	return NULL;
 }
 
@@ -1229,7 +1229,7 @@ static void sb_print(void)
 		offset  = 0;
 		routine = routine_list;
 		while (routine != NULL) {
-			if (routine->skip == SB_TRUE) {
+			if (routine->print == SB_FALSE) {
 				routine = routine->next;
 				continue;
 			}
@@ -1341,12 +1341,13 @@ int main(int argc, char *argv[])
 		if (index == DELIMITER) {
 			snprintf(routine_object->output, sizeof(routine_object->output)-1, ";");
 			routine_object->length = 1;
+			routine_object->print  = SB_TRUE;
 			continue;
 		}
 		routine_object->thread_func = possible_routines[index].callback;
 		routine_object->interval    = chosen_routines[i].seconds;
 		routine_object->color       = chosen_routines[i].color;
-		routine_object->skip        = SB_TRUE; /* this will be set to SB_FALSE when routine initializes successfully */
+		routine_object->print       = SB_FALSE; /* this will be set to SB_TRUE when routine initializes successfully */
 
 		/* create thread */
 		pthread_mutex_init(&(routine_object->mutex), NULL);
