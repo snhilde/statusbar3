@@ -1241,7 +1241,7 @@ static void sb_print(void)
 				break;
 			}
 
-			/* add space between routines */
+			/* Print space between routines. */
 			if (routine->routine != DELIMITER) {
 				memcpy(full_output+offset, "  ", 2);
 				offset += 2;
@@ -1249,20 +1249,21 @@ static void sb_print(void)
 
 			/* Print opening status2d color code. */
 			if (color_text && routine->routine != DELIMITER) {
-				strcpy(full_output+offset, "^c");
+				memcpy(full_output+offset, "^c", 2);
 				offset += 2;
-				strcpy(full_output+offset, routine->color);
+				memcpy(full_output+offset, routine->color, 7);
 				offset += 7;
-				strcpy(full_output+offset, "^");
+				memcpy(full_output+offset, "^", 1);
 				offset += 1;
 			}
 
+			/* Print routine output. */
 			memcpy(full_output+offset, routine->output, len);
 			offset += len;
 
 			/* Print status2d terminator code. */
 			if (color_text && routine->routine != DELIMITER) {
-				strcpy(full_output+offset, "^d^");
+				memcpy(full_output+offset, "^d^", 3);
 				offset += 3;
 			}
 
