@@ -1238,10 +1238,9 @@ static void sb_print(void)
 				break;
 			}
 
-			/* Print space between routines. */
 			if (routine->routine != DELIMITER) {
-				memcpy(full_output+offset, "  ", 2);
-				offset += 2;
+				memcpy(full_output+offset, "[", 1);
+				offset += 1;
 			}
 
 			/* Print opening status2d color code. */
@@ -1263,6 +1262,12 @@ static void sb_print(void)
 				memcpy(full_output+offset, "^d^", 3);
 				offset += 3;
 			}
+
+			if (routine->routine != DELIMITER) {
+				memcpy(full_output+offset, "] ", 2);
+				offset += 2;
+			}
+
 
 			pthread_mutex_unlock(&(routine->mutex));
 			routine = routine->next;
