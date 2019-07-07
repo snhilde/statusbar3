@@ -1347,11 +1347,6 @@ int main(int argc, char *argv[])
 		routine_object->skip = SB_TRUE; /* make sure routine is skipped */
 		free(join_ret);
 	}
-	/* kill print thread */
-	run = 0;
-	if (pthread_join(print_thread, &join_ret) != 0)
-		fprintf(stderr, "print thread did not exit cleanly (%s)\n", (char *)join_ret);
-	free(join_ret);
 
 	return EXIT_SUCCESS;
 }
