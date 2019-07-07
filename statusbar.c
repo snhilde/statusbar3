@@ -47,6 +47,11 @@ static float sb_calc_magnitude(long number, char *prefix)
 
 static long sb_normalize_perc(long num)
 {
+	if (num > 100)
+		return 100;
+
+	if (num < 0)
+		return 0;
 
 	return num;
 }
