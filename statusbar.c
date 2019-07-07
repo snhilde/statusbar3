@@ -670,12 +670,12 @@ static void *sb_fan_routine(void *thunk)
 		SB_SLEEP;
 	}
 
-	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		fprintf(stderr, "Fan routine: Failed to destroy mutex\n");
 	if (fd != NULL)
 		fclose(fd);
 #endif
 
+	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
+		fprintf(stderr, "Fan routine: Failed to destroy mutex\n");
 	routine->skip = SB_TRUE;
 	return NULL;
 }
