@@ -1,8 +1,8 @@
 /* Which routines to run (and display) and how often (in seconds) they should update. */
 static const struct {
-	enum sb_routine_e routine;
-	time_t            seconds;
-	const char        color[8];
+	enum sb_routine_e  routine;
+	time_t             seconds;
+	const char        *color;
 } chosen_routines[] = {
 	/* TOP BAR */
 	{ TODO     , 5      , "#FFFFFF" },
@@ -11,7 +11,7 @@ static const struct {
 	{ TIME     , 1      , "#FFFFFF" },
 
 	/* DELIMITER BETWEEN BARS */
-	{ DELIMITER, 0      , ""        },
+	{ DELIMITER, 0      , NULL      },
 
 	/*BOTTOM BAR */
 	{ NETWORK  , 1      , "#FFFFFF" },
