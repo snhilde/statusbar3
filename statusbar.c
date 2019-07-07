@@ -456,12 +456,12 @@ static void *sb_cpu_usage_routine(void *thunk)
 		SB_SLEEP;
 	}
 
-	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		fprintf(stderr, "CPU Usage routine: Failed to destroy mutex\n");
 	if (fd != NULL)
 		fclose(fd);
 #endif
 
+	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
+		fprintf(stderr, "CPU Usage routine: Failed to destroy mutex\n");
 	routine->skip = SB_TRUE;
 	return NULL;
 }
