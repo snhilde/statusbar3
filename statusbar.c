@@ -45,6 +45,12 @@ static float sb_calc_magnitude(long number, char *prefix)
 	return (number >> (10*(i-1))) / 1024.0;
 }
 
+static long sb_normalize_perc(long num)
+{
+
+	return num;
+}
+
 
 /* --- BATTERY ROUTINE --- */
 #ifdef BUILD_BATTERY
