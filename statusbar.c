@@ -398,6 +398,8 @@ static void *sb_cpu_temp_routine(void *thunk)
 	}
 #endif
 
+	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
+		fprintf(stderr, "CPU Temp routine: Failed to destroy mutex\n");
 	routine->skip = SB_TRUE;
 	return NULL;
 }
