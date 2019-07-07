@@ -796,7 +796,7 @@ static void *sb_ram_routine(void *thunk)
 		avail_bytes_f = sb_calc_magnitude(avail_bytes, &avail_bytes_prefix);
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "ram: %3.1f%c/%3.1f%c",
+		snprintf(routine->output, sizeof(routine->output)-1, "%3.1f%c free/%3.1f%c",
 				avail_bytes_f, avail_bytes_prefix, total_bytes_f, total_bytes_prefix);
 		pthread_mutex_unlock(&(routine->mutex));
 
