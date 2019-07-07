@@ -1160,6 +1160,8 @@ static void *sb_volume_routine(void *thunk)
 	snd_mixer_close(mixer);
 #endif
 
+	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
+		fprintf(stderr, "Volume routine: Failed to destroy mutex\n");
 	routine->skip = SB_TRUE;
 	return NULL;
 }
