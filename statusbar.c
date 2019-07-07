@@ -519,6 +519,8 @@ static void *sb_disk_routine(void *thunk)
 	}
 #endif
 
+	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
+		fprintf(stderr, "Disk routine: Failed to destroy mutex\n");
 	routine->skip = SB_TRUE;
 	return NULL;
 }
