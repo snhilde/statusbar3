@@ -1343,16 +1343,17 @@ int main(int argc, char *argv[])
 			snprintf(routine_object->output, sizeof(routine_object->output)-1, ";");
 			routine_object->length = 1;
 			routine_object->print  = SB_TRUE;
-			continue;
-		}
-		routine_object->thread_func = possible_routines[index].callback;
-		routine_object->interval    = chosen_routines[i].seconds;
-		routine_object->color       = chosen_routines[i].color;
-		routine_object->print       = SB_FALSE; /* this will be set to SB_TRUE when routine initializes successfully */
+		} else if (strlen(chosen_routines[i].color) != 7) {
+			fprintf(stderr, "%s: color must be RGB hex (\"#RRGGBB\")", routine_names[index]);
+		} else {
+			routine_object->thread_func = possible_routines[index].callback;
+			routine_object->interval    = chosen_routines[i].seconds;
+			routine_object->color       = chosen_routines[i].color;
 
-		/* create thread */
-		pthread_mutex_init(&(routine_object->mutex), NULL);
-		pthread_create(&(routine_object->thread), NULL, routine_object->thread_func, (void *)routine_object);
+			/* create thread */
+			pthread_mutex_init(&(routine_object->mutex), NULL);
+			pthread_create(&(routine_object->thread), NULL, routine_object->thread_func, (void *)routine_object);
+		}
 	}
 	/* properly terminate the routine list */
 	routine_object->next = NULL;
