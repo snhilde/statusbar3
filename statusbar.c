@@ -17,7 +17,7 @@
 #define SB_SLEEP \
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000); \
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) { \
-			fprintf(stderr, "%s routine: Error sleeping\n", routine_names[routine->routine]); \
+			fprintf(stderr, "%s routine: Error sleeping\n", routine->name); \
 		}
 
 /* --- HELPER FUNCTIONS --- */
