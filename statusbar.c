@@ -720,6 +720,8 @@ static void *sb_load_routine(void *thunk)
 		fclose(fd);
 #endif
 
+	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
+		fprintf(stderr, "Load routine: Failed to destroy mutex\n");
 	routine->skip = SB_TRUE;
 	return NULL;
 }
