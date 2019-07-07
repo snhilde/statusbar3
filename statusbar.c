@@ -1220,9 +1220,6 @@ static void sb_print(void)
 	dpy  = XOpenDisplay(NULL);
 	root = RootWindow(dpy, DefaultScreen(dpy));
 
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
-
 	while (1) {
 		SB_START_TIMER;
 
