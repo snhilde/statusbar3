@@ -893,6 +893,8 @@ static void *sb_ram_routine(void *thunk)
 	}
 #endif
 
+	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
+		fprintf(stderr, "RAM routine: Failed to destroy mutex\n");
 	routine->skip = SB_TRUE;
 	return NULL;
 }
