@@ -1229,6 +1229,9 @@ static void sb_print(void)
 			if (routine->print == SB_FALSE) {
 				routine = routine->next;
 				continue;
+			} else if (routine->routine == DELIMITER) {
+				memcpy(full_output+offset, ";", 1);
+				continue;
 			}
 
 			pthread_mutex_lock(&(routine->mutex));
@@ -1238,13 +1241,8 @@ static void sb_print(void)
 				break;
 			}
 
-			if (routine->routine != DELIMITER) {
-				memcpy(full_output+offset, "[", 1);
-				offset += 1;
-			}
-
 			/* Print opening status2d color code. */
-			if (color_text && routine->routine != DELIMITER) {
+			if (color_text) {
 				memcpy(full_output+offset, "^c", 2);
 				offset += 2;
 				memcpy(full_output+offset, routine->color, 7);
@@ -1253,20 +1251,20 @@ static void sb_print(void)
 				offset += 1;
 			}
 
-			/* Print routine output. */
+			memcpy(full_output+offset, "[", 1);
+			offset += 1;
+
 			memcpy(full_output+offset, routine->output, len);
 			offset += len;
 
 			/* Print status2d terminator code. */
-			if (color_text && routine->routine != DELIMITER) {
+			if (color_text) {
 				memcpy(full_output+offset, "^d^", 3);
 				offset += 3;
 			}
 
-			if (routine->routine != DELIMITER) {
-				memcpy(full_output+offset, "] ", 2);
-				offset += 2;
-			}
+			memcpy(full_output+offset, "] ", 2);
+			offset += 2;
 
 
 			pthread_mutex_unlock(&(routine->mutex));
