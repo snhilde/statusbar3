@@ -38,7 +38,7 @@
 #endif
 
 enum sb_routine_e {
-	BATTERY  ,
+	BATTERY = 0,
 	CPU_TEMP ,
 	CPU_USAGE,
 	DISK     ,
@@ -99,7 +99,7 @@ static const char *routine_names[] = {
 /* This array will hold all the routine objects. Because it is global, it is zero'd out on
  * startup. If a user does not chose a particular routine in the config file, that
  * routine's index will remain empty. */
-sb_routine_t routine_array[sizeof(routine_names) / sizeof(*routine_names) + 1];
+sb_routine_t routine_array[DELIMITER + 1];
 
 /* These are all the flags for the routine. Because it is global, it is zero'd out on
  * startup. If a user does not chose a particular routine in the config file, that routine's
