@@ -839,6 +839,8 @@ static void *sb_network_routine(void *thunk)
 		fclose(fd);
 #endif
 
+	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
+		fprintf(stderr, "Network routine: Failed to destroy mutex\n");
 	routine->skip = SB_TRUE;
 	return NULL;
 }
