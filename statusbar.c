@@ -1338,7 +1338,7 @@ int main(int argc, char *argv[])
 		routine_object->next = routine_array + chosen_routines[i+1].routine;
 
 		/* initialize the routine */
-		routine_object->routine = chosen_routines[i].routine;
+		routine_object->routine = index;
 		if (index == DELIMITER) {
 			snprintf(routine_object->output, sizeof(routine_object->output)-1, ";");
 			routine_object->length = 1;
