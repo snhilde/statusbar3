@@ -46,94 +46,6 @@ static float sb_calc_magnitude(long number, char *prefix)
 }
 
 
-/* --- PRINTING THREAD --- */
-static void *sb_print_to_sb(void *thunk)
-{
-	SB_TIMER_VARS
-	int          *run = thunk;
-	Display      *dpy;
-	Window        root;
-
-	char          full_output[SBLENGTH];
-	size_t        offset;
-	sb_routine_t *routine;
-	size_t        len;
-
-	dpy  = XOpenDisplay(NULL);
-	root = RootWindow(dpy, DefaultScreen(dpy));
-
-	memset(&start_tp, 0, sizeof(start_tp));
-	memset(&finish_tp, 0, sizeof(finish_tp));
-
-	while (*run) {
-		SB_START_TIMER;
-
-		offset  = 0;
-		routine = routine_list;
-		while (routine != NULL) {
-			if (routine->skip == SB_TRUE) {
-				routine = routine->next;
-				continue;
-			}
-
-			pthread_mutex_lock(&(routine->mutex));
-			len = strlen(routine->output);
-			if (offset+len > SBLENGTH - 1 + (color_text?10:0)) {
-				fprintf(stderr, "Print: Exceeded max output length\n");
-				break;
-			}
-
-			/* add space between routines */
-			if (routine->routine != DELIMITER) {
-				memcpy(full_output+offset, "  ", 2);
-				offset += 2;
-			}
-
-			/* Print opening status2d color code. */
-			if (color_text && routine->routine != DELIMITER) {
-				strcpy(full_output+offset, "^c");
-				offset += 2;
-				strcpy(full_output+offset, routine->color);
-				offset += 7;
-				strcpy(full_output+offset, "^");
-				offset += 1;
-			}
-
-			memcpy(full_output+offset, routine->output, len);
-			offset += len;
-
-			/* Print status2d terminator code. */
-			if (color_text && routine->routine != DELIMITER) {
-				strcpy(full_output+offset, "^d^");
-				offset += 3;
-			}
-
-			pthread_mutex_unlock(&(routine->mutex));
-			routine = routine->next;
-		}
-		full_output[offset] = '\0';
-
-		if (!XStoreName(dpy, root, full_output)) {
-			fprintf(stderr, "Print: Failed to set root name\n");
-			break;
-		}
-		if (!XFlush(dpy)) {
-			fprintf(stderr, "Print: Failed to flush output buffer\n");
-			break;
-		}
-
-		SB_STOP_TIMER;
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
-		if (usleep(1000000 - elapsed_usec) != 0) {
-			fprintf(stderr, "Print routine: Error sleeping\n");
-		}
-	}
-
-	fprintf(stderr, "Closing print_thread, exiting program...\n");
-	exit(EXIT_FAILURE);
-}
-
-
 /* --- BATTERY ROUTINE --- */
 #ifdef BUILD_BATTERY
 struct sb_bat_t {
@@ -1290,6 +1202,93 @@ static void *sb_wifi_routine(void *thunk)
 		fprintf(stderr, "Wifi routine: Failed to destroy mutex\n");
 	routine->skip = SB_TRUE;
 	return NULL;
+}
+
+
+/* --- PRINT LOOP --- */
+static void sb_print(void)
+{
+	SB_TIMER_VARS
+	Display      *dpy;
+	Window        root;
+
+	char          full_output[SBLENGTH];
+	size_t        offset;
+	sb_routine_t *routine;
+	size_t        len;
+
+	dpy  = XOpenDisplay(NULL);
+	root = RootWindow(dpy, DefaultScreen(dpy));
+
+	memset(&start_tp, 0, sizeof(start_tp));
+	memset(&finish_tp, 0, sizeof(finish_tp));
+
+	while (1) {
+		SB_START_TIMER;
+
+		offset  = 0;
+		routine = routine_list;
+		while (routine != NULL) {
+			if (routine->skip == SB_TRUE) {
+				routine = routine->next;
+				continue;
+			}
+
+			pthread_mutex_lock(&(routine->mutex));
+			len = strlen(routine->output);
+			if (offset+len > SBLENGTH - 1 + (color_text?10:0)) {
+				fprintf(stderr, "Print: Exceeded max output length\n");
+				break;
+			}
+
+			/* add space between routines */
+			if (routine->routine != DELIMITER) {
+				memcpy(full_output+offset, "  ", 2);
+				offset += 2;
+			}
+
+			/* Print opening status2d color code. */
+			if (color_text && routine->routine != DELIMITER) {
+				strcpy(full_output+offset, "^c");
+				offset += 2;
+				strcpy(full_output+offset, routine->color);
+				offset += 7;
+				strcpy(full_output+offset, "^");
+				offset += 1;
+			}
+
+			memcpy(full_output+offset, routine->output, len);
+			offset += len;
+
+			/* Print status2d terminator code. */
+			if (color_text && routine->routine != DELIMITER) {
+				strcpy(full_output+offset, "^d^");
+				offset += 3;
+			}
+
+			pthread_mutex_unlock(&(routine->mutex));
+			routine = routine->next;
+		}
+		full_output[offset] = '\0';
+
+		if (!XStoreName(dpy, root, full_output)) {
+			fprintf(stderr, "Print: Failed to set root name\n");
+			break;
+		}
+		if (!XFlush(dpy)) {
+			fprintf(stderr, "Print: Failed to flush output buffer\n");
+			break;
+		}
+
+		SB_STOP_TIMER;
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
+		if (usleep(1000000 - elapsed_usec) != 0) {
+			fprintf(stderr, "Print routine: Error sleeping\n");
+		}
+	}
+
+	fprintf(stderr, "Closing print loop, exiting program...\n");
+	exit(EXIT_FAILURE);
 }
 
 
