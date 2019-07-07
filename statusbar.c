@@ -1358,6 +1358,9 @@ int main(int argc, char *argv[])
 	/* properly terminate the routine list */
 	routine_object->next = NULL;
 
+	/* print loop */
+	sb_print();
+
 	/* block until all threads exit */
 	for (i=0; i<num_routines; i++) {
 		index          = chosen_routines[i].routine;
