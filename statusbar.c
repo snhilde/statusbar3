@@ -1316,9 +1316,6 @@ int main(int argc, char *argv[])
 	int                i;
 	enum sb_routine_e  index;
 	sb_routine_t      *routine_object;
-	pthread_t          print_thread;
-	int                run      = 1;
-	void              *join_ret = NULL;
 
 	num_routines = sizeof(chosen_routines) / sizeof(*chosen_routines);
 	if (num_routines < 1) {
