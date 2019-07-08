@@ -91,7 +91,7 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 		fclose(fd);
 
 		if (strcasecmp(buf, match) == 0) {
-			snprintf(buf, size-1, "%s/%s/", base, dirent->d_name);
+			snprintf(buf, size, "%s/%s/", base, dirent->d_name);
 			closedir(dir);
 			return SB_TRUE;
 		}
