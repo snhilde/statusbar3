@@ -103,7 +103,7 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 		if (!sb_read_file(contents, sizeof(contents), path, file, name))
 			continue;
 
-		if (strcasecmp(contents, match) == 0) {
+		if (strncasecmp(contents, match, strlen(match)) == 0) {
 			snprintf(buf, size, "%s/%s/", base, dirent->d_name);
 			closedir(dir);
 			return SB_TRUE;
@@ -117,86 +117,43 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 
 
 /* --- BATTERY ROUTINE --- */
-#ifdef BUILD_BATTERY
-struct sb_bat_t {
-	char path[512];
-	long max;
-	long now;
-	int  status; /* -1 = discharging, 0 = full, 1 = charging */
-};
-
-static long sb_bat_read_max(const char *bat, const char *file)
-{
-	char  path[512];
-	FILE *fd;
-	char  buf[64];
-
-	snprintf(path, sizeof(path), "%s%s", bat, file);
-	fd = fopen(path, "r");
-	if (fd == NULL) {
-		fprintf(stderr, "Battery routine: Failed to open %s\n", path);
-		return -1;
-	}
-
-	if (fgets(buf, sizeof(buf)-1, fd) == NULL) {
-		fprintf(stderr, "Battery routine: Failed to read %s\n", path);
-		fclose(fd);
-		return -1;
-	}
-	fclose(fd);
-
-	return atol(buf);
-}
-
-static SB_BOOL sb_bat_find_bat(struct sb_bat_t *bat)
-{
-	static const char *base      =;
-	DIR               *dir;
-	struct dirent     *dirent;
-	char               path[512];
-	char               buf[512];
-	FILE              *fd;
-	SB_BOOL            found_bat = SB_FALSE;
-
-	bat->max = sb_bat_read_max(bat->path, "charge_full");
-	if (bat->max < 0)
-		return SB_FALSE;
-	strncat(bat->path, "charge_now", sizeof(bat->path)-strlen(bat->path)-1);
-
-	return SB_TRUE;
-}
-#endif
-
 static void *sb_battery_routine(void *thunk)
 {
 	sb_routine_t *routine = thunk;
 
 #ifdef BUILD_BATTERY
 	SB_TIMER_VARS;
-	struct sb_bat_t  bat;
-	FILE            *fd;
-	long             perc;
+	char path[512];
+	char buf[512];
+	long max;
+	long now;
+	long perc;
 
-	memset(&bat, 0, sizeof(bat));
-	if (!sb_get_path(path, sizeof(path), "/sys/class/power_supply", "type", "Battery", routine->name);
+	if (!sb_get_path(path, sizeof(path), "/sys/class/power_supply", "type", "Battery", routine->name))
 		return NULL;
-	if (!sb_bat_find_bat(&bat))
+	if (!sb_read_file(buf, sizeof(buf), path, "charge_full", routine->name))
 		return NULL;
+
+	max = atol(buf);
+	if (max <= 0) {
+		fprintf(stderr, "Battery routine: Failed to read max level\n");
+		return NULL;
+	}
 
 	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
-		fd = fopen(bat.path, "r");
-		if (fd == NULL) {
-			fprintf(stderr, "Battery routine: Failed to open %s\n", bat.path);
-		} else if (fscanf(fd, "%ld", &bat.now) < 1) {
-			fprintf(stderr, "Battery routine: Failed to read %s\n", bat.path);
-		} else if (fclose(fd) != 0) {
-			fprintf(stderr, "Battery routine: Failed to close %s\n", bat.path);
+		if (!sb_read_file(buf, sizeof(buf), path, "charge_now", routine->name))
+			break;
+
+		now = atol(buf);
+		if (now < 0) {
+			fprintf(stderr, "Battery routine: Failed to read current level\n");
+			break;
 		}
 
-		perc = sb_normalize_perc((bat.now * 100) / bat.max);
+		perc = sb_normalize_perc((now * 100) / max);
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "%ld%% BAT", perc);
@@ -205,9 +162,6 @@ static void *sb_battery_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-
-	if (fd != NULL)
-		fclose(fd);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
