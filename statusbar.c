@@ -102,6 +102,8 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 	return SB_FALSE;
 }
 
+static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const char *file)
+
 
 /* --- BATTERY ROUTINE --- */
 #ifdef BUILD_BATTERY
@@ -133,6 +135,24 @@ static long sb_bat_read_max(const char *bat, const char *file)
 	fclose(fd);
 
 	return atol(buf);
+}
+
+static SB_BOOL sb_bat_find_bat(struct sb_bat_t *bat)
+{
+	static const char *base      =;
+	DIR               *dir;
+	struct dirent     *dirent;
+	char               path[512];
+	char               buf[512];
+	FILE              *fd;
+	SB_BOOL            found_bat = SB_FALSE;
+
+	bat->max = sb_bat_read_max(bat->path, "charge_full");
+	if (bat->max < 0)
+		return SB_FALSE;
+	strncat(bat->path, "charge_now", sizeof(bat->path)-strlen(bat->path)-1);
+
+	return SB_TRUE;
 }
 #endif
 
