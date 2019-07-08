@@ -536,7 +536,7 @@ static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
 					fans[*count].max = sb_read_fan_speed(fans[*count].path);
 					if (fans[*count].max < 0)
 						break;
-					snprintf(fans[*count].path, sizeof(fans[*count].path)-1, "%s/%.4s_output", path, dirent->d_name);
+					snprintf(fans[*count].path, sizeof(fans[*count].path), "%s/%.4s_output", path, dirent->d_name);
 					(*count)++;
 				}
 			}
