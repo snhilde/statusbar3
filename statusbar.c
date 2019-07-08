@@ -588,7 +588,7 @@ static void *sb_fan_routine(void *thunk)
 			break;
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "%3ld%% RPM", average / count);
+		snprintf(routine->output, sizeof(routine->output)-1, "%ld%% RPM", average / count);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
@@ -1076,7 +1076,7 @@ static void *sb_volume_routine(void *thunk)
 		} else {
 			perc = sb_normalize_perc((volume - min) * 100 / (max - min));
 			pthread_mutex_lock(&(routine->mutex));
-			snprintf(routine->output, sizeof(routine->output)-1, "%3ld%%", perc);
+			snprintf(routine->output, sizeof(routine->output)-1, "%ld%%", perc);
 			pthread_mutex_unlock(&(routine->mutex));
 		}
 
