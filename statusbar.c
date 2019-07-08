@@ -1047,6 +1047,7 @@ static void *sb_volume_routine(void *thunk)
 	long              max;
 	int               mute = 0;
 	long              volume;
+	long              perc;
 
 	if (!sb_get_snd_elem(&mixer, &snd_elem))
 		return NULL;
@@ -1074,9 +1075,9 @@ static void *sb_volume_routine(void *thunk)
 			fprintf(stderr, "Volume routine: Failed to get volume\n");
 			break;
 		} else {
+			perc = sb_normalize_perc((volume - min) * 100 / (max - min));
 			pthread_mutex_lock(&(routine->mutex));
-			snprintf(routine->output, sizeof(routine->output)-1, "%3ld%%",
-					(volume - min) * 100 / (max - min));
+			snprintf(routine->output, sizeof(routine->output)-1, "%3ld%%", perc);
 			pthread_mutex_unlock(&(routine->mutex));
 		}
 
