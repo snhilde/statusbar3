@@ -120,7 +120,7 @@ static long sb_bat_read_max(const char *bat, const char *file)
 	FILE *fd;
 	char  buf[64];
 
-	snprintf(path, sizeof(path)-1, "%s%s", bat, file);
+	snprintf(path, sizeof(path), "%s%s", bat, file);
 	fd = fopen(path, "r");
 	if (fd == NULL) {
 		fprintf(stderr, "Battery routine: Failed to open %s\n", path);
