@@ -446,7 +446,7 @@ static void *sb_disk_routine(void *thunk)
 			}
 			avail = sb_calc_magnitude(stats.f_bfree *stats.f_bsize, &avail_prefix);
 			total = sb_calc_magnitude(stats.f_blocks*stats.f_bsize, &total_prefix);
-			snprintf(output, sizeof(output)-1, "%s: %4.1f%c/%4.1f%c",
+			snprintf(output, sizeof(output), "%s: %4.1f%c/%4.1f%c",
 					filesystems[i].display_name, avail, avail_prefix, total, total_prefix);
 			strncat(routine->output, output, sizeof(routine->output)-strlen(routine->output)-1);
 
