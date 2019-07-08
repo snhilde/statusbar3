@@ -461,7 +461,7 @@ struct sb_fan_t {
 	long  max;
 };
 
-static long sb_read_fan_speeds(const char *path)
+static long sb_read_fan_speed(const char *path)
 {
 	FILE *fd;
 	char  buf[64];
@@ -517,7 +517,7 @@ static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
 			for (dirent=readdir(device); dirent!=NULL; dirent=readdir(device)) {
 				if (!strncmp(dirent->d_name, "fan", 3) && !strncmp(dirent->d_name+4, "_output", 7)) {
 					snprintf(fans[*count].path, sizeof(fans[*count].path)-1, "%s/%.4s_max", path, dirent->d_name);
-					fans[*count].max = sb_read_fan_speeds(fans[*count].path);
+					fans[*count].max = sb_read_fan_speed(fans[*count].path);
 					if (fans[*count].max < 0)
 						break;
 					snprintf(fans[*count].path, sizeof(fans[*count].path)-1, "%s/%.4s_output", path, dirent->d_name);
@@ -567,7 +567,7 @@ static void *sb_fan_routine(void *thunk)
 		average = 0;
 		/* go through each fan#_output, get the value, and determine the percentage */
 		for (i=0; i<count && !error; i++) {
-			speed = sb_read_fan_speeds(fans[i].path);
+			speed = sb_read_fan_speed(fans[i].path);
 			if (speed < 0) {
 				error = SB_TRUE;
 				break;
