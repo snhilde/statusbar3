@@ -343,6 +343,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 	static const char *path = "/proc/stat";
 	unsigned long      used;
 	unsigned long      total;
+	long               perc;
 	struct {
 		unsigned long user;
 		unsigned long nice;
@@ -368,9 +369,10 @@ static void *sb_cpu_usage_routine(void *thunk)
 
 		used  = (new.user-old.user) + (new.nice-old.nice) + (new.system-old.system);
 		total = (new.user-old.user) + (new.nice-old.nice) + (new.system-old.system) + (new.idle-old.idle);
+		perc  = sb_normalize_perc((used*100)/total);
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "%2lu%% CPU", (used*100)/total);
+		snprintf(routine->output, sizeof(routine->output)-1, "%2lu%% CPU", perc);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		old.user   = new.user;
