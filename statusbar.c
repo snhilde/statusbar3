@@ -693,7 +693,7 @@ static SB_BOOL sb_get_paths(struct sb_file_t *rx_file, struct sb_file_t *tx_file
 		strncpy(ifr.ifr_name, ifap->ifa_name, IFNAMSIZ);
 		if (ioctl(fd, SIOCGIFFLAGS, &ifr) >= 0) {
 			if (ifr.ifr_flags & IFF_RUNNING && !(ifr.ifr_flags & IFF_LOOPBACK)) {
-				snprintf(rx_file->path, sizeof(rx_file->path)-1,
+				snprintf(rx_file->path, sizeof(rx_file->path),
 						"/sys/class/net/%s/statistics/rx_bytes", ifap->ifa_name);
 				snprintf(tx_file->path, sizeof(tx_file->path)-1,
 						"/sys/class/net/%s/statistics/tx_bytes", ifap->ifa_name);
