@@ -477,7 +477,11 @@ static long sb_read_fan_speeds(const char *path)
 		fclose(fd);
 		return -1;
 	}
-	fclose(fd);
+
+	if (fclose(fd) != 0) {
+		fprintf(stderr, "Fan routine: Failed to close %s\n", path);
+		return -1;
+	}
 
 	return atol(buf);
 }
@@ -563,16 +567,10 @@ static void *sb_fan_routine(void *thunk)
 		average = 0;
 		/* go through each fan#_output, get the value, and determine the percentage */
 		for (i=0; i<count && !error; i++) {
-			fd = fopen(fans[i].path, "r");
-			if (fd == NULL) {
-				fprintf(stderr, "Fan routine: Failed to open %s\n", fans[i].path);
+			speed = sb_read_fan_speeds(fans[i].path);
+			if (speed < 0) {
 				error = SB_TRUE;
-			} else if (fscanf(fd, "%ld", &speed) < 1) {
-				fprintf(stderr, "Fan routine: Failed to read %s\n", fans[i].path);
-				error = SB_TRUE;
-			} else if (fclose(fd) != 0) {
-				fprintf(stderr, "Fan routine: Failed to close %s\n", fans[i].path);
-				error = SB_TRUE;
+				break;
 			}
 
 			average += sb_normalize_perc((speed * 100) / fans[i].max);
