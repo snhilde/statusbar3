@@ -56,6 +56,10 @@ static long sb_normalize_perc(long num)
 	return num;
 }
 
+static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char *file, const char *match)
+{
+}
+
 
 /* --- BATTERY ROUTINE --- */
 #ifdef BUILD_BATTERY
