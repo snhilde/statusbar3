@@ -532,7 +532,7 @@ static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
 			/* step through each file in base/hwmon#/device and find any fans */
 			for (dirent=readdir(device); dirent!=NULL; dirent=readdir(device)) {
 				if (!strncmp(dirent->d_name, "fan", 3) && !strncmp(dirent->d_name+4, "_output", 7)) {
-					snprintf(fans[*count].path, sizeof(fans[*count].path)-1, "%s/%.4s_max", path, dirent->d_name);
+					snprintf(fans[*count].path, sizeof(fans[*count].path), "%s/%.4s_max", path, dirent->d_name);
 					fans[*count].max = sb_read_fan_speed(fans[*count].path);
 					if (fans[*count].max < 0)
 						break;
