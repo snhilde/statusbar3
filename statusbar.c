@@ -594,7 +594,7 @@ static void *sb_fan_routine(void *thunk)
 			break;
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "%ld%% RPM", average / count);
+		snprintf(routine->output, sizeof(routine->output), "%ld%% RPM", average / count);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
