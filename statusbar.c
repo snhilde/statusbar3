@@ -522,6 +522,7 @@ static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
 			}
 			closedir(device);
 			if (*count > 0) {
+				/* we found our directory of fans; stop the search */
 				break;
 			}
 		}
