@@ -260,7 +260,7 @@ static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
 		if (!strncmp(dirent->d_name, ".", 1) || !strncmp(dirent->d_name, "..", 2))
 			continue;
 
-		snprintf(path, sizeof(path)-1, "%s/%s/name", base, dirent->d_name);
+		snprintf(path, sizeof(path), "%s/%s/name", base, dirent->d_name);
 		fd = fopen(path, "r");
 		if (fd == NULL) {
 			/* if we can't open it, it's probably not there */
