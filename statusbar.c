@@ -150,6 +150,7 @@ static void *sb_battery_routine(void *thunk)
 	SB_TIMER_VARS;
 	struct sb_bat_t  bat;
 	FILE            *fd;
+	long             perc;
 
 	memset(&bat, 0, sizeof(bat));
 	if (!sb_bat_find_bat(&bat))
@@ -168,8 +169,10 @@ static void *sb_battery_routine(void *thunk)
 			fprintf(stderr, "Battery routine: Failed to close %s\n", bat.path);
 		}
 
+		perc = sb_normalize_perc((bat.now * 100) / bat.max);
+
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "%2ld%% BAT", (bat.now * 100) / bat.max);
+		snprintf(routine->output, sizeof(routine->output)-1, "%2ld%% BAT", perc);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
@@ -1276,7 +1279,6 @@ static void sb_print(void)
 
 			memcpy(full_output+offset, "] ", 2);
 			offset += 2;
-
 
 			pthread_mutex_unlock(&(routine->mutex));
 			routine = routine->next;
