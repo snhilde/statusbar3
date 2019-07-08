@@ -1359,7 +1359,7 @@ int main(int argc, char *argv[])
 		/* initialize the routine */
 		routine_object->routine = index;
 		if (index == DELIMITER) {
-			snprintf(routine_object->output, sizeof(routine_object->output)-1, ";");
+			snprintf(routine_object->output, sizeof(routine_object->output), ";");
 			routine_object->length = 1;
 			routine_object->print  = SB_TRUE;
 		} else if (strlen(chosen_routines[i].color) != 7) {
