@@ -458,7 +458,6 @@ static void *sb_disk_routine(void *thunk)
 #ifdef BUILD_FAN
 struct sb_fan_t {
 	char  path[512];
-	long  min;
 	long  max;
 };
 
@@ -490,8 +489,8 @@ static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
 	/* We don't know which hardware monitor we want, so w're going to peek into each
 	 * device listed in /sys/class/hwmon. If there's a device folder, we'll scan that
 	 * for every fan with the name fan#_output, where # is a number between 0 and 9. For
-	 * every fan that we find, we'll save the path to the fan#_output and read the min
-	 * and max values from fan#_min and fan#_max.
+	 * every fan that we find, we'll save the path to the fan#_output and read the
+	 * max value from fan#_max.
 	 * */
 	static const char *base      = "/sys/class/hwmon";
 	DIR               *dir;
@@ -516,9 +515,8 @@ static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
 			for (dirent=readdir(device); dirent!=NULL; dirent=readdir(device)) {
 				if (!strncmp(dirent->d_name, "fan", 3) && !strncmp(dirent->d_name+4, "_output", 7)) {
 					snprintf(fans[*count].path, sizeof(fans[*count].path)-1, "%s/%.4s", path, dirent->d_name);
-					fans[*count].min = sb_read_fan_speeds(fans[*count].path, "_min");
 					fans[*count].max = sb_read_fan_speeds(fans[*count].path, "_max");
-					if (fans[*count].min < 0 || fans[*count].max < 0)
+					if (fans[*count].max < 0)
 						break;
 					strncat(fans[*count].path, "_output", sizeof(fans[*count].path)-strlen(fans[*count].path-1));
 					(*count)++;
@@ -565,8 +563,7 @@ static void *sb_fan_routine(void *thunk)
 
 		error   = SB_FALSE;
 		average = 0;
-		/* go through each fan#_output, get the value, and determine the percentage from
-		 * its max and min */
+		/* go through each fan#_output, get the value, and determine the percentage */
 		for (i=0; i<count && !error; i++) {
 			fd = fopen(fans[i].path, "r");
 			if (fd == NULL) {
