@@ -550,7 +550,6 @@ static void *sb_fan_routine(void *thunk)
 	struct sb_fan_t  fans[64];
 	int              count = 0;
 	int              i;
-	FILE            *fd;
 	SB_BOOL          error;
 	long             speed;
 	long             average;
@@ -586,8 +585,6 @@ static void *sb_fan_routine(void *thunk)
 		SB_SLEEP;
 	}
 
-	if (fd != NULL)
-		fclose(fd);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
