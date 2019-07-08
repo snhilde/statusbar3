@@ -973,7 +973,7 @@ static void *sb_todo_routine(void *thunk)
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "%s%s%s",
+		snprintf(routine->output, sizeof(routine->output), "%s%s%s",
 				line1_ptr, separator, line2_ptr);
 		pthread_mutex_unlock(&(routine->mutex));
 
