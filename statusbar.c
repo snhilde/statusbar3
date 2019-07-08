@@ -172,7 +172,7 @@ static void *sb_battery_routine(void *thunk)
 		perc = sb_normalize_perc((bat.now * 100) / bat.max);
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "%2ld%% BAT", perc);
+		snprintf(routine->output, sizeof(routine->output)-1, "%ld%% BAT", perc);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
