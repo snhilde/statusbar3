@@ -388,7 +388,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		perc  = sb_normalize_perc((used*100)/total);
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "%2lu%% CPU", perc);
+		snprintf(routine->output, sizeof(routine->output), "%2lu%% CPU", perc);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		old.user   = new.user;
