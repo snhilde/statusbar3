@@ -550,7 +550,6 @@ static void *sb_fan_routine(void *thunk)
 	FILE            *fd;
 	SB_BOOL          error;
 	long             speed;
-	long             percent;
 	long             average;
 
 	memset(fans, 0, sizeof(fans));
@@ -577,9 +576,7 @@ static void *sb_fan_routine(void *thunk)
 				error = SB_TRUE;
 			}
 
-			percent += (speed * 100) / fans[i].max;
-			percent  = sb_normalize_perc(percent);
-			average += percent;
+			average += sb_normalize_perc((speed * 100) / fans[i].max);
 		}
 		if (error)
 			break;
