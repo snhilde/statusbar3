@@ -56,13 +56,36 @@ static long sb_normalize_perc(long num)
 	return num;
 }
 
+static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const char *file, const char *name)
+{
+	char  path[512];
+	FILE *fd;
+
+	memset(buf, 0, size);
+
+	snprintf(path, sizeof(path), "%s%s", base, file);
+	fd = fopen(path, "r");
+	if (fd == NULL) {
+		fprintf(stderr, "%s routine: Failed to open %s\n", name, path);
+		return SB_FALSE;
+	}
+
+	if (fgets(buf, size, fd) == NULL) {
+		fprintf(stderr, "%s routine: Failed to read %s\n", name, path);
+		fclose(fd);
+		return SB_FALSE;
+	}
+	fclose(fd);
+
+	return SB_TRUE;
+}
+
 static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char *file, const char *match, const char *name)
 {
 	DIR           *dir;
 	struct dirent *dirent;
-	char           path[512]     = {0};
-	FILE          *fd;
-	char           contents[512] = {0};
+	char           path[512];
+	char           contents[512];
 
 	memset(buf, 0, size);
 
@@ -76,21 +99,11 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 		if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0)
 			continue;
 
-		snprintf(path, sizeof(path), "%s/%s/%s", base, dirent->d_name, file);
-		fd = fopen(path, "r");
-		if (fd == NULL) {
-			fprintf(stderr, "%s routine: Failed to open %s", name, path);
+		snprintf(path, sizeof(path), "%s/%s/", base, dirent->d_name);
+		if (!sb_read_file(contents, sizeof(contents), path, file, name))
 			continue;
-		}
 
-		if (fgets(contents, sizeof(contents), fd) == NULL) {
-			fprintf(stderr, "%s routine: Failed to read %s\n", name, path);
-			fclose(fd);
-			continue;
-		}
-		fclose(fd);
-
-		if (strcasecmp(buf, match) == 0) {
+		if (strcasecmp(contents, match) == 0) {
 			snprintf(buf, size, "%s/%s/", base, dirent->d_name);
 			closedir(dir);
 			return SB_TRUE;
@@ -101,8 +114,6 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 	closedir(dir);
 	return SB_FALSE;
 }
-
-static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const char *file)
 
 
 /* --- BATTERY ROUTINE --- */
