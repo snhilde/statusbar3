@@ -332,7 +332,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 		total /= 1000;  /* convert to celsius */
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "%ld °C", total);
+		snprintf(routine->output, sizeof(routine->output), "%ld °C", total);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
