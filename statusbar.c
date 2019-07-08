@@ -579,10 +579,7 @@ static void *sb_fan_routine(void *thunk)
 			}
 
 			percent += ((speed - fans[i].min) * 100) / (fans[i].max - fans[i].min);
-			if (percent < 0)
-				percent = 0;
-			if (percent > 100)
-				percent = 100;
+			percent  = sb_normalize_perc(percent);
 			average += percent;
 		}
 		if (error)
