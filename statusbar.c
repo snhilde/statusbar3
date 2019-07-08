@@ -547,12 +547,12 @@ static void *sb_fan_routine(void *thunk)
 
 #ifdef BUILD_FAN
 	SB_TIMER_VARS;
-	struct sb_fan_t  fans[64];
-	int              count = 0;
-	int              i;
-	SB_BOOL          error;
-	long             speed;
-	long             average;
+	struct sb_fan_t fans[64];
+	int             count = 0;
+	int             i;
+	SB_BOOL         error;
+	long            speed;
+	long            average;
 
 	memset(fans, 0, sizeof(fans));
 	if (!sb_find_fans(fans, &count))
