@@ -756,7 +756,7 @@ static void *sb_network_routine(void *thunk)
 			break;
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "%3ld%c up/%3ld%c down",
+		snprintf(routine->output, sizeof(routine->output), "%3ld%c up/%3ld%c down",
 				files[0].reduced, files[0].prefix, files[1].reduced, files[1].prefix);
 		pthread_mutex_unlock(&(routine->mutex));
 
