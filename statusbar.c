@@ -638,7 +638,7 @@ static void *sb_load_routine(void *thunk)
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output)-1, "%4.2f, %4.2f, %4.2f", av[0], av[1], av[2]);
+		snprintf(routine->output, sizeof(routine->output), "%4.2f, %4.2f, %4.2f", av[0], av[1], av[2]);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
