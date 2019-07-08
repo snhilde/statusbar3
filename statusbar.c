@@ -526,7 +526,7 @@ static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
 
 	/* step through each file/directory in the base and try to open a subdirectory called device */
 	for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
-		snprintf(path, sizeof(path)-1, "%s/%s/device", base, dirent->d_name);
+		snprintf(path, sizeof(path), "%s/%s/device", base, dirent->d_name);
 		device = opendir(path);
 		if (device != NULL) {
 			/* step through each file in base/hwmon#/device and find any fans */
