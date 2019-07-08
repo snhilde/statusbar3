@@ -1245,6 +1245,8 @@ static void sb_print(void)
 				continue;
 			} else if (routine->routine == DELIMITER) {
 				memcpy(full_output+offset, ";", 1);
+				offset += 1;
+				routine = routine->next;
 				continue;
 			}
 
