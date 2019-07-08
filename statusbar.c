@@ -76,7 +76,7 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 		if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0)
 			continue;
 
-		snprintf(path, sizeof(path)-1, "%s/%s/%s", base, dirent->d_name, file);
+		snprintf(path, sizeof(path), "%s/%s/%s", base, dirent->d_name, file);
 		fd = fopen(path, "r");
 		if (fd == NULL) {
 			fprintf(stderr, "%s routine: Failed to open %s", name, path);
