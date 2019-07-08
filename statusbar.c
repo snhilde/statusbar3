@@ -56,8 +56,50 @@ static long sb_normalize_perc(long num)
 	return num;
 }
 
-static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char *file, const char *match)
+static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char *file, const char *match, const char *name)
 {
+	DIR           *dir;
+	struct dirent *dirent;
+	char           path[512]     = {0};
+	FILE          *fd;
+	char           contents[512] = {0};
+
+	memset(buf, 0, size);
+
+	dir = opendir(base);
+	if (dir == NULL) {
+		fprintf(stderr, "%s routine: Failed to open %s\n", name, base);
+		return SB_FALSE;
+	}
+
+	while ((dirent=readdir(dir))) {
+		if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0)
+			continue;
+
+		snprintf(path, sizeof(path)-1, "%s/%s/%s", base, dirent->d_name, file);
+		fd = fopen(path, "r");
+		if (fd == NULL) {
+			fprintf(stderr, "%s routine: Failed to open %s", name, path);
+			continue;
+		}
+
+		if (fgets(contents, sizeof(contents), fd) == NULL) {
+			fprintf(stderr, "%s routine: Failed to read %s\n", name, path);
+			fclose(fd);
+			continue;
+		}
+		fclose(fd);
+
+		if (strcasecmp(buf, match) == 0) {
+			snprintf(buf, size-1, "%s/%s/", base, dirent->d_name);
+			closedir(dir);
+			return SB_TRUE;
+		}
+	}
+
+	fprintf(stderr, "%s routine: Failed to find file\n", name);
+	closedir(dir);
+	return SB_FALSE;
 }
 
 
@@ -92,58 +134,6 @@ static long sb_bat_read_max(const char *bat, const char *file)
 
 	return atol(buf);
 }
-
-static SB_BOOL sb_bat_find_bat(struct sb_bat_t *bat)
-{
-	/* Here, we're going to check each device in /sys/class/power_supply. When we find
- 	 * a battery, we'll break out of the loop and record some general data.
-	 */
-	static const char *base      = "/sys/class/power_supply";
-	DIR               *dir;
-	struct dirent     *dirent;
-	char               path[512];
-	char               buf[512];
-	FILE              *fd;
-	SB_BOOL            found_bat = SB_FALSE;
-
-	dir = opendir(base);
-	if (dir == NULL) {
-		fprintf(stderr, "Battery routine: Failed to open %s\n", base);
-		return SB_FALSE;
-	}
-
-	/* step through each device, looking for file "type" with value "battery" */
-	for (dirent=readdir(dir); dirent!=NULL && !found_bat; dirent=readdir(dir)) {
-		if (!strncmp(dirent->d_name, ".", 1) || !strncmp(dirent->d_name, "..", 2))
-			continue;
-
-		snprintf(path, sizeof(path)-1, "%s/%s/type", base, dirent->d_name);
-		fd = fopen(path, "r");
-		if (fd == NULL) {
-			fprintf(stderr, "Battery routine: Failed to open %s", path);
-		} else if (fgets(buf, sizeof(buf)-1, fd) == NULL) {
-			fprintf(stderr, "Battery routine: Failed to read %s\n", path);
-		} else if (!strncasecmp(buf, "Battery", 7)) {
-			snprintf(bat->path, sizeof(bat->path)-1, "%s/%s/", base, dirent->d_name);
-			found_bat = SB_TRUE;
-		}
-		if (fd != NULL)
-			fclose(fd);
-	}
-	closedir(dir);
-
-	if (found_bat) {
-		bat->max = sb_bat_read_max(bat->path, "charge_full");
-		if (bat->max < 0)
-			return SB_FALSE;
-		strncat(bat->path, "charge_now", sizeof(bat->path)-strlen(bat->path)-1);
-	} else {
-		fprintf(stderr, "Battery routine: Failed to find battery");
-		return SB_FALSE;
-	}
-
-	return SB_TRUE;
-}
 #endif
 
 static void *sb_battery_routine(void *thunk)
@@ -157,6 +147,8 @@ static void *sb_battery_routine(void *thunk)
 	long             perc;
 
 	memset(&bat, 0, sizeof(bat));
+	if (!sb_get_path(path, sizeof(path), "/sys/class/power_supply", "type", "Battery", routine->name);
+		return NULL;
 	if (!sb_bat_find_bat(&bat))
 		return NULL;
 
