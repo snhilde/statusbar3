@@ -102,10 +102,5 @@ static const char *routine_names[] = {
  * routine's index will remain empty. */
 sb_routine_t routine_array[DELIMITER + 1];
 
-/* These are all the flags for the routine. Because it is global, it is zero'd out on
- * startup. If a user does not chose a particular routine in the config file, that routine's
- * flag will remain zero. If the routine is chosen, then its bit flag will be set to 1. */
-unsigned long sb_flags_active;
-
 /* This will be the ordered list of routines used for printing to the master string. */
 sb_routine_t *routine_list;

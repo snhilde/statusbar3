@@ -1201,9 +1201,6 @@ int main(int argc, char *argv[])
 		index          = chosen_routines[i].routine;
 		routine_object = routine_array + index;
 
-		/* set flag for this routine */
-		sb_flags_active |= 1<<index;
-
 		/* string onto routine list */
 		routine_object->next = routine_array + chosen_routines[i+1].routine;
 
