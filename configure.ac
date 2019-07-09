@@ -53,11 +53,14 @@ AC_CHECK_HEADERS([sys/statvfs.h],
 AC_CHECK_HEADERS([ctype.h],
 				 [todo_headers="yes"],
 				 [AC_MSG_NOTICE([Missing <ctype.h>, not running TODO routine])])
-AC_CHECK_HEADERS([linux/wireless.h sys/ioctl.h ifaddrs.h],
+AC_CHECK_HEADERS([sys/ioctl.h ifaddrs.h net/if.h],
 				 [net_headers="yes"],
 				 [net_headers="no";
-				  AC_MSG_NOTICE([Missing a header, not running network of wifi routines]);
+				  AC_MSG_NOTICE([Missing a network header, not running network or wifi routines]);
 				  break])
+AC_CHECK_HEADERS([linux/wireless.h],
+				 [wifi_headers="yes"],
+				 [AC_MSG_NOTICE([Missing <linux/wireless.h>, not running wifi routine])])
 AC_CHECK_HEADERS([alsa/asoundlib.h],
 				 [volume_headers="yes"],
 				 [AC_MSG_NOTICE([Missing <alsa/asoundlib.h>, not running volume routine])])
@@ -75,7 +78,8 @@ AC_CHECK_FUNCS([strncasecmp])
 AS_IF([test "$volume_headers" = "yes" && test "$volume_lib" != "no"], [AC_DEFINE([BUILD_VOLUME])])
 AS_IF([test "$disk_headers"   = "yes"], [AC_DEFINE([BUILD_DISK])])
 AS_IF([test "$todo_headers"   = "yes"], [AC_DEFINE([BUILD_TODO])])
-AS_IF([test "$net_headers"    = "yes"], [AC_DEFINE([BUILD_NETWORK]) AC_DEFINE([BUILD_WIFI])])
+AS_IF([test "$net_headers"    = "yes"], [AC_DEFINE([BUILD_NETWORK])])
+AS_IF([test "$net_headers"    = "yes" -a "$wifi_headers" = "yes"], AC_DEFINE([BUILD_WIFI])])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
