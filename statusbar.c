@@ -931,7 +931,7 @@ static void *sb_volume_routine(void *thunk)
 		} else {
 			perc = sb_normalize_perc((volume - min) * 100 / (max - min));
 			pthread_mutex_lock(&(routine->mutex));
-			snprintf(routine->output, sizeof(routine->output), "%ld%%", perc);
+			snprintf(routine->output, sizeof(routine->output), "Vol %ld%%", perc);
 			pthread_mutex_unlock(&(routine->mutex));
 		}
 
