@@ -23,9 +23,13 @@
   #include <ctype.h>
 #endif
 
-#if defined BUILD_NETWORK && defined BUILD_WIFI
+#ifdef BUILD_NETWORK
   #include <sys/ioctl.h>
   #include <ifaddrs.h>
+  #include <net/if.h>
+#endif
+
+#ifdef BUILD_WIFI
   #include <linux/wireless.h>
 #endif
 
