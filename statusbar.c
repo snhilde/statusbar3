@@ -517,7 +517,7 @@ struct sb_file_t {
 	char prefix;
 };
 
-static SB_BOOL sb_get_paths(struct sb_file_t *rx_file, struct sb_file_t *tx_file)
+static SB_BOOL sb_network_get_paths(struct sb_file_t *rx_file, struct sb_file_t *tx_file)
 {
 	int             fd;
 	struct ifreq    ifr;
@@ -578,7 +578,7 @@ static void *sb_network_routine(void *thunk)
 	FILE             *fd;
 	long              diff;
 
-	if (!sb_get_paths(&files[0], &files[1]))
+	if (!sb_network_get_paths(&files[0], &files[1]))
 		return NULL;
 
 	routine->print = SB_TRUE;
@@ -735,7 +735,7 @@ static void *sb_time_routine(void *thunk)
 
 /* --- TODO ROUTINE --- */
 #ifdef BUILD_TODO
-static int sb_count_blanks(const char *line, SB_BOOL *is_blank)
+static int sb_todo_count_blanks(const char *line, SB_BOOL *is_blank)
 {
 	int i = 0;
 
@@ -816,10 +816,10 @@ static void *sb_todo_routine(void *thunk)
 		/* advance line pointers until they hit the first non-blank character */
 		if (!l1_isempty) {
 			line1[strlen(line1)-1] = '\0';
-			line1_ptr += sb_count_blanks(line1, &l1_isempty);
+			line1_ptr += sb_todo_count_blanks(line1, &l1_isempty);
 		}
 		if (!l2_isempty) {
-			line2_ptr += sb_count_blanks(line2, &l2_isempty);
+			line2_ptr += sb_todo_count_blanks(line2, &l2_isempty);
 			line2[strlen(line2)-1] = '\0';
 		}
 
@@ -845,7 +845,7 @@ static void *sb_todo_routine(void *thunk)
 
 /* --- VOLUME ROUTINE --- */
 #ifdef BUILD_VOLUME
-static SB_BOOL sb_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **snd_elem)
+static SB_BOOL sb_volume_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **snd_elem)
 {
 	static const char    *card   = "default";
 	snd_mixer_selem_id_t *snd_id = NULL;
@@ -903,7 +903,7 @@ static void *sb_volume_routine(void *thunk)
 	long              volume;
 	long              perc;
 
-	if (!sb_get_snd_elem(&mixer, &snd_elem))
+	if (!sb_volume_get_snd_elem(&mixer, &snd_elem))
 		return NULL;
 	if (snd_mixer_selem_get_playback_volume_range(snd_elem, &min, &max) != 0) {
 		fprintf(stderr, "Volume routine: Failed to get volume range\n");
@@ -980,7 +980,7 @@ static void *sb_weather_routine(void *thunk)
 
 /* --- WIFI ROUTINE --- */
 #ifdef BUILD_WIFI
-static SB_BOOL sb_init_wifi(int *fd, struct iwreq *iwr, char *essid, size_t max_len)
+static SB_BOOL sb_wifi_init(int *fd, struct iwreq *iwr, char *essid, size_t max_len)
 {
 	struct ifaddrs *ifaddrs = NULL;
 	struct ifaddrs *ifap;
@@ -1041,7 +1041,7 @@ static void *sb_wifi_routine(void *thunk)
 	struct iwreq iwr;
 	char         essid[IW_ESSID_MAX_SIZE + 1];
 
-	if (!sb_init_wifi(&fd, &iwr, essid, sizeof(essid))) {
+	if (!sb_wifi_init(&fd, &iwr, essid, sizeof(essid))) {
 		close(fd);
 		return NULL;
 	}
