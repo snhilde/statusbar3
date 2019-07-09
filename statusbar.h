@@ -15,24 +15,20 @@
 #define BUILD_TIME
 #define BUILD_WEATHER
 
-/* for disk routine */
 #ifdef BUILD_DISK
   #include <sys/statvfs.h>
 #endif
 
-/* for todo routine */
 #ifdef BUILD_TODO
   #include <ctype.h>
 #endif
 
-/* for network and wifi routines */
 #if defined BUILD_NETWORK && defined BUILD_WIFI
   #include <sys/ioctl.h>
   #include <ifaddrs.h>
   #include <linux/wireless.h>
 #endif
 
-/* for volume routine */
 #ifdef BUILD_VOLUME
   #include <alsa/asoundlib.h>
 #endif
