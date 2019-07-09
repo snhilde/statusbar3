@@ -96,7 +96,7 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 	}
 
 	while ((dirent=readdir(dir))) {
-		if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0)
+		if (strncasecmp(dirent->d_name, ".", 1) == 0 || strncasecmp(dirent->d_name, "..", 2) == 0)
 			continue;
 
 		snprintf(path, sizeof(path), "%s/%s/", base, dirent->d_name);
@@ -186,10 +186,10 @@ static SB_BOOL sb_cpu_temp_get_filename(char path[], char filename[], size_t siz
 
 	/* Find a temperature monitor. */
 	while ((dirent=readdir(dir))) {
-		if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0)
+		if (strncasecmp(dirent->d_name, ".", 1) == 0 || strncasecmp(dirent->d_name, "..", 2) == 0)
 			continue;
 
-		if (strncmp(dirent->d_name, "temp", 4) == 0 && strncmp(dirent->d_name+5, "_input", 6) == 0) {
+		if (strncasecmp(dirent->d_name, "temp", 4) == 0 && strncasecmp(dirent->d_name+5, "_input", 6) == 0) {
 			/* We found a match. */
 			strncpy(filename, dirent->d_name, size-1);
 			closedir(dir);
@@ -391,7 +391,7 @@ static SB_BOOL sb_fan_get_path(char path[], size_t size)
 
 	/* step through each file/directory in the base and try to open a subdirectory called device */
 	while ((dirent=readdir(dir))) {
-		if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0)
+		if (strncasecmp(dirent->d_name, ".", 1) == 0 || strncasecmp(dirent->d_name, "..", 2) == 0)
 			continue;
 
 		snprintf(path, size, "%s/%s/device", base, dirent->d_name);
@@ -399,7 +399,7 @@ static SB_BOOL sb_fan_get_path(char path[], size_t size)
 		if (device != NULL) {
 			/* step through each file in base/hwmon#/device and find any fans */
 			while ((devent=readdir(device))) {
-				if (strncmp(devent->d_name, "fan", 3) == 0 && strncmp(devent->d_name+4, "_output", 7) == 0) {
+				if (strncasecmp(devent->d_name, "fan", 3) == 0 && strncasecmp(devent->d_name+4, "_output", 7) == 0) {
 					/* We found a fan. */
 					snprintf(path, size, "%s/%s/device/%s", base, dirent->d_name, devent->d_name);
 					closedir(device);
