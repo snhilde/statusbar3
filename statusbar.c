@@ -173,99 +173,33 @@ static void *sb_battery_routine(void *thunk)
 
 /* --- CPU TEMP ROUTINE --- */
 #ifdef BUILD_CPU_TEMP
-struct sb_temp_t {
-	char path[512];
-	long temp;
-};
-
-static SB_BOOL sb_read_temps(struct sb_temp_t *temps, int count)
+static SB_BOOL sb_cpu_temp_get_filename(char path[], char filename[], size_t size, const char *name)
 {
-	int   i;
-	FILE *fd;
-
-	for (i=0; i<count; i++) {
-		temps[i].temp = 0;
-		fd = fopen(temps[i].path, "r");
-		if (fd == NULL) {
-			fprintf(stderr, "CPU Temp routine: Failed to open %s\n", temps[i].path);
-			continue;
-		} else if (fscanf(fd, "%ld", &temps[i].temp) != 1) {
-			fprintf(stderr, "CPU Temp routine: Failed to read %s\n", temps[i].path);
-		}
-		fclose(fd);
-	}
-
-	return SB_TRUE;
-}
-
-static SB_BOOL sb_find_temps(struct sb_temp_t *temps, size_t len, int *count)
-{
-	/* We're going to search each listed hardware monitor for one named "coretemp".
- 	 * If we find that, we'll save the path of every temperature probe in there
-	 * as well as the max for each (max up to len probes).
-	 */
-	const char    *base = "/sys/class/hwmon";
 	DIR           *dir;
 	struct dirent *dirent;
-	char           path[512];
-	FILE          *fd;
-	char           name[256];
-	size_t         str_len;
 
-	*count = 0;
-
-	dir = opendir(base);
+	dir = opendir(path);
 	if (dir == NULL) {
-		fprintf(stderr, "CPU Temp routine: Failed to open %s\n", base);
+		fprintf(stderr, "%s routine: Failed to open %s\n", name, path);
 		return SB_FALSE;
 	}
 
-	/* check the name of each subdirectory here for "coretemp" */
-	for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
-		if (!strncmp(dirent->d_name, ".", 1) || !strncmp(dirent->d_name, "..", 2))
+	/* Find a temperature monitor. */
+	while ((dirent=readdir(dir))) {
+		if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0)
 			continue;
 
-		snprintf(path, sizeof(path), "%s/%s/name", base, dirent->d_name);
-		fd = fopen(path, "r");
-		if (fd == NULL) {
-			/* if we can't open it, it's probably not there */
-			continue;
-		} else if (fgets(name, sizeof(name)-1, fd) == NULL) {
-			fprintf(stderr, "CPU Temp routine: Failed to read %s", path);
-			break;
-		} else if (fclose(fd) != 0) {
-			fprintf(stderr, "CPU Temp routine: Failed to close %s", path);
-			break;
-		} else if (!strncmp(name, "coretemp", 8)) {
-			/* we find our monitor, now get all the temps in it */
+		if (strncmp(dirent->d_name, "temp", 4) == 0 && strncmp(dirent->d_name+5, "_input", 6) == 0) {
+			/* We found a match. */
+			strncpy(filename, dirent->d_name, size-1);
 			closedir(dir);
-			snprintf(path, sizeof(path), "%s/%s", base, dirent->d_name);
-			dir = opendir(path); /* open new directory stream in coretemp's hwmon */
-			if (dir == NULL) {
-				fprintf(stderr, "CPU Temp routine: Failed to open %s\n", base);
-				return SB_FALSE;
-			}
-
-			/* go through each file/folder, saving the inputs */
-			for (dirent=readdir(dir); dirent!=NULL && *count<len; dirent=readdir(dir)) {
-				if (!strncmp(dirent->d_name, ".", 1) || !strncmp(dirent->d_name, "..", 2))
-					continue;
-				/* we want to grab the length of the name now so we can more easily
- 				 * measure from the end for the second string comparison below */
-				str_len = strlen(dirent->d_name);
-				if (!strncmp(dirent->d_name, "temp", 4) && !strncmp(dirent->d_name+str_len-6, "_input", 6)) {
-					/* we have a match */
-					snprintf(temps[*count].path, sizeof(temps[*count].path), "%s/%s", path, dirent->d_name);
-					(*count)++;
-				}
-			}
-			/* if we reached here, then we found our file and all the probes in it */
-			break;
+			return SB_TRUE;
 		}
 	}
 
+	fprintf(stderr, "%s routine: Failed to find temperature monitor\n", name);
 	closedir(dir);
-	return SB_TRUE;
+	return SB_FALSE;
 }
 #endif
 
@@ -275,29 +209,33 @@ static void *sb_cpu_temp_routine(void *thunk)
 
 #ifdef BUILD_CPU_TEMP
 	SB_TIMER_VARS;
-	struct sb_temp_t temps[16];
-	int              count;
-	int              i;
-	long             total;
+	char path[512];
+	char filename[128];
+	char contents[128];
+	long now;
 
-	if (!sb_find_temps(temps, sizeof(temps)/sizeof(*temps), &count))
+	if (!sb_get_path(path, sizeof(path), "/sys/class/hwmon", "name", "coretemp", routine->name))
+		return NULL;
+	if (!sb_cpu_temp_get_filename(path, filename, sizeof(filename), routine->name))
 		return NULL;
 
 	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
-		total = 0;
-		if (!sb_read_temps(temps, count))
+		if (!sb_read_file(contents, sizeof(contents), path, filename, routine->name))
 			break;
-		for (i=0; i<count; i++) {
-			total += temps[i].temp;
+
+		now = atol(contents);
+		if (now < 0) {
+			fprintf(stderr, "%s routine: Failed to read temperature\n", routine->name);
+			break;
 		}
-		total /= count; /* get average temperature in millicelsius */
-		total /= 1000;  /* convert to celsius */
+
+		now /= 1000; /* convert to celsius */
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output), "%ld °C", total);
+		snprintf(routine->output, sizeof(routine->output), "%ld °C", now);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
