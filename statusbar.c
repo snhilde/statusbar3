@@ -63,7 +63,7 @@ static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const cha
 
 	memset(buf, 0, size);
 
-	snprintf(path, sizeof(path), "%s%s", base, file);
+	snprintf(path, sizeof(path), "%s%s", base, file?file:"");
 	fd = fopen(path, "r");
 	if (fd == NULL) {
 		fprintf(stderr, "%s routine: Failed to open %s\n", name, path);
@@ -375,51 +375,13 @@ static void *sb_disk_routine(void *thunk)
 
 /* --- FAN ROUTINE --- */
 #ifdef BUILD_FAN
-struct sb_fan_t {
-	char  path[512];
-	long  max;
-};
-
-static long sb_read_fan_speed(const char *path)
+static SB_BOOL sb_fan_get_path(char path[], size_t size)
 {
-	FILE *fd;
-	char  buf[64];
-
-	fd = fopen(path, "r");
-	if (fd == NULL) {
-		fprintf(stderr, "Fan routine: Failed to open %s\n", path);
-		return -1;
-	}
-
-	if (fgets(buf, sizeof(buf)-1, fd) == NULL) {
-		fprintf(stderr, "Fan routine: Failed to read %s\n", path);
-		fclose(fd);
-		return -1;
-	}
-
-	if (fclose(fd) != 0) {
-		fprintf(stderr, "Fan routine: Failed to close %s\n", path);
-		return -1;
-	}
-
-	return atol(buf);
-}
-
-static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
-{
-	/* We don't know which hardware monitor we want, so w're going to peek into each
-	 * device listed in /sys/class/hwmon. If there's a device folder, we'll scan that
-	 * for every fan with the name fan#_output, where # is a number between 0 and 9. For
-	 * every fan that we find, we'll save the path to the fan#_output and read the
-	 * max value from fan#_max.
-	 * */
-	static const char *base      = "/sys/class/hwmon";
+	static const char *base = "/sys/class/hwmon";
 	DIR               *dir;
 	struct dirent     *dirent;
-	char               path[512] = {0};
 	DIR               *device;
-
-	*count = 0;
+	struct dirent     *devent;
 
 	dir = opendir(base);
 	if (dir == NULL) {
@@ -428,35 +390,31 @@ static SB_BOOL sb_find_fans(struct sb_fan_t *fans, int *count)
 	}
 
 	/* step through each file/directory in the base and try to open a subdirectory called device */
-	for (dirent=readdir(dir); dirent!=NULL; dirent=readdir(dir)) {
-		snprintf(path, sizeof(path), "%s/%s/device", base, dirent->d_name);
+	while ((dirent=readdir(dir))) {
+		if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0)
+			continue;
+
+		snprintf(path, size, "%s/%s/device", base, dirent->d_name);
 		device = opendir(path);
 		if (device != NULL) {
 			/* step through each file in base/hwmon#/device and find any fans */
-			for (dirent=readdir(device); dirent!=NULL; dirent=readdir(device)) {
-				if (!strncmp(dirent->d_name, "fan", 3) && !strncmp(dirent->d_name+4, "_output", 7)) {
-					snprintf(fans[*count].path, sizeof(fans[*count].path), "%s/%.4s_max", path, dirent->d_name);
-					fans[*count].max = sb_read_fan_speed(fans[*count].path);
-					if (fans[*count].max < 0)
-						break;
-					snprintf(fans[*count].path, sizeof(fans[*count].path), "%s/%.4s_output", path, dirent->d_name);
-					(*count)++;
+			while ((devent=readdir(device))) {
+				if (strncmp(devent->d_name, "fan", 3) == 0 && strncmp(devent->d_name+4, "_output", 7) == 0) {
+					/* We found a fan. */
+					snprintf(path, size, "%s/%s/device/%s", base, dirent->d_name, devent->d_name);
+					closedir(device);
+					closedir(dir);
+					return SB_TRUE;
 				}
 			}
+
 			closedir(device);
-			if (*count > 0) {
-				/* we found our directory of fans; stop the search */
-				break;
-			}
 		}
 	}
 
+	fprintf(stderr, "Fan routine: Failed to find a fan\n");
 	closedir(dir);
-	if (*count == 0) {
-		fprintf(stderr, "Fan routine: No fans found\n");
-		return SB_FALSE;
-	}
-	return SB_TRUE;
+	return SB_FALSE;
 }
 #endif
 
@@ -466,38 +424,28 @@ static void *sb_fan_routine(void *thunk)
 
 #ifdef BUILD_FAN
 	SB_TIMER_VARS;
-	struct sb_fan_t fans[64];
-	int             count = 0;
-	int             i;
-	SB_BOOL         error;
-	long            speed;
-	long            average;
+	char path[512];
+	char contents[128];
+	long now;
 
-	memset(fans, 0, sizeof(fans));
-	if (!sb_find_fans(fans, &count))
+	if (!sb_fan_get_path(path, sizeof(path)))
 		return NULL;
 
 	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
-		error   = SB_FALSE;
-		average = 0;
-		/* go through each fan#_output, get the value, and determine the percentage */
-		for (i=0; i<count && !error; i++) {
-			speed = sb_read_fan_speed(fans[i].path);
-			if (speed < 0) {
-				error = SB_TRUE;
-				break;
-			}
-
-			average += sb_normalize_perc((speed * 100) / fans[i].max);
-		}
-		if (error)
+		if (!sb_read_file(contents, sizeof(contents), path, NULL, routine->name))
 			break;
 
+		now = atol(contents);
+		if (now < 0) {
+			fprintf(stderr, "%s routine: Failed to read current fan speed\n", routine->name);
+			break;
+		}
+
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output), "%ld%% RPM", average / count);
+		snprintf(routine->output, sizeof(routine->output), "%ld RPM", now);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
