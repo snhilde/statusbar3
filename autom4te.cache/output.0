@@ -4815,6 +4815,8 @@ if test "x$ac_cv_func_clock_gettime" = xyes; then :
 @%:@define HAVE_CLOCK_GETTIME 1
 _ACEOF
  
+else
+  as_fn_error $? "Unable to run \`clock_gettime\`" "$LINENO" 5
 fi
 done
 
@@ -4826,6 +4828,8 @@ if test "x$ac_cv_func_localtime_r" = xyes; then :
 @%:@define HAVE_LOCALTIME_R 1
 _ACEOF
  
+else
+  as_fn_error $? "Unable to run \`localtime_r\`" "$LINENO" 5
 fi
 done
 
@@ -4837,6 +4841,8 @@ if test "x$ac_cv_func_memset" = xyes; then :
 @%:@define HAVE_MEMSET 1
 _ACEOF
  
+else
+  as_fn_error $? "Unable to run \`memset\`" "$LINENO" 5
 fi
 done
 
@@ -4848,6 +4854,8 @@ if test "x$ac_cv_func_socket" = xyes; then :
 @%:@define HAVE_SOCKET 1
 _ACEOF
  
+else
+  as_fn_error $? "Unable to run \`socket\`" "$LINENO" 5
 fi
 done
 
@@ -4859,11 +4867,13 @@ if test "x$ac_cv_func_strncasecmp" = xyes; then :
 @%:@define HAVE_STRNCASECMP 1
 _ACEOF
  
+else
+  as_fn_error $? "Unable to run \`strncasecmp\`" "$LINENO" 5
 fi
 done
 
 
-if test "$volume_headers" = "yes" && test "$volume_lib" != "no"; then :
+if test "$volume_headers" = "yes" -a "$volume_lib" != "no"; then :
   $as_echo "@%:@define BUILD_VOLUME 1" >>confdefs.h
 
 fi
