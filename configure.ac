@@ -69,11 +69,11 @@ AC_CHECK_HEADERS([alsa/asoundlib.h],
 AC_TYPE_SIZE_T
 
 # Check for library functions.
-AC_CHECK_FUNCS([clock_gettime])
-AC_CHECK_FUNCS([localtime_r])
-AC_CHECK_FUNCS([memset])
-AC_CHECK_FUNCS([socket])
-AC_CHECK_FUNCS([strncasecmp])
+AC_CHECK_FUNCS([clock_gettime], [], [AC_MSG_ERROR([Unable to run `clock_gettime`])])
+AC_CHECK_FUNCS([localtime_r],   [], [AC_MSG_ERROR([Unable to run `localtime_r`])])
+AC_CHECK_FUNCS([memset],        [], [AC_MSG_ERROR([Unable to run `memset`])])
+AC_CHECK_FUNCS([socket],        [], [AC_MSG_ERROR([Unable to run `socket`])])
+AC_CHECK_FUNCS([strncasecmp],   [], [AC_MSG_ERROR([Unable to run `strncasecmp`])])
 
 AS_IF([test "$volume_headers" = "yes" -a "$volume_lib" != "no"], [AC_DEFINE([BUILD_VOLUME])])
 AS_IF([test "$disk_headers"   = "yes"], [AC_DEFINE([BUILD_DISK])])
