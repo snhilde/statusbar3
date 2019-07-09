@@ -4744,7 +4744,7 @@ fi
 
 done
 
-for ac_header in linux/wireless.h sys/ioctl.h ifaddrs.h
+for ac_header in sys/ioctl.h ifaddrs.h net/if.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -4755,9 +4755,24 @@ _ACEOF
  net_headers="yes"
 else
   net_headers="no";
-				  { $as_echo "$as_me:${as_lineno-$LINENO}: Missing a header, not running network of wifi routines" >&5
-$as_echo "$as_me: Missing a header, not running network of wifi routines" >&6;};
+				  { $as_echo "$as_me:${as_lineno-$LINENO}: Missing a network header, not running network or wifi routines" >&5
+$as_echo "$as_me: Missing a network header, not running network or wifi routines" >&6;};
 				  break
+fi
+
+done
+
+for ac_header in linux/wireless.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "linux/wireless.h" "ac_cv_header_linux_wireless_h" "$ac_includes_default"
+if test "x$ac_cv_header_linux_wireless_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+@%:@define HAVE_LINUX_WIRELESS_H 1
+_ACEOF
+ wifi_headers="yes"
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Missing <linux/wireless.h>, not running wifi routine" >&5
+$as_echo "$as_me: Missing <linux/wireless.h>, not running wifi routine" >&6;}
 fi
 
 done
@@ -4862,8 +4877,11 @@ if test "$todo_headers"   = "yes"; then :
 fi
 if test "$net_headers"    = "yes"; then :
   $as_echo "@%:@define BUILD_NETWORK 1" >>confdefs.h
- $as_echo "@%:@define BUILD_WIFI 1" >>confdefs.h
 
+fi
+if test "$net_headers"    = "yes" -a "$wifi_headers" = "yes"; then :
+  $as_echo "@%:@define BUILD_WIFI 1" >>confdefs.h
+]
 fi
 
 ac_config_files="$ac_config_files Makefile"
