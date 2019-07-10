@@ -16,7 +16,7 @@ static const struct {
 	/*BOTTOM BAR */
 	{ NETWORK  , 1      , "#FFFFFF" },
 	{ DISK     , 5      , "#FFFFFF" },
-	{ RAM      , 1      , "#FFFFFF" },
+	{ RAM      , 5      , "#FFFFFF" },
 	{ LOAD     , 1      , "#FFFFFF" },
 	{ CPU_USAGE, 1      , "#FFFFFF" },
 	{ CPU_TEMP , 1      , "#FFFFFF" },
