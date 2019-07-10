@@ -342,7 +342,7 @@ static void *sb_disk_routine(void *thunk)
 			}
 			avail = sb_calc_magnitude(stats.f_bfree *stats.f_bsize, &avail_unit);
 			total = sb_calc_magnitude(stats.f_blocks*stats.f_bsize, &total_unit);
-			snprintf(output, sizeof(output), "%s: %4.1f%c/%4.1f%c",
+			snprintf(output, sizeof(output), "%s: %.1f%c/%.1f%c",
 					filesystems[i].display_name, avail, avail_unit, total, total_unit);
 			strncat(routine->output, output, sizeof(routine->output)-strlen(routine->output)-1);
 
