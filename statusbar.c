@@ -23,26 +23,23 @@
 /* --- HELPER FUNCTIONS --- */
 static float sb_calc_magnitude(long number, char *prefix)
 {
+	/* This will calculate how many commas the number would have. We are going to
+ 	 * start at 1 because 0 would just be skipped (nothing would happen). We are
+	 * adding 1 to every bitshift operation because we need to save a thousandth
+	 * place for later dividing into a floating-point number. If we didn't add the
+	 * one 1, the number would lose its decimal places and precision. */
 	int   i;
-	long  num     = number;
 	char *symbols = "BKMGTP";
 
-	if (number < 1024) {
+	if (number < 1000) {
 		*prefix = 'B';
 		return number * 1.0;
 	}
 
-	/* This will calculate (roughly) how many commas the number would have by
-	 * shifting it 3 places to the right (or, more precisely, dividing by 1024)
-	 * until the number is consumed. We are going to start at 1 because 0 would
-	 * just be skipped (nothing would happen). We are adding 1 to every bitshift
-	 * operation because we need to save a thousandth place for later dividing
-	 * into a floating-point number. If we didn't add the one 1, the number
-	 * would lose its decimal places and precision. */
-	for (i=1; (num >> (10*(i+1))) > 0; i++);
+	for (i=0; number / powl(10, 3*i) > 1000; i++);
 
 	*prefix = symbols[i];
-	return (number >> (10*(i-1))) / 1024.0;
+	return (number / powl(10, 3*i)) / 1000.0;
 }
 
 static long sb_normalize_perc(long num)
