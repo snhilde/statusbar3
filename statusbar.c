@@ -519,14 +519,14 @@ struct sb_file_t {
 
 static SB_BOOL sb_network_get_paths(struct sb_file_t *rx_file, struct sb_file_t *tx_file)
 {
-	int             fd;
+	int             sock;
 	struct ifreq    ifr;
 	struct ifaddrs *ifaddrs = NULL;
 	struct ifaddrs *ifap;
 
 	/* open socket and return file descriptor for it */
-	fd = socket(AF_INET, SOCK_DGRAM, 0);
-	if (fd < 0) {
+	sock = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sock < 0) {
 		fprintf(stderr, "Network routine: Failed to open socket file descriptor\n");
 		return SB_FALSE;
 	}
@@ -534,7 +534,7 @@ static SB_BOOL sb_network_get_paths(struct sb_file_t *rx_file, struct sb_file_t 
 	/* get all network interfaces */
 	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
 		fprintf(stderr, "Network routine: Failed to find interface addresses\n");
-		close(fd);
+		close(sock);
 		return SB_FALSE;
 	}
 	ifap = ifaddrs;
@@ -542,7 +542,7 @@ static SB_BOOL sb_network_get_paths(struct sb_file_t *rx_file, struct sb_file_t 
 	/* go through each interface until we find an active one */
 	while (ifap != NULL) {
 		strncpy(ifr.ifr_name, ifap->ifa_name, IFNAMSIZ);
-		if (ioctl(fd, SIOCGIFFLAGS, &ifr) >= 0) {
+		if (ioctl(sock, SIOCGIFFLAGS, &ifr) >= 0) {
 			if (ifr.ifr_flags & IFF_RUNNING && !(ifr.ifr_flags & IFF_LOOPBACK)) {
 				snprintf(rx_file->path, sizeof(rx_file->path),
 						"/sys/class/net/%s/statistics/rx_bytes", ifap->ifa_name);
@@ -554,7 +554,7 @@ static SB_BOOL sb_network_get_paths(struct sb_file_t *rx_file, struct sb_file_t 
 		ifap = ifap->ifa_next;
 	}
 
-	close(fd);
+	close(sock);
 	freeifaddrs(ifaddrs);
 
 	if (ifap == NULL) {
@@ -980,8 +980,9 @@ static void *sb_weather_routine(void *thunk)
 
 /* --- WIFI ROUTINE --- */
 #ifdef BUILD_WIFI
-static SB_BOOL sb_wifi_init(int *fd, struct iwreq *iwr, char *essid, size_t max_len)
+static SB_BOOL sb_wifi_init(struct iwreq *iwr, char *essid, size_t max_len)
 {
+	int             sock;
 	struct ifaddrs *ifaddrs = NULL;
 	struct ifaddrs *ifap;
 
@@ -991,8 +992,8 @@ static SB_BOOL sb_wifi_init(int *fd, struct iwreq *iwr, char *essid, size_t max_
 	iwr->u.data.flags    = 0;
 
 	/* open socket and return file descriptor for it */
-	*fd = socket(AF_INET, SOCK_DGRAM, 0);
-	if (*fd < 0) {
+	sock = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sock < 0) {
 		fprintf(stderr, "Wifi routine: Failed to open socket file descriptor\n");
 		return SB_FALSE;
 	}
@@ -1000,6 +1001,7 @@ static SB_BOOL sb_wifi_init(int *fd, struct iwreq *iwr, char *essid, size_t max_
 	/* get all network interfaces */
 	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
 		fprintf(stderr, "Wifi routine: Failed to find interface addresses\n");
+		close(sock);
 		return SB_FALSE;
 	}
 	ifap = ifaddrs;
@@ -1007,9 +1009,10 @@ static SB_BOOL sb_wifi_init(int *fd, struct iwreq *iwr, char *essid, size_t max_
 	/* go through each interface until one returns an ssid */
 	while (ifap != NULL) {
 		strncpy(iwr->ifr_ifrn.ifrn_name, ifap->ifa_name, IFNAMSIZ);
-		if (ioctl(*fd, SIOCGIWESSID, iwr) >= 0) {
+		if (ioctl(sock, SIOCGIWESSID, iwr) >= 0) {
 			/* we found a match */
 			freeifaddrs(ifaddrs);
+			close(sock);
 			return SB_TRUE;
 		}
 		/* no match found, try the next interface */
@@ -1019,6 +1022,7 @@ static SB_BOOL sb_wifi_init(int *fd, struct iwreq *iwr, char *essid, size_t max_
 	/* if we reached here, then we didn't find anything */
 	fprintf(stderr, "Wifi routine: No wireless interfaces found\n");
 	freeifaddrs(ifaddrs);
+	close(sock);
 	return SB_FALSE;
 }
 #endif
@@ -1037,24 +1041,31 @@ static void *sb_wifi_routine(void *thunk)
 
 #ifdef BUILD_WIFI
 	SB_TIMER_VARS;
-	int          fd;
+	int          sock;
 	struct iwreq iwr;
 	char         essid[IW_ESSID_MAX_SIZE + 1];
 
-	if (!sb_wifi_init(&fd, &iwr, essid, sizeof(essid))) {
-		close(fd);
+	if (!sb_wifi_init(&iwr, essid, sizeof(essid)))
 		return NULL;
-	}
 
 	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
 		memset(essid, 0, sizeof(essid));
-		if (ioctl(fd, SIOCGIWESSID, &iwr) < 0) {
-			fprintf(stderr, "Wifi routine: Failed to get SSID\n");
+
+		sock = socket(AF_INET, SOCK_DGRAM, 0);
+		if (sock < 0) {
+			fprintf(stderr, "Wifi routine: Failed to open socket file descriptor\n");
 			break;
 		}
+
+		if (ioctl(sock, SIOCGIWESSID, &iwr) < 0) {
+			fprintf(stderr, "Wifi routine: Failed to get SSID\n");
+			close(sock);
+			break;
+		}
+		close(sock);
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "%s", essid);
@@ -1063,8 +1074,6 @@ static void *sb_wifi_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-
-	close(fd);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
