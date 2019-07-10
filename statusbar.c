@@ -21,24 +21,20 @@
 		}
 
 /* --- HELPER FUNCTIONS --- */
-static float sb_calc_magnitude(long number, char *prefix)
+static float sb_calc_magnitude(long number, char *unit)
 {
-	/* This will calculate how many commas the number would have. We are going to
- 	 * start at 1 because 0 would just be skipped (nothing would happen). We are
-	 * adding 1 to every bitshift operation because we need to save a thousandth
-	 * place for later dividing into a floating-point number. If we didn't add the
-	 * one 1, the number would lose its decimal places and precision. */
-	int   i;
-	char *symbols = "BKMGTP";
+	/* This will calculate how many commas the number would have. */
+	int  i;
+	char symbols[] = "KMGTP";
 
 	if (number < 1000) {
-		*prefix = 'B';
+		*unit = 'B';
 		return number * 1.0;
 	}
 
 	for (i=0; number / powl(10, 3*i) > 1000; i++);
 
-	*prefix = symbols[i];
+	*unit = symbols[i];
 	return (number / powl(10, 3*i)) / 1000.0;
 }
 
@@ -511,7 +507,7 @@ struct sb_file_t {
 	long old_bytes;
 	long new_bytes;
 	long reduced;
-	char prefix;
+	char unit;
 };
 
 static SB_BOOL sb_network_get_paths(struct sb_file_t *rx_file, struct sb_file_t *tx_file)
@@ -597,7 +593,7 @@ static void *sb_network_routine(void *thunk)
 				error = SB_TRUE;
 			} else {
 				diff             = files[i].new_bytes - files[i].old_bytes;
-				files[i].reduced = (long)sb_calc_magnitude(diff, &files[i].prefix);
+				files[i].reduced = (long)sb_calc_magnitude(diff, &files[i].unit);
 			}
 		}
 		if (error)
@@ -605,7 +601,7 @@ static void *sb_network_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "%3ld%c up/%3ld%c down",
-				files[0].reduced, files[0].prefix, files[1].reduced, files[1].prefix);
+				files[0].reduced, files[0].unit, files[1].reduced, files[1].unit);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
