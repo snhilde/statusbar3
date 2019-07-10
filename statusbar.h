@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <dirent.h>
+#include <math.h>
 
 #define BUILD_BATTERY
 #define BUILD_CPU_TEMP
