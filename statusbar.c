@@ -319,9 +319,9 @@ static void *sb_disk_routine(void *thunk)
 	struct statvfs stats;
 	SB_BOOL        error   = SB_FALSE;
 	float          avail;
-	char           avail_prefix;
+	char           avail_unit;
 	float          total;
-	char           total_prefix;
+	char           total_unit;
 	char           output[512];
 
 	routine->print = SB_TRUE;
@@ -340,10 +340,10 @@ static void *sb_disk_routine(void *thunk)
 				error = SB_TRUE;
 				break;
 			}
-			avail = sb_calc_magnitude(stats.f_bfree *stats.f_bsize, &avail_prefix);
-			total = sb_calc_magnitude(stats.f_blocks*stats.f_bsize, &total_prefix);
+			avail = sb_calc_magnitude(stats.f_bfree *stats.f_bsize, &avail_unit);
+			total = sb_calc_magnitude(stats.f_blocks*stats.f_bsize, &total_unit);
 			snprintf(output, sizeof(output), "%s: %4.1f%c/%4.1f%c",
-					filesystems[i].display_name, avail, avail_prefix, total, total_prefix);
+					filesystems[i].display_name, avail, avail_unit, total, total_unit);
 			strncat(routine->output, output, sizeof(routine->output)-strlen(routine->output)-1);
 
 			if (i+1 < num_filesystems)
