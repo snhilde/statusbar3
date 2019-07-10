@@ -25,17 +25,17 @@ static float sb_calc_magnitude(long number, char *unit)
 {
 	/* This will calculate how many commas the number would have. */
 	int  i;
-	char symbols[] = "KMGTP";
+	char symbols[] = "BKMGTP";
 
 	if (number < 1000) {
 		*unit = 'B';
 		return number * 1.0;
 	}
 
-	for (i=0; number / powl(10, 3*i) > 1000; i++);
+	for (i=0; number / powl(10, 3*i) > 999; i++);
 
 	*unit = symbols[i];
-	return (number / powl(10, 3*i)) / 1000.0;
+	return (number / powl(10, 3*(i-1))) / 1000.0;
 }
 
 static long sb_normalize_perc(long num)
