@@ -49,6 +49,9 @@ AC_CHECK_HEADERS([string.h],
 AC_CHECK_HEADERS([dirent.h],
 				 [],
 				 [AC_MSG_ERROR([Missing <dirent.h>])])
+AC_CHECK_HEADERS([math.h],
+				 [],
+				 [AC_MSG_ERROR([Missing <math.h>])])
 
 AC_CHECK_HEADERS([sys/statvfs.h],
 				 [disk_headers="yes"],
