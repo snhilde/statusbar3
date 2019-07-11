@@ -1019,7 +1019,7 @@ static SB_BOOL sb_wifi_init(struct iwreq *iwr, char *essid, size_t max_len)
 	}
 
 	/* if we reached here, then we didn't find anything */
-	fprintf(stderr, "Wifi routine: No wireless interfaces found\n");
+	SB_PRINT_ERROR("No wireless interfaces found");
 	freeifaddrs(ifaddrs);
 	close(sock);
 	return SB_FALSE;
