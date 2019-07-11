@@ -342,7 +342,7 @@ static void *sb_disk_routine(void *thunk)
 		num_filesystems = sizeof(filesystems) / sizeof(*filesystems);
 		for (i=0; i<num_filesystems; i++) {
 			if (statvfs(filesystems[i].path, &stats) != 0) {
-				fprintf(stderr, "Disk routine: Failed to get stats for %s", filesystems[i].path);
+				SB_PRINT_ERROR_W_ARG("Failed to get stats for", filesystems[i].path)
 				error = SB_TRUE;
 				break;
 			}
