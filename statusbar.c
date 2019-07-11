@@ -855,7 +855,7 @@ static SB_BOOL sb_volume_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **sn
 	*mixer    = NULL;
 
 	if (snd_mixer_open(mixer, 0) < 0) {
-		fprintf(stderr, "Volume routine: Failed to open mixer\n");
+		SB_PRINT_ERROR("Failed to open mixer");
 	} else if (snd_mixer_attach(*mixer, card) < 0) {
 		fprintf(stderr, "Volume routine: Failed to attach mixer\n");
 	} else if (snd_mixer_selem_register(*mixer, NULL, NULL) < 0) {
