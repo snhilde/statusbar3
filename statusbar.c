@@ -557,7 +557,7 @@ static SB_BOOL sb_network_get_paths(struct sb_file_t *rx_file, struct sb_file_t 
 	freeifaddrs(ifaddrs);
 
 	if (ifap == NULL) {
-		fprintf(stderr, "Network routine: No wireless interfaces found\n");
+		SB_PRINT_ERROR("No wireless interfaces found");
 		return SB_FALSE;
 	}
 
