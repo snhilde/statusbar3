@@ -135,7 +135,7 @@ static void *sb_battery_routine(void *thunk)
 
 	max = atol(buf);
 	if (max <= 0) {
-		fprintf(stderr, "Battery routine: Failed to read max level\n");
+		SB_PRINT_ERROR("Failed to read max level");
 		return NULL;
 	}
 
