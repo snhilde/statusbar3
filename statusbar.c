@@ -90,7 +90,7 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 
 	dir = opendir(base);
 	if (dir == NULL) {
-		fprintf(stderr, "%s routine: Failed to open %s\n", name, base);
+		SB_PRINT_ERROR_W_ARG("Failed to open", base);
 		return SB_FALSE;
 	}
 
