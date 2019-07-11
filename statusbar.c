@@ -592,7 +592,7 @@ static void *sb_network_routine(void *thunk)
 				SB_PRINT_ERROR_W_ARG("Failed to open", files[i].path);
 				error = SB_TRUE;
 			} else if (fscanf(fd, "%ld", &files[i].new_bytes) < 1) {
-				fprintf(stderr, "Network routine: Failed to read %s\n", files[i].path);
+				SB_PRINT_ERROR_W_ARG("Failed to read", files[i].path);
 				error = SB_TRUE;
 			} else if (fclose(fd) != 0) {
 				fprintf(stderr, "Network routine: Failed to close %s\n", files[i].path);
