@@ -70,7 +70,7 @@ static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const cha
 	}
 
 	if (fgets(buf, size, fd) == NULL) {
-		fprintf(stderr, "%s routine: Failed to read %s\n", name, path);
+		SB_PRINT_ERROR_W_ARG("Failed to read", path);
 		fclose(fd);
 		return SB_FALSE;
 	}
