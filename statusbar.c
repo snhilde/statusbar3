@@ -657,7 +657,7 @@ static void *sb_ram_routine(void *thunk)
 		/* get available memory */
 		avail_bytes = sysconf(_SC_AVPHYS_PAGES) * page_size;
 		if (avail_bytes < 0) {
-			fprintf(stderr, "RAM routine: Failed to get available bytes\n");
+			SB_PRINT_ERROR("Failed to get available bytes");
 			break;
 		}
 		avail_bytes_f = sb_calc_magnitude(avail_bytes, &avail_bytes_prefix);
