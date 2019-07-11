@@ -859,7 +859,7 @@ static SB_BOOL sb_volume_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **sn
 	} else if (snd_mixer_attach(*mixer, card) < 0) {
 		SB_PRINT_ERROR("Failed to attach mixer");
 	} else if (snd_mixer_selem_register(*mixer, NULL, NULL) < 0) {
-		fprintf(stderr, "Volume routine: Failed to register mixer\n");
+		SB_PRINT_ERROR("Failed to register mixer");
 	} else if (snd_mixer_load(*mixer) < 0) {
 		fprintf(stderr, "Volume routine: Failed to load mixer\n");
 
