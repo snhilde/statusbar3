@@ -999,7 +999,7 @@ static SB_BOOL sb_wifi_init(struct iwreq *iwr, char *essid, size_t max_len)
 
 	/* get all network interfaces */
 	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
-		fprintf(stderr, "Wifi routine: Failed to find interface addresses\n");
+		SB_PRINT_ERROR("Failed to find interface addresses");
 		close(sock);
 		return SB_FALSE;
 	}
