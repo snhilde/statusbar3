@@ -384,7 +384,7 @@ static SB_BOOL sb_fan_get_path(char path[], size_t size)
 
 	dir = opendir(base);
 	if (dir == NULL) {
-		fprintf(stderr, "Fan routine: Failed to open %s\n", base);
+		SB_PRINT_ERROR_W_ARG("Failed to open", base);
 		return SB_FALSE;
 	}
 
