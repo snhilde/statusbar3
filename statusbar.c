@@ -941,7 +941,7 @@ static void *sb_volume_routine(void *thunk)
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		fprintf(stderr, "Volume routine: Failed to destroy mutex\n");
+		SB_PRINT_ERROR("Failed to destroy mutex");
 	routine->print = SB_FALSE;
 	return NULL;
 }
