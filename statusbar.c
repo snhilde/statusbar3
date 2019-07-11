@@ -1055,14 +1055,12 @@ static void *sb_wifi_routine(void *thunk)
 
 		if (ioctl(sock, SIOCGIWESSID, &iwr) < 0) {
 			fprintf(stderr, "Wifi routine: Failed to get SSID\n");
-			close(sock);
-			break;
+		} else {
+			pthread_mutex_lock(&(routine->mutex));
+			snprintf(routine->output, sizeof(routine->output), "%s", essid);
+			pthread_mutex_unlock(&(routine->mutex));
 		}
 		close(sock);
-
-		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output), "%s", essid);
-		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
 		SB_SLEEP;
