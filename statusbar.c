@@ -532,7 +532,7 @@ static SB_BOOL sb_network_get_paths(struct sb_file_t *rx_file, struct sb_file_t 
 
 	/* get all network interfaces */
 	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
-		fprintf(stderr, "Network routine: Failed to find interface addresses\n");
+		SB_PRINT_ERROR("Failed to find interface addresses");
 		close(sock);
 		return SB_FALSE;
 	}
