@@ -148,7 +148,7 @@ static void *sb_battery_routine(void *thunk)
 
 		now = atol(buf);
 		if (now < 0) {
-			fprintf(stderr, "Battery routine: Failed to read current level\n");
+			SB_PRINT_ERROR("Failed to read current level");
 			break;
 		}
 
