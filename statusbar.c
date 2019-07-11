@@ -65,7 +65,7 @@ static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const cha
 	snprintf(path, sizeof(path), "%s%s", base, file?file:"");
 	fd = fopen(path, "r");
 	if (fd == NULL) {
-		fprintf(stderr, "%s routine: Failed to open %s\n", name, path);
+		SB_PRINT_ERROR_W_ARG("Failed to open", path);
 		return SB_FALSE;
 	}
 
