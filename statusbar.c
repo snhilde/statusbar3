@@ -196,7 +196,7 @@ static SB_BOOL sb_cpu_temp_get_filename(char path[], char filename[], size_t siz
 		}
 	}
 
-	fprintf(stderr, "%s routine: Failed to find temperature monitor\n", name);
+	SB_PRINT_ERROR("Failed to find temperature monitor");
 	closedir(dir);
 	return SB_FALSE;
 }
