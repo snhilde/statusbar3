@@ -796,7 +796,7 @@ static void *sb_todo_routine(void *thunk)
 		} else if (fgets(line2, sizeof(line2), fd) == NULL) {
 			l2_isempty = SB_TRUE;
 		} else if (fclose(fd) != 0) {
-			fprintf(stderr, "Todo routine: Failed to close %s\n", path);
+			SB_PRINT_ERROR_W_ARG("Failed to close", path);
 			break;
 		}
 
