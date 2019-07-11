@@ -3,10 +3,11 @@
 
 #define SBLENGTH 10240
 
-#define SB_TIMER_VARS \
-	struct timespec  start_tp  = {0}; \
-	struct timespec  finish_tp = {0}; \
-	long             elapsed_usec;
+#define SB_PRINT_ERROR(msg) \
+		fprintf(stderr, "%s routine: " msg "\n", routine->name)
+
+#define SB_PRINT_ERROR_W_ARG(msg, arg) \
+		fprintf(stderr, "%s routine: " msg " %s\n", routine->name, arg)
 
 #define SB_START_TIMER \
 	clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
@@ -17,14 +18,13 @@
 #define SB_SLEEP \
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000); \
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) { \
-			fprintf(stderr, "%s routine: Error sleeping\n", routine->name); \
+			SB_PRINT_ERROR("Error sleeping") \
 		}
 
-#define SB_PRINT_ERROR(msg) \
-		fprintf(stderr, "%s routine: " msg "\n", routine->name)
-
-#define SB_PRINT_ERROR_W_ARG(msg, arg) \
-		fprintf(stderr, "%s routine: " msg " %s\n", routine->name, arg)
+#define SB_TIMER_VARS \
+	struct timespec  start_tp  = {0}; \
+	struct timespec  finish_tp = {0}; \
+	long             elapsed_usec;
 
 /* --- HELPER FUNCTIONS --- */
 static float sb_calc_magnitude(long number, char *unit)
