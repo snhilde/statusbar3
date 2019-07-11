@@ -227,7 +227,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 
 		now = atol(contents);
 		if (now < 0) {
-			fprintf(stderr, "%s routine: Failed to read temperature\n", routine->name);
+			SB_PRINT_ERROR("Failed to read temperature");
 			break;
 		}
 
