@@ -109,7 +109,7 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 		}
 	}
 
-	fprintf(stderr, "%s routine: Failed to find file\n", name);
+	SB_PRINT_ERROR("Failed to find file");
 	closedir(dir);
 	return SB_FALSE;
 }
