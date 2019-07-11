@@ -483,7 +483,7 @@ static void *sb_load_routine(void *thunk)
 			SB_PRINT_ERROR_W_ARG("Failed to read", path);
 			break;
 		} else if (fclose(fd) != 0) {
-			fprintf(stderr, "Load routine: Failed to close %s\n", path);
+			SB_PRINT_ERROR_W_ARG("Failed to close", path);
 			break;
 		}
 
