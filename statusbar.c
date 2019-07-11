@@ -864,7 +864,7 @@ static SB_BOOL sb_volume_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **sn
 		SB_PRINT_ERROR("Failed to load mixer");
 
 	} else if (snd_mixer_selem_id_malloc(&snd_id) != 0) {
-		fprintf(stderr, "Volume routine: Failed to allocate snd_id\n");
+		SB_PRINT_ERROR("Failed to allocate snd_id");
 	} else {
 		snd_mixer_selem_id_set_index(snd_id, index);
 		snd_mixer_selem_id_set_name(snd_id, name);
