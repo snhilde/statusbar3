@@ -411,7 +411,7 @@ static SB_BOOL sb_fan_get_path(char path[], size_t size)
 		}
 	}
 
-	fprintf(stderr, "Fan routine: Failed to find a fan\n");
+	SB_PRINT_ERROR("Failed to find a fan");
 	closedir(dir);
 	return SB_FALSE;
 }
@@ -439,7 +439,7 @@ static void *sb_fan_routine(void *thunk)
 
 		now = atol(contents);
 		if (now < 0) {
-			fprintf(stderr, "%s routine: Failed to read current fan speed\n", routine->name);
+			SB_PRINT_ERROR("Failed to read current fan speed");
 			break;
 		}
 
