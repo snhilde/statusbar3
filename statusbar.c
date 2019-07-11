@@ -643,7 +643,7 @@ static void *sb_ram_routine(void *thunk)
 	page_size   = sysconf(_SC_PAGESIZE);
 	total_pages = sysconf(_SC_PHYS_PAGES);
 	if (page_size < 0 || total_pages < 0) {
-		fprintf(stderr, "RAM routine: Failed to get page info\n");
+		SB_PRINT_ERROR("Failed to get page info");
 		return NULL;
 	}
 
