@@ -589,7 +589,7 @@ static void *sb_network_routine(void *thunk)
 			files[i].old_bytes = files[i].new_bytes;
 			fd                 = fopen(files[i].path, "r");
 			if (fd == NULL) {
-				fprintf(stderr, "Network routine: Failed to open %s\n", files[i].path);
+				SB_PRINT_ERROR_W_ARG("Failed to open", files[i].path);
 				error = SB_TRUE;
 			} else if (fscanf(fd, "%ld", &files[i].new_bytes) < 1) {
 				fprintf(stderr, "Network routine: Failed to read %s\n", files[i].path);
