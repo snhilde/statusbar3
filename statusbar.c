@@ -179,7 +179,7 @@ static SB_BOOL sb_cpu_temp_get_filename(char path[], char filename[], size_t siz
 
 	dir = opendir(path);
 	if (dir == NULL) {
-		fprintf(stderr, "%s routine: Failed to open %s\n", name, path);
+		SB_PRINT_ERROR_W_ARG("Failed to open", path);
 		return SB_FALSE;
 	}
 
