@@ -480,7 +480,7 @@ static void *sb_load_routine(void *thunk)
 			SB_PRINT_ERROR_W_ARG("Failed to open", path);
 			break;
 		} else if (fscanf(fd, "%lf %lf %lf", &av[0], &av[1], &av[2]) < 3) {
-			fprintf(stderr, "Load routine: Failed to read %s\n", path);
+			SB_PRINT_ERROR_W_ARG("Failed to read", path);
 			break;
 		} else if (fclose(fd) != 0) {
 			fprintf(stderr, "Load routine: Failed to close %s\n", path);
