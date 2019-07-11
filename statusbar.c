@@ -526,7 +526,7 @@ static SB_BOOL sb_network_get_paths(struct sb_file_t *rx_file, struct sb_file_t 
 	/* open socket and return file descriptor for it */
 	sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sock < 0) {
-		fprintf(stderr, "Network routine: Failed to open socket file descriptor\n");
+		SB_PRINT_ERROR("Failed to open socket file descriptor");
 		return SB_FALSE;
 	}
 
