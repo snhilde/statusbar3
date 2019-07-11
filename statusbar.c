@@ -918,7 +918,7 @@ static void *sb_volume_routine(void *thunk)
 			SB_PRINT_ERROR("Failed to clear mixer");
 			break;
 		} else if (snd_mixer_selem_get_playback_switch(snd_elem, SND_MIXER_SCHN_MONO, &mute) != 0) {
-			fprintf(stderr, "Volume routine: Failed to get mute state\n");
+			SB_PRINT_ERROR("Failed to get mute state");
 			break;
 		} else if (mute == 0) {
 			pthread_mutex_lock(&(routine->mutex));
