@@ -20,6 +20,9 @@
 			fprintf(stderr, "%s routine: Error sleeping\n", routine->name); \
 		}
 
+#define SB_PRINT_ERROR(msg) \
+		fprintf(stderr, "%s routine: " msg "\n", routine->name)
+
 /* --- HELPER FUNCTIONS --- */
 static float sb_calc_magnitude(long number, char *unit)
 {
