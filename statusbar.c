@@ -243,7 +243,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		fprintf(stderr, "CPU Temp routine: Failed to destroy mutex\n");
+		SB_PRINT_ERROR("Failed to destroy mutex");
 	routine->print = SB_FALSE;
 	return NULL;
 }
@@ -275,7 +275,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 
 		fd = fopen(path, "r");
 		if (fd == NULL) {
-			fprintf(stderr, "CPU Usage routine: Failed to open %s\n", path);
+			SB_PRINT_ERROR_W_ARG("Failed to open", path);
 			break;
 		} else if (fscanf(fd, "cpu %lu %lu %lu %lu", &new.user, &new.nice, &new.system, &new.idle) < 4) {
 			fprintf(stderr, "CPU Usage routine: Failed to read %s\n", path);
