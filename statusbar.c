@@ -24,7 +24,7 @@
 		fprintf(stderr, "%s routine: " msg "\n", routine->name)
 
 #define SB_PRINT_ERROR_W_ARG(msg, arg) \
-		fprintf(stderr, "%s routine: " msg "%c\n", routine->name, arg)
+		fprintf(stderr, "%s routine: " msg "%s\n", routine->name, arg)
 
 /* --- HELPER FUNCTIONS --- */
 static float sb_calc_magnitude(long number, char *unit)
