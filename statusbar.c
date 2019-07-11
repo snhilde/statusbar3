@@ -1055,7 +1055,7 @@ static void *sb_wifi_routine(void *thunk)
 
 		sock = socket(AF_INET, SOCK_DGRAM, 0);
 		if (sock < 0) {
-			fprintf(stderr, "Wifi routine: Failed to open socket file descriptor\n");
+			SB_PRINT_ERROR("Failed to open socket file descriptor");
 			break;
 		}
 
