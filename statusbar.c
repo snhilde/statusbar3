@@ -905,7 +905,7 @@ static void *sb_volume_routine(void *thunk)
 	if (!sb_volume_get_snd_elem(&mixer, &snd_elem))
 		return NULL;
 	if (snd_mixer_selem_get_playback_volume_range(snd_elem, &min, &max) != 0) {
-		fprintf(stderr, "Volume routine: Failed to get volume range\n");
+		SB_PRINT_ERROR("Failed to get volume range");
 		snd_mixer_close(mixer);
 		return NULL;
 	}
