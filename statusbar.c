@@ -789,7 +789,7 @@ static void *sb_todo_routine(void *thunk)
 
 		fd = fopen(path, "r");
 		if (fd == NULL) {
-			fprintf(stderr, "Todo routine: Failed to open %s\n", path);
+			SB_PRINT_ERROR_W_ARG("Failed to open", path);
 			break;
 		} else if (fgets(line1, sizeof(line1), fd) == NULL) {
 			l1_isempty = SB_TRUE;
