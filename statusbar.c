@@ -4,10 +4,10 @@
 #define SBLENGTH 10240
 
 #define SB_PRINT_ERROR(msg) \
-		fprintf(stderr, "%s routine: " msg "\n", routine->name)
+		fprintf(stderr, "%s routine: " msg "\n", routine->name);
 
 #define SB_PRINT_ERROR_W_ARG(msg, arg) \
-		fprintf(stderr, "%s routine: " msg " %s\n", routine->name, arg)
+		fprintf(stderr, "%s routine: " msg " %s\n", routine->name, arg);
 
 #define SB_START_TIMER \
 	clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
@@ -18,7 +18,7 @@
 #define SB_SLEEP \
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000); \
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) { \
-			SB_PRINT_ERROR("Error sleeping") \
+			SB_PRINT_ERROR("Error sleeping"); \
 		}
 
 #define SB_TIMER_VARS \
@@ -55,7 +55,7 @@ static long sb_normalize_perc(long num)
 	return num;
 }
 
-static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const char *file, const char *name)
+static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const char *file, sb_routine_t *routine)
 {
 	char  path[512];
 	FILE *fd;
@@ -79,7 +79,7 @@ static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const cha
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char *file, const char *match, const char *name)
+static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char *file, const char *match, sb_routine_t *routine)
 {
 	DIR           *dir;
 	struct dirent *dirent;
@@ -99,7 +99,7 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 			continue;
 
 		snprintf(path, sizeof(path), "%s/%s/", base, dirent->d_name);
-		if (!sb_read_file(contents, sizeof(contents), path, file, name))
+		if (!sb_read_file(contents, sizeof(contents), path, file, routine))
 			continue;
 
 		if (strncasecmp(contents, match, strlen(match)) == 0) {
@@ -128,9 +128,9 @@ static void *sb_battery_routine(void *thunk)
 	long now;
 	long perc;
 
-	if (!sb_get_path(path, sizeof(path), "/sys/class/power_supply", "type", "Battery", routine->name))
+	if (!sb_get_path(path, sizeof(path), "/sys/class/power_supply", "type", "Battery", routine))
 		return NULL;
-	if (!sb_read_file(buf, sizeof(buf), path, "charge_full", routine->name))
+	if (!sb_read_file(buf, sizeof(buf), path, "charge_full", routine))
 		return NULL;
 
 	max = atol(buf);
@@ -143,7 +143,7 @@ static void *sb_battery_routine(void *thunk)
 	while(1) {
 		SB_START_TIMER;
 
-		if (!sb_read_file(buf, sizeof(buf), path, "charge_now", routine->name))
+		if (!sb_read_file(buf, sizeof(buf), path, "charge_now", routine))
 			break;
 
 		now = atol(buf);
@@ -172,7 +172,7 @@ static void *sb_battery_routine(void *thunk)
 
 /* --- CPU TEMP ROUTINE --- */
 #ifdef BUILD_CPU_TEMP
-static SB_BOOL sb_cpu_temp_get_filename(char path[], char filename[], size_t size, const char *name)
+static SB_BOOL sb_cpu_temp_get_filename(char path[], char filename[], size_t size, sb_routine_t *routine)
 {
 	DIR           *dir;
 	struct dirent *dirent;
@@ -213,16 +213,16 @@ static void *sb_cpu_temp_routine(void *thunk)
 	char contents[128];
 	long now;
 
-	if (!sb_get_path(path, sizeof(path), "/sys/class/hwmon", "name", "coretemp", routine->name))
+	if (!sb_get_path(path, sizeof(path), "/sys/class/hwmon", "name", "coretemp", routine))
 		return NULL;
-	if (!sb_cpu_temp_get_filename(path, filename, sizeof(filename), routine->name))
+	if (!sb_cpu_temp_get_filename(path, filename, sizeof(filename), routine))
 		return NULL;
 
 	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
-		if (!sb_read_file(contents, sizeof(contents), path, filename, routine->name))
+		if (!sb_read_file(contents, sizeof(contents), path, filename, routine))
 			break;
 
 		now = atol(contents);
@@ -374,7 +374,7 @@ static void *sb_disk_routine(void *thunk)
 
 /* --- FAN ROUTINE --- */
 #ifdef BUILD_FAN
-static SB_BOOL sb_fan_get_path(char path[], size_t size)
+static SB_BOOL sb_fan_get_path(char path[], size_t size, sb_routine_t *routine)
 {
 	static const char *base = "/sys/class/hwmon";
 	DIR               *dir;
@@ -427,14 +427,14 @@ static void *sb_fan_routine(void *thunk)
 	char contents[128];
 	long now;
 
-	if (!sb_fan_get_path(path, sizeof(path)))
+	if (!sb_fan_get_path(path, sizeof(path), routine))
 		return NULL;
 
 	routine->print = SB_TRUE;
 	while(1) {
 		SB_START_TIMER;
 
-		if (!sb_read_file(contents, sizeof(contents), path, NULL, routine->name))
+		if (!sb_read_file(contents, sizeof(contents), path, NULL, routine))
 			break;
 
 		now = atol(contents);
@@ -516,7 +516,7 @@ struct sb_file_t {
 	char unit;
 };
 
-static SB_BOOL sb_network_get_paths(struct sb_file_t *rx_file, struct sb_file_t *tx_file)
+static SB_BOOL sb_network_get_paths(struct sb_file_t *rx_file, struct sb_file_t *tx_file, sb_routine_t *routine)
 {
 	int             sock;
 	struct ifreq    ifr;
@@ -577,7 +577,7 @@ static void *sb_network_routine(void *thunk)
 	FILE             *fd;
 	long              diff;
 
-	if (!sb_network_get_paths(&files[0], &files[1]))
+	if (!sb_network_get_paths(&files[0], &files[1], routine))
 		return NULL;
 
 	routine->print = SB_TRUE;
@@ -844,7 +844,7 @@ static void *sb_todo_routine(void *thunk)
 
 /* --- VOLUME ROUTINE --- */
 #ifdef BUILD_VOLUME
-static SB_BOOL sb_volume_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **snd_elem)
+static SB_BOOL sb_volume_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **snd_elem, sb_routine_t *routine)
 {
 	static const char    *card   = "default";
 	snd_mixer_selem_id_t *snd_id = NULL;
@@ -902,7 +902,7 @@ static void *sb_volume_routine(void *thunk)
 	long              volume;
 	long              perc;
 
-	if (!sb_volume_get_snd_elem(&mixer, &snd_elem))
+	if (!sb_volume_get_snd_elem(&mixer, &snd_elem, routine))
 		return NULL;
 	if (snd_mixer_selem_get_playback_volume_range(snd_elem, &min, &max) != 0) {
 		SB_PRINT_ERROR("Failed to get volume range");
@@ -979,7 +979,7 @@ static void *sb_weather_routine(void *thunk)
 
 /* --- WIFI ROUTINE --- */
 #ifdef BUILD_WIFI
-static SB_BOOL sb_wifi_init(struct iwreq *iwr, char *essid, size_t max_len)
+static SB_BOOL sb_wifi_init(struct iwreq *iwr, char *essid, size_t max_len, sb_routine_t *routine)
 {
 	int             sock;
 	struct ifaddrs *ifaddrs = NULL;
@@ -1044,7 +1044,7 @@ static void *sb_wifi_routine(void *thunk)
 	struct iwreq iwr;
 	char         essid[IW_ESSID_MAX_SIZE + 1];
 
-	if (!sb_wifi_init(&iwr, essid, sizeof(essid)))
+	if (!sb_wifi_init(&iwr, essid, sizeof(essid), routine))
 		return NULL;
 
 	routine->print = SB_TRUE;
@@ -1214,7 +1214,6 @@ int main(int argc, char *argv[])
 		routine_object->routine = index;
 		if (index == DELIMITER) {
 			snprintf(routine_object->output, sizeof(routine_object->output), ";");
-			routine_object->length = 1;
 			routine_object->print  = SB_TRUE;
 		} else if (strlen(chosen_routines[i].color) != 7) {
 			fprintf(stderr, "%s: color must be RGB hex (\"#RRGGBB\")", routine_names[index]);
