@@ -1152,8 +1152,8 @@ static void sb_print(void)
 			fprintf(stderr, "Print: Failed to set root name\n");
 			break;
 		}
-		if (!XFlush(dpy)) {
-			fprintf(stderr, "Print: Failed to flush output buffer\n");
+		if (!XSync(dpy, False)) {
+			fprintf(stderr, "Print: Failed to sync\n");
 			break;
 		}
 
