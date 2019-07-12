@@ -70,7 +70,6 @@ typedef struct sb_routine {
 	char               output[256]; /* String of data that each routine will output for
 	                                   master status bar string to copy */
 	const char        *color;       /* Font color */
-	size_t             length;      /* Length of output */
 	pthread_t          thread;      /* Thread assigned to this routine */
 	pthread_mutex_t    mutex;       /* Mutex assigned to this routine. This will be used to
 	                                   lock output when reading from or writing to it. */
