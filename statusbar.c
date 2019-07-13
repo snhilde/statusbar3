@@ -1084,16 +1084,11 @@ static void *sb_wifi_routine(void *thunk)
 static void sb_print(void)
 {
 	SB_TIMER_VARS
-	Display      *dpy;
-	Window        root;
-
 	char          full_output[SBLENGTH];
 	size_t        offset;
 	sb_routine_t *routine;
 	size_t        len;
-
-	dpy  = XOpenDisplay(NULL);
-	root = RootWindow(dpy, DefaultScreen(dpy));
+	Display      *dpy;
 
 	while (1) {
 		SB_START_TIMER;
@@ -1148,14 +1143,10 @@ static void sb_print(void)
 		}
 		full_output[offset] = '\0';
 
-		if (!XStoreName(dpy, root, full_output)) {
-			fprintf(stderr, "Print: Failed to set root name\n");
-			break;
-		}
-		if (!XSync(dpy, False)) {
-			fprintf(stderr, "Print: Failed to sync\n");
-			break;
-		}
+		dpy = XOpenDisplay(NULL);
+		XStoreName(dpy, RootWindow(dpy, DefaultScreen(dpy)), full_output);
+		XFlush(dpy);
+		XCloseDisplay(dpy);
 
 		SB_STOP_TIMER;
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
