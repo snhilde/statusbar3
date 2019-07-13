@@ -1145,7 +1145,7 @@ static void sb_print(void)
 
 		dpy = XOpenDisplay(NULL);
 		XStoreName(dpy, RootWindow(dpy, DefaultScreen(dpy)), full_output);
-		XFlush(dpy);
+		XSync(dpy, False);
 		XCloseDisplay(dpy);
 
 		SB_STOP_TIMER;
