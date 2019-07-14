@@ -468,7 +468,6 @@ static void *sb_load_routine(void *thunk)
 	static const char *path = "/proc/loadavg";
 	double             av[3];
 
-	routine->print = SB_TRUE;
 	while (routine->print) {
 		SB_START_TIMER;
 
