@@ -1075,11 +1075,15 @@ static void sb_print(void)
 
 			pthread_mutex_lock(&(routine->mutex));
 			len = strlen(routine->output);
-			if (len == 0)
+			if (len == 0) {
+				pthread_mutex_unlock(&(routine->mutex));
+				routine = routine->next;
 				continue;
+			}
 
 			if (offset+len > SBLENGTH - 1 + (color_text?10:0)) {
 				fprintf(stderr, "Print: Exceeded max output length\n");
+				pthread_mutex_unlock(&(routine->mutex));
 				break;
 			}
 
