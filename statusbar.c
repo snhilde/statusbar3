@@ -464,7 +464,7 @@ static void *sb_load_routine(void *thunk)
 		if (!sb_read_file(contents, sizeof(contents), path, NULL, routine))
 			break;
 		if (sscanf(contents, "%lf %lf %lf", &av[0], &av[1], &av[2]) != 3)
-			SB_PRINT_ERROR("Failed to read /proc/loadavg", NULL);
+			SB_PRINT_ERROR("Failed to read", path);
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "%.2f, %.2f, %.2f", av[0], av[1], av[2]);
