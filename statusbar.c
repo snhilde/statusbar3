@@ -1208,7 +1208,7 @@ int main(int argc, char *argv[])
 		routine_object->routine = index;
 		if (index == DELIMITER) {
 			snprintf(routine_object->output, sizeof(routine_object->output), ";");
-			routine_object->print  = SB_TRUE;
+			routine_object->print = SB_TRUE;
 		} else if (strlen(chosen_routines[i].color) != 7) {
 			fprintf(stderr, "%s: color must be RGB hex (\"#RRGGBB\")", routine_names[index]);
 		} else {
@@ -1216,6 +1216,7 @@ int main(int argc, char *argv[])
 			routine_object->interval    = chosen_routines[i].seconds;
 			routine_object->color       = chosen_routines[i].color;
 			routine_object->name        = routine_names[index];
+			routine_object->print       = SB_TRUE;
 
 			/* create thread */
 			pthread_mutex_init(&(routine_object->mutex), NULL);
