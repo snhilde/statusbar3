@@ -455,15 +455,14 @@ static void *sb_load_routine(void *thunk)
 
 #ifdef BUILD_LOAD
 	SB_TIMER_VARS;
-	static const char *base     = "/proc/";
-	static const char *filename = "loadavg";
+	static const char *path = "/proc/loadavg";
 	char               contents[128];
 	double             av[3];
 
 	while (routine->print) {
 		SB_START_TIMER;
 
-		if (!sb_read_file(contents, sizeof(contents), base, filename, routine))
+		if (!sb_read_file(contents, sizeof(contents), path, NULL, routine))
 			break;
 		if (sscanf(contents, "%lf %lf %lf", &av[0], &av[1], &av[2]) != 3)
 			SB_PRINT_ERROR("Failed to read /proc/loadavg", NULL);
