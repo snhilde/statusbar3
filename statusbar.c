@@ -329,7 +329,6 @@ static void *sb_disk_routine(void *thunk)
 	char           total_unit;
 	char           output[512];
 
-	routine->print = SB_TRUE;
 	while (routine->print) {
 		SB_START_TIMER;
 
