@@ -331,7 +331,7 @@ static void *sb_disk_routine(void *thunk)
 	char           output[512];
 
 	routine->print = SB_TRUE;
-	while(1) {
+	while (routine->print) {
 		SB_START_TIMER;
 
 		/* In this routine, we're going to lock the mutex for the entire operation so we
