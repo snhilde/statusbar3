@@ -18,7 +18,7 @@
 #define SB_SLEEP \
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000); \
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) { \
-			SB_PRINT_ERROR("Error sleeping"); \
+			SB_PRINT_ERROR("Error sleeping", NULL); \
 		}
 
 #define SB_TIMER_VARS \
@@ -109,7 +109,7 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 		}
 	}
 
-	SB_PRINT_ERROR("Failed to find file");
+	SB_PRINT_ERROR("Failed to find file", NULL);
 	closedir(dir);
 	return SB_FALSE;
 }
@@ -135,7 +135,7 @@ static void *sb_battery_routine(void *thunk)
 	} else {
 		max = atol(buf);
 		if (max <= 0) {
-			SB_PRINT_ERROR("Failed to read max level");
+			SB_PRINT_ERROR("Failed to read max level", NULL);
 			routine->print = SB_FALSE;
 		}
 	}
@@ -148,7 +148,7 @@ static void *sb_battery_routine(void *thunk)
 
 		now = atol(buf);
 		if (now < 0) {
-			SB_PRINT_ERROR("Failed to read current level");
+			SB_PRINT_ERROR("Failed to read current level", NULL);
 			break;
 		}
 
@@ -164,7 +164,7 @@ static void *sb_battery_routine(void *thunk)
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex");
+		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
@@ -196,7 +196,7 @@ static SB_BOOL sb_cpu_temp_get_filename(char path[], char filename[], size_t siz
 		}
 	}
 
-	SB_PRINT_ERROR("Failed to find temperature monitor");
+	SB_PRINT_ERROR("Failed to find temperature monitor", NULL);
 	closedir(dir);
 	return SB_FALSE;
 }
@@ -227,7 +227,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 
 		now = atol(contents);
 		if (now < 0) {
-			SB_PRINT_ERROR("Failed to read temperature");
+			SB_PRINT_ERROR("Failed to read temperature", NULL);
 			break;
 		}
 
@@ -243,7 +243,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex");
+		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
@@ -306,7 +306,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex");
+		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
@@ -364,7 +364,7 @@ static void *sb_disk_routine(void *thunk)
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex");
+		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
@@ -409,7 +409,7 @@ static SB_BOOL sb_fan_get_path(char path[], size_t size, sb_routine_t *routine)
 		}
 	}
 
-	SB_PRINT_ERROR("Failed to find a fan");
+	SB_PRINT_ERROR("Failed to find a fan", NULL);
 	closedir(dir);
 	return SB_FALSE;
 }
@@ -436,7 +436,7 @@ static void *sb_fan_routine(void *thunk)
 
 		now = atol(contents);
 		if (now < 0) {
-			SB_PRINT_ERROR("Failed to read current fan speed");
+			SB_PRINT_ERROR("Failed to read current fan speed", NULL);
 			break;
 		}
 
@@ -451,7 +451,7 @@ static void *sb_fan_routine(void *thunk)
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex");
+		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
@@ -496,7 +496,7 @@ static void *sb_load_routine(void *thunk)
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex");
+		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
@@ -522,13 +522,13 @@ static SB_BOOL sb_network_get_paths(struct sb_file_t *rx_file, struct sb_file_t 
 	/* open socket and return file descriptor for it */
 	sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sock < 0) {
-		SB_PRINT_ERROR("Failed to open socket file descriptor");
+		SB_PRINT_ERROR("Failed to open socket file descriptor", NULL);
 		return SB_FALSE;
 	}
 
 	/* get all network interfaces */
 	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
-		SB_PRINT_ERROR("Failed to find interface addresses");
+		SB_PRINT_ERROR("Failed to find interface addresses", NULL);
 		close(sock);
 		return SB_FALSE;
 	}
@@ -553,7 +553,7 @@ static SB_BOOL sb_network_get_paths(struct sb_file_t *rx_file, struct sb_file_t 
 	freeifaddrs(ifaddrs);
 
 	if (ifap == NULL) {
-		SB_PRINT_ERROR("No wireless interfaces found");
+		SB_PRINT_ERROR("No wireless interfaces found", NULL);
 		return SB_FALSE;
 	}
 
@@ -614,7 +614,7 @@ static void *sb_network_routine(void *thunk)
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex");
+		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
@@ -638,7 +638,7 @@ static void *sb_ram_routine(void *thunk)
 	page_size   = sysconf(_SC_PAGESIZE);
 	total_pages = sysconf(_SC_PHYS_PAGES);
 	if (page_size < 0 || total_pages < 0) {
-		SB_PRINT_ERROR("Failed to get page info");
+		SB_PRINT_ERROR("Failed to get page info", NULL);
 		routine->print = SB_FALSE;
 	} else {
 		/* get total bytes as a decimal in human-readable format */
@@ -651,7 +651,7 @@ static void *sb_ram_routine(void *thunk)
 		/* get available memory */
 		avail_bytes = sysconf(_SC_AVPHYS_PAGES) * page_size;
 		if (avail_bytes < 0) {
-			SB_PRINT_ERROR("Failed to get available bytes");
+			SB_PRINT_ERROR("Failed to get available bytes", NULL);
 			break;
 		}
 		avail_bytes_f = sb_calc_magnitude(avail_bytes, &avail_bytes_prefix);
@@ -667,7 +667,7 @@ static void *sb_ram_routine(void *thunk)
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex");
+		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
@@ -713,13 +713,13 @@ static void *sb_time_routine(void *thunk)
 		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
-			SB_PRINT_ERROR("Error sleeping");
+			SB_PRINT_ERROR("Error sleeping", NULL);
 		}
 	}
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex");
+		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
@@ -828,7 +828,7 @@ static void *sb_todo_routine(void *thunk)
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex");
+		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
@@ -847,24 +847,24 @@ static SB_BOOL sb_volume_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **sn
 	*mixer    = NULL;
 
 	if (snd_mixer_open(mixer, 0) < 0) {
-		SB_PRINT_ERROR("Failed to open mixer");
+		SB_PRINT_ERROR("Failed to open mixer", NULL);
 	} else if (snd_mixer_attach(*mixer, card) < 0) {
-		SB_PRINT_ERROR("Failed to attach mixer");
+		SB_PRINT_ERROR("Failed to attach mixer", NULL);
 	} else if (snd_mixer_selem_register(*mixer, NULL, NULL) < 0) {
-		SB_PRINT_ERROR("Failed to register mixer");
+		SB_PRINT_ERROR("Failed to register mixer", NULL);
 	} else if (snd_mixer_load(*mixer) < 0) {
-		SB_PRINT_ERROR("Failed to load mixer");
+		SB_PRINT_ERROR("Failed to load mixer", NULL);
 
 	} else if (snd_mixer_selem_id_malloc(&snd_id) != 0) {
-		SB_PRINT_ERROR("Failed to allocate snd_id");
+		SB_PRINT_ERROR("Failed to allocate snd_id", NULL);
 	} else {
 		snd_mixer_selem_id_set_index(snd_id, index);
 		snd_mixer_selem_id_set_name(snd_id, name);
 		*snd_elem = snd_mixer_find_selem(*mixer, snd_id);
 		if (*snd_elem == NULL) {
-			SB_PRINT_ERROR("Failed to find element");
+			SB_PRINT_ERROR("Failed to find element", NULL);
 		} else if (snd_mixer_selem_has_playback_volume(*snd_elem) == 0) {
-			SB_PRINT_ERROR("Element does not have playback volume");
+			SB_PRINT_ERROR("Element does not have playback volume", NULL);
 		} else {
 			snd_mixer_selem_id_free(snd_id);
 			return SB_TRUE;
@@ -897,7 +897,7 @@ static void *sb_volume_routine(void *thunk)
 	if (!sb_volume_get_snd_elem(&mixer, &snd_elem, routine)) {
 		routine->print = SB_FALSE;
 	} else if (snd_mixer_selem_get_playback_dB_range(snd_elem, &min, &max) != 0) {
-		SB_PRINT_ERROR("Failed to get decibels range");
+		SB_PRINT_ERROR("Failed to get decibels range", NULL);
 		routine->print = SB_FALSE;
 	}
 
@@ -905,17 +905,17 @@ static void *sb_volume_routine(void *thunk)
 		SB_START_TIMER;
 
 		if (snd_mixer_handle_events(mixer) < 0) {
-			SB_PRINT_ERROR("Failed to clear mixer");
+			SB_PRINT_ERROR("Failed to clear mixer", NULL);
 			break;
 		} else if (snd_mixer_selem_get_playback_switch(snd_elem, SND_MIXER_SCHN_MONO, &mute) != 0) {
-			SB_PRINT_ERROR("Failed to get mute state");
+			SB_PRINT_ERROR("Failed to get mute state", NULL);
 			break;
 		} else if (mute == 0) {
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "mute");
 			pthread_mutex_unlock(&(routine->mutex));
 		} else if (snd_mixer_selem_get_playback_dB(snd_elem, SND_MIXER_SCHN_MONO, &decibels) != 0) {
-			SB_PRINT_ERROR("Failed to get decibels");
+			SB_PRINT_ERROR("Failed to get decibels", NULL);
 			break;
 		} else {
 			perc = sb_normalize_perc((decibels - min) * 100 / (max - min));
@@ -931,7 +931,7 @@ static void *sb_volume_routine(void *thunk)
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex");
+		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
@@ -960,7 +960,7 @@ static void *sb_weather_routine(void *thunk)
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex");
+		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
@@ -982,13 +982,13 @@ static SB_BOOL sb_wifi_init(struct iwreq *iwr, char *essid, size_t max_len, sb_r
 	/* open socket and return file descriptor for it */
 	sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sock < 0) {
-		SB_PRINT_ERROR("Failed to open socket file descriptor");
+		SB_PRINT_ERROR("Failed to open socket file descriptor", NULL);
 		return SB_FALSE;
 	}
 
 	/* get all network interfaces */
 	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
-		SB_PRINT_ERROR("Failed to find interface addresses");
+		SB_PRINT_ERROR("Failed to find interface addresses", NULL);
 		close(sock);
 		return SB_FALSE;
 	}
@@ -1008,7 +1008,7 @@ static SB_BOOL sb_wifi_init(struct iwreq *iwr, char *essid, size_t max_len, sb_r
 	}
 
 	/* if we reached here, then we didn't find anything */
-	SB_PRINT_ERROR("No wireless interfaces found");
+	SB_PRINT_ERROR("No wireless interfaces found", NULL);
 	freeifaddrs(ifaddrs);
 	close(sock);
 	return SB_FALSE;
@@ -1043,12 +1043,12 @@ static void *sb_wifi_routine(void *thunk)
 
 		sock = socket(AF_INET, SOCK_DGRAM, 0);
 		if (sock < 0) {
-			SB_PRINT_ERROR("Failed to open socket file descriptor");
+			SB_PRINT_ERROR("Failed to open socket file descriptor", NULL);
 			break;
 		}
 
 		if (ioctl(sock, SIOCGIWESSID, &iwr) < 0) {
-			SB_PRINT_ERROR("Failed to get SSID");
+			SB_PRINT_ERROR("Failed to get SSID", NULL);
 		} else {
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "%s", essid);
@@ -1062,7 +1062,7 @@ static void *sb_wifi_routine(void *thunk)
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex");
+		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
