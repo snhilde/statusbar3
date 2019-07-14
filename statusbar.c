@@ -426,9 +426,8 @@ static void *sb_fan_routine(void *thunk)
 	long now;
 
 	if (!sb_fan_get_path(path, sizeof(path), routine))
-		return NULL;
+		routine->print = SB_FALSE;
 
-	routine->print = SB_TRUE;
 	while (routine->print) {
 		SB_START_TIMER;
 
