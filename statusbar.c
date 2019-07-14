@@ -318,7 +318,6 @@ static void *sb_disk_routine(void *thunk)
 	size_t         num_filesystems;
 	int            i;
 	struct statvfs stats;
-	SB_BOOL        error = SB_FALSE;
 	float          avail;
 	char           avail_unit;
 	float          total;
@@ -337,7 +336,6 @@ static void *sb_disk_routine(void *thunk)
 		for (i=0; i<num_filesystems; i++) {
 			if (statvfs(filesystems[i].path, &stats) != 0) {
 				SB_PRINT_ERROR("Failed to get stats for", filesystems[i].path)
-				error = SB_TRUE;
 				break;
 			}
 			avail = sb_calc_magnitude(stats.f_bfree *stats.f_bsize, &avail_unit);
@@ -350,9 +348,6 @@ static void *sb_disk_routine(void *thunk)
 				strncat(routine->output, ", ", sizeof(routine->output)-strlen(routine->output)-1);
 		}
 		pthread_mutex_unlock(&(routine->mutex));
-
-		if (error)
-			break;
 
 		SB_STOP_TIMER;
 		SB_SLEEP;
