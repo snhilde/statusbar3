@@ -776,7 +776,6 @@ static void *sb_todo_routine(void *thunk)
 
 	snprintf(path, sizeof(path), "%s/.TODO", getenv("HOME"));
 
-	routine->print = SB_TRUE;
 	while (routine->print) {
 		SB_START_TIMER;
 
