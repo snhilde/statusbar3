@@ -4970,7 +4970,7 @@ if test "$net_headers"    = "yes"; then :
 fi
 if test "$net_headers"    = "yes" -a "$wifi_headers" = "yes"; then :
   $as_echo "#define BUILD_WIFI 1" >>confdefs.h
-]
+
 fi
 
 ac_config_files="$ac_config_files Makefile"
