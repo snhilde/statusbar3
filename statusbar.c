@@ -269,7 +269,6 @@ static void *sb_cpu_usage_routine(void *thunk)
 		unsigned long idle;
 	} old, new;
 
-	routine->print = SB_TRUE;
 	while (routine->print) {
 		SB_START_TIMER;
 
