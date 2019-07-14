@@ -188,7 +188,7 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
-CFLAGS = -Wall \
+CFLAGS = -g -O0 -Wall \
         -DVERSION=\"$(VERSION)\" \
         -DPROG="\"$(PACKAGE)\"" \
         -I ${INCDIR} \
