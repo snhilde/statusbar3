@@ -259,8 +259,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 
 #ifdef BUILD_CPU_USAGE
 	SB_TIMER_VARS;
-	static const char *base     = "/proc/";
-	static const char *filename = "stat";
+	static const char *path = "/proc/stat";
 	char               contents[128];
 	unsigned long      used;
 	unsigned long      total;
@@ -277,7 +276,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 	while (routine->print) {
 		SB_START_TIMER;
 
-		if (!sb_read_file(contents, sizeof(contents), base, filename, routine))
+		if (!sb_read_file(contents, sizeof(contents), path, NULL, routine))
 			break;
 		if (sscanf(contents, "cpu %lu %lu %lu %lu", &new.user, &new.nice, &new.system, &new.idle) != 4 ) {
 			SB_PRINT_ERROR("Failed to read /proc/stat", NULL);
