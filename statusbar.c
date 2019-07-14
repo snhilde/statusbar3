@@ -272,6 +272,8 @@ static void *sb_cpu_usage_routine(void *thunk)
 		unsigned long idle;
 	} old, new;
 
+	memset(&old, 0, sizeof(old));
+	memset(&new, 0, sizeof(new));
 	while (routine->print) {
 		SB_START_TIMER;
 
