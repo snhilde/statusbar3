@@ -707,7 +707,7 @@ static int sb_todo_count_blanks(const char *line, SB_BOOL *is_empty)
 	switch (*line) {
 		case '\t':
 		case ' ' :
-			while (isblank(line[i]) != 0) {
+			while (line[i] && isblank(line[i]) != 0) {
 				i++;
 			}
 			return i;
