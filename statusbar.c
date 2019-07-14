@@ -739,13 +739,13 @@ static void *sb_todo_routine(void *thunk)
 	SB_TIMER_VARS;
 	FILE       *fd;
 	char        path[512]  = {0};
-	char        line1[512] = {0};
-	char        line2[512] = {0};
-	const char *line1_ptr;
-	const char *line2_ptr;
-	SB_BOOL     l1_isempty = SB_FALSE;
-	SB_BOOL     l2_isempty = SB_FALSE;
 	const char *separator;
+	int         i;
+	struct {
+		char        line[512];
+		const char *ptr;
+		SB_BOOL     isempty;
+	} line[2] = {0};
 
 	snprintf(path, sizeof(path), "%s/.TODO", getenv("HOME"));
 
@@ -756,40 +756,37 @@ static void *sb_todo_routine(void *thunk)
 		if (fd == NULL) {
 			SB_PRINT_ERROR("Failed to open", path);
 			break;
-		} else if (fgets(line1, sizeof(line1), fd) == NULL) {
-			l1_isempty = SB_TRUE;
-		} else if (fgets(line2, sizeof(line2), fd) == NULL) {
-			l2_isempty = SB_TRUE;
+		} else if (fgets(line[0].line, sizeof(line[0].line), fd) == NULL) {
+			line[0].isempty = SB_TRUE;
+		} else if (fgets(line[1].line, sizeof(line[1].line), fd) == NULL) {
+			line[1].isempty = SB_TRUE;
 		} else if (fclose(fd) != 0) {
 			SB_PRINT_ERROR("Failed to close", path);
 			break;
 		}
 
-		if (l1_isempty) {
+		if (line[0].isempty) {
 			separator = "";
-		} else if (isblank(*line2)) {
+		} else if (isblank(*line[1].line)) {
 			separator = " -> ";
 		} else {
 			separator = " | ";
 		}
 
-		/* reset pointers to beginning of line */
-		line1_ptr = line1;
-		line2_ptr = line2;
+		for (i=0; i<2; i++) {
+			/* reset pointer to beginning of line */
+			line[i].ptr = line[i].line;
 
-		/* advance line pointers until they hit the first non-blank character */
-		if (!l1_isempty) {
-			line1[strlen(line1)-1] = '\0';
-			line1_ptr += sb_todo_count_blanks(line1, &l1_isempty);
-		}
-		if (!l2_isempty) {
-			line2_ptr += sb_todo_count_blanks(line2, &l2_isempty);
-			line2[strlen(line2)-1] = '\0';
+			/* advance line pointer until it hits the first non-blank character */
+			if (!line[i].isempty) {
+				line[i].line[strlen(line[i].line)] = '\0';
+				line[i].ptr += sb_todo_count_blanks(line[i].line, &line[i].isempty);
+			}
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "%s%s%s",
-				line1_ptr, separator, line2_ptr);
+				line[0].ptr, separator, line[1].ptr);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
