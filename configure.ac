@@ -81,6 +81,16 @@ AC_CHECK_FUNCS([memset],        [], [AC_MSG_ERROR([Unable to run `memset`])])
 AC_CHECK_FUNCS([socket],        [], [AC_MSG_ERROR([Unable to run `socket`])])
 AC_CHECK_FUNCS([strncasecmp],   [], [AC_MSG_ERROR([Unable to run `strncasecmp`])])
 
+# Build all routines that don't need explicit dependency checks
+AC_DEFINE([BUILD_BATTERY])
+AC_DEFINE([BUILD_CPU_TEMP])
+AC_DEFINE([BUILD_CPU_USAGE])
+AC_DEFINE([BUILD_FAN])
+AC_DEFINE([BUILD_LOAD])
+AC_DEFINE([BUILD_RAM])
+AC_DEFINE([BUILD_TIME])
+AC_DEFINE([BUILD_WEATHER])
+
 AS_IF([test "$volume_headers" = "yes" -a "$volume_lib" != "no"], [AC_DEFINE([BUILD_VOLUME])])
 AS_IF([test "$disk_headers"   = "yes"], [AC_DEFINE([BUILD_DISK])])
 AS_IF([test "$todo_headers"   = "yes"], [AC_DEFINE([BUILD_TODO])])
