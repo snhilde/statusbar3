@@ -65,12 +65,12 @@ static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const cha
 	snprintf(path, sizeof(path), "%s%s", base, file?file:"");
 	fd = fopen(path, "r");
 	if (fd == NULL) {
-		SB_PRINT_ERROR_W_ARG("Failed to open", path);
+		SB_PRINT_ERROR("Failed to open", path);
 		return SB_FALSE;
 	}
 
 	if (fgets(buf, size, fd) == NULL) {
-		SB_PRINT_ERROR_W_ARG("Failed to read", path);
+		SB_PRINT_ERROR("Failed to read", path);
 		fclose(fd);
 		return SB_FALSE;
 	}
@@ -90,7 +90,7 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 
 	dir = opendir(base);
 	if (dir == NULL) {
-		SB_PRINT_ERROR_W_ARG("Failed to open", base);
+		SB_PRINT_ERROR("Failed to open", base);
 		return SB_FALSE;
 	}
 
@@ -179,7 +179,7 @@ static SB_BOOL sb_cpu_temp_get_filename(char path[], char filename[], size_t siz
 
 	dir = opendir(path);
 	if (dir == NULL) {
-		SB_PRINT_ERROR_W_ARG("Failed to open", path);
+		SB_PRINT_ERROR("Failed to open", path);
 		return SB_FALSE;
 	}
 
@@ -274,13 +274,13 @@ static void *sb_cpu_usage_routine(void *thunk)
 
 		fd = fopen(path, "r");
 		if (fd == NULL) {
-			SB_PRINT_ERROR_W_ARG("Failed to open", path);
+			SB_PRINT_ERROR("Failed to open", path);
 			break;
 		} else if (fscanf(fd, "cpu %lu %lu %lu %lu", &new.user, &new.nice, &new.system, &new.idle) < 4) {
-			SB_PRINT_ERROR_W_ARG("Failed to read", path);
+			SB_PRINT_ERROR("Failed to read", path);
 			break;
 		} else if (fclose(fd) != 0) {
-			SB_PRINT_ERROR_W_ARG("Failed to close", path);
+			SB_PRINT_ERROR("Failed to close", path);
 			break;
 		}
 
@@ -340,7 +340,7 @@ static void *sb_disk_routine(void *thunk)
 		num_filesystems = sizeof(filesystems) / sizeof(*filesystems);
 		for (i=0; i<num_filesystems; i++) {
 			if (statvfs(filesystems[i].path, &stats) != 0) {
-				SB_PRINT_ERROR_W_ARG("Failed to get stats for", filesystems[i].path)
+				SB_PRINT_ERROR("Failed to get stats for", filesystems[i].path)
 				error = SB_TRUE;
 				break;
 			}
@@ -382,7 +382,7 @@ static SB_BOOL sb_fan_get_path(char path[], size_t size, sb_routine_t *routine)
 
 	dir = opendir(base);
 	if (dir == NULL) {
-		SB_PRINT_ERROR_W_ARG("Failed to open", base);
+		SB_PRINT_ERROR("Failed to open", base);
 		return SB_FALSE;
 	}
 
@@ -473,13 +473,13 @@ static void *sb_load_routine(void *thunk)
 
 		fd = fopen(path, "r");
 		if (fd == NULL) {
-			SB_PRINT_ERROR_W_ARG("Failed to open", path);
+			SB_PRINT_ERROR("Failed to open", path);
 			break;
 		} else if (fscanf(fd, "%lf %lf %lf", &av[0], &av[1], &av[2]) < 3) {
-			SB_PRINT_ERROR_W_ARG("Failed to read", path);
+			SB_PRINT_ERROR("Failed to read", path);
 			break;
 		} else if (fclose(fd) != 0) {
-			SB_PRINT_ERROR_W_ARG("Failed to close", path);
+			SB_PRINT_ERROR("Failed to close", path);
 			break;
 		}
 
@@ -584,13 +584,13 @@ static void *sb_network_routine(void *thunk)
 			files[i].old_bytes = files[i].new_bytes;
 			fd                 = fopen(files[i].path, "r");
 			if (fd == NULL) {
-				SB_PRINT_ERROR_W_ARG("Failed to open", files[i].path);
+				SB_PRINT_ERROR("Failed to open", files[i].path);
 				error = SB_TRUE;
 			} else if (fscanf(fd, "%ld", &files[i].new_bytes) < 1) {
-				SB_PRINT_ERROR_W_ARG("Failed to read", files[i].path);
+				SB_PRINT_ERROR("Failed to read", files[i].path);
 				error = SB_TRUE;
 			} else if (fclose(fd) != 0) {
-				SB_PRINT_ERROR_W_ARG("Failed to close", files[i].path);
+				SB_PRINT_ERROR("Failed to close", files[i].path);
 				error = SB_TRUE;
 			} else {
 				diff             = files[i].new_bytes - files[i].old_bytes;
@@ -781,14 +781,14 @@ static void *sb_todo_routine(void *thunk)
 
 		fd = fopen(path, "r");
 		if (fd == NULL) {
-			SB_PRINT_ERROR_W_ARG("Failed to open", path);
+			SB_PRINT_ERROR("Failed to open", path);
 			break;
 		} else if (fgets(line1, sizeof(line1), fd) == NULL) {
 			l1_isempty = SB_TRUE;
 		} else if (fgets(line2, sizeof(line2), fd) == NULL) {
 			l2_isempty = SB_TRUE;
 		} else if (fclose(fd) != 0) {
-			SB_PRINT_ERROR_W_ARG("Failed to close", path);
+			SB_PRINT_ERROR("Failed to close", path);
 			break;
 		}
 
