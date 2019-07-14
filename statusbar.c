@@ -1156,6 +1156,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
+	/* mark head of routine list */
 	routine_list = &(routine_array[chosen_routines[0].routine]);
 
 	/* step through each routine chosen in config.h and set it up */
