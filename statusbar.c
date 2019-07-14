@@ -318,7 +318,7 @@ static void *sb_disk_routine(void *thunk)
 	size_t         num_filesystems;
 	int            i;
 	struct statvfs stats;
-	SB_BOOL        error   = SB_FALSE;
+	SB_BOOL        error = SB_FALSE;
 	float          avail;
 	char           avail_unit;
 	float          total;
