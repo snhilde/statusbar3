@@ -762,6 +762,7 @@ static void *sb_todo_routine(void *thunk)
 			line[1].isempty = SB_TRUE;
 		} else if (fclose(fd) != 0) {
 			SB_PRINT_ERROR("Failed to close", path);
+			fclose(fd);
 			break;
 		}
 
@@ -792,9 +793,6 @@ static void *sb_todo_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-
-	if (fd != NULL)
-		fclose(fd);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
