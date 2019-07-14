@@ -956,7 +956,7 @@ static void *sb_weather_routine(void *thunk)
 	SB_TIMER_VARS;
 
 	routine->print = SB_TRUE;
-	while(1) {
+	while (routine->print) {
 		SB_START_TIMER;
 
 		/* TODO: run routine */
