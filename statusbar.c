@@ -651,7 +651,7 @@ static void *sb_ram_routine(void *thunk)
 	total_bytes_f = sb_calc_magnitude(total_pages*page_size, &total_bytes_prefix);
 
 	routine->print = SB_TRUE;
-	while(1) {
+	while (routine->print) {
 		SB_START_TIMER;
 
 		/* get available memory */
