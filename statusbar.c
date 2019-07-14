@@ -698,11 +698,11 @@ static void *sb_time_routine(void *thunk)
 
 /* --- TODO ROUTINE --- */
 #ifdef BUILD_TODO
-static int sb_todo_count_blanks(const char *line, SB_BOOL *is_empty)
+static int sb_todo_count_blanks(const char *line, SB_BOOL *isempty)
 {
 	int i = 0;
 
-	*is_empty = SB_FALSE;
+	*isempty = SB_FALSE;
 
 	switch (*line) {
 		case '\t':
@@ -711,10 +711,10 @@ static int sb_todo_count_blanks(const char *line, SB_BOOL *is_empty)
 				i++;
 			}
 			if (!isgraph(line[i]))
-				*is_empty = SB_TRUE;
+				*isempty = SB_TRUE;
 			return i;
 		case '\n':
-			*is_empty = SB_TRUE;
+			*isempty = SB_TRUE;
 		default:
 			return 0;
 	}
