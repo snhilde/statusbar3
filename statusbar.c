@@ -1165,11 +1165,12 @@ int main(int argc, char *argv[])
 		routine_object = &(routine_array[index]);
 
 		/* string onto routine list */
-		if (i+1 < num_routines)
+		if (i+1 < num_routines) {
 			next = chosen_routines[i+1].routine;
-		else
-			next = NULL;
-		routine_object->next = &(routine_array[next]);
+			routine_object->next = &(routine_array[next]);
+		} else {
+			routine_object->next = NULL;
+		}
 
 		/* initialize the routine */
 		routine_object->routine = index;
