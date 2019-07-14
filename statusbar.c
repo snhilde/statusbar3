@@ -431,7 +431,7 @@ static void *sb_fan_routine(void *thunk)
 		return NULL;
 
 	routine->print = SB_TRUE;
-	while(1) {
+	while (routine->print) {
 		SB_START_TIMER;
 
 		if (!sb_read_file(contents, sizeof(contents), path, NULL, routine))
