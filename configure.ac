@@ -95,7 +95,7 @@ AS_IF([test "$volume_headers" = "yes" -a "$volume_lib" != "no"], [AC_DEFINE([BUI
 AS_IF([test "$disk_headers"   = "yes"], [AC_DEFINE([BUILD_DISK])])
 AS_IF([test "$todo_headers"   = "yes"], [AC_DEFINE([BUILD_TODO])])
 AS_IF([test "$net_headers"    = "yes"], [AC_DEFINE([BUILD_NETWORK])])
-AS_IF([test "$net_headers"    = "yes" -a "$wifi_headers" = "yes"], AC_DEFINE([BUILD_WIFI])])
+AS_IF([test "$net_headers"    = "yes" -a "$wifi_headers" = "yes"], [AC_DEFINE([BUILD_WIFI])])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
