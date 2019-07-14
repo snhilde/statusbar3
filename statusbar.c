@@ -1061,15 +1061,12 @@ static void sb_print(void)
 		SB_START_TIMER;
 
 		offset  = 0;
-		routine = routine_list;
-		while (routine != NULL) {
+		for (routine = routine_list; routine != NULL; routine = routine->next) {
 			if (routine->print == SB_FALSE) {
-				routine = routine->next;
 				continue;
 			} else if (routine->routine == DELIMITER) {
 				memcpy(full_output+offset, ";", 1);
 				offset += 1;
-				routine = routine->next;
 				continue;
 			}
 
@@ -1077,7 +1074,6 @@ static void sb_print(void)
 			len = strlen(routine->output);
 			if (len == 0) {
 				pthread_mutex_unlock(&(routine->mutex));
-				routine = routine->next;
 				continue;
 			}
 
@@ -1113,7 +1109,6 @@ static void sb_print(void)
 			offset += 2;
 
 			pthread_mutex_unlock(&(routine->mutex));
-			routine = routine->next;
 		}
 		full_output[offset] = '\0';
 
