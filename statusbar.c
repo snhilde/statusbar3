@@ -1034,9 +1034,8 @@ static void *sb_wifi_routine(void *thunk)
 	char         essid[IW_ESSID_MAX_SIZE + 1];
 
 	if (!sb_wifi_init(&iwr, essid, sizeof(essid), routine))
-		return NULL;
+		routine->print = SB_FALSE;
 
-	routine->print = SB_TRUE;
 	while (routine->print) {
 		SB_START_TIMER;
 
