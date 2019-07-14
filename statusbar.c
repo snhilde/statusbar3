@@ -3,8 +3,8 @@
 
 #define SBLENGTH 10240
 
-#define SB_PRINT_ERROR(msg) \
-		fprintf(stderr, "%s routine: " msg "\n", routine->name);
+#define SB_PRINT_ERROR(msg, arg) \
+		fprintf(stderr, "%s routine: " msg " %s\n", routine->name, arg?arg:"");
 
 #define SB_PRINT_ERROR_W_ARG(msg, arg) \
 		fprintf(stderr, "%s routine: " msg " %s\n", routine->name, arg);
