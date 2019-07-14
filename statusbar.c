@@ -1081,6 +1081,9 @@ static void sb_print(void)
 				break;
 			}
 
+			memcpy(full_output+offset, "[", 1);
+			offset += 1;
+
 			/* Print opening status2d color code. */
 			if (color_text) {
 				memcpy(full_output+offset, "^c", 2);
@@ -1090,9 +1093,6 @@ static void sb_print(void)
 				memcpy(full_output+offset, "^", 1);
 				offset += 1;
 			}
-
-			memcpy(full_output+offset, "[", 1);
-			offset += 1;
 
 			memcpy(full_output+offset, routine->output, len);
 			offset += len;
