@@ -581,7 +581,7 @@ static void *sb_network_routine(void *thunk)
 		return NULL;
 
 	routine->print = SB_TRUE;
-	while(1) {
+	while (routine->print) {
 		SB_START_TIMER;
 
 		error = SB_FALSE;
