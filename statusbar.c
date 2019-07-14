@@ -814,6 +814,7 @@ static SB_BOOL sb_volume_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **sn
 	*snd_elem = NULL;
 	*mixer    = NULL;
 
+	/* open and load mixer */
 	if (snd_mixer_open(mixer, 0) < 0) {
 		SB_PRINT_ERROR("Failed to open mixer", NULL);
 	} else if (snd_mixer_attach(*mixer, card) < 0) {
@@ -823,8 +824,11 @@ static SB_BOOL sb_volume_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **sn
 	} else if (snd_mixer_load(*mixer) < 0) {
 		SB_PRINT_ERROR("Failed to load mixer", NULL);
 
+	/* get id */
 	} else if (snd_mixer_selem_id_malloc(&snd_id) != 0) {
 		SB_PRINT_ERROR("Failed to allocate snd_id", NULL);
+
+	/* get element */
 	} else {
 		snd_mixer_selem_id_set_index(snd_id, index);
 		snd_mixer_selem_id_set_name(snd_id, name);
