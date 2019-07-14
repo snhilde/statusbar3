@@ -553,7 +553,6 @@ static void *sb_network_routine(void *thunk)
 	SB_BOOL          error;
 	int              i;
 	char             contents[128];
-	long             diff;
 
 	if (!sb_network_get_paths(&files[0], &files[1], routine))
 		routine->print = SB_FALSE;
@@ -570,8 +569,7 @@ static void *sb_network_routine(void *thunk)
 				SB_PRINT_ERROR("Failed to read", files[i].path);
 				error = SB_TRUE;
 			} else {
-				diff             = files[i].new_bytes - files[i].old_bytes;
-				files[i].reduced = (long)sb_calc_magnitude(diff, &files[i].unit);
+				files[i].reduced = (long)sb_calc_magnitude(files[i].new_bytes - files[i].old_bytes, &files[i].unit);
 			}
 		}
 		if (error)
