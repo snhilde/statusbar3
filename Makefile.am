@@ -6,7 +6,7 @@ X11_INCDIR= /usr/include/X11
 LIBDIR=     /usr/lib/x86_64-linux-gnu
 X11_LIBDIR= /usr/lib/X11
 
-CFLAGS= -Wall \
+CFLAGS= -g -O0 -Wall \
         -DVERSION=\"$(VERSION)\" \
         -DPROG="\"$(PACKAGE)\"" \
         -I ${INCDIR} \
