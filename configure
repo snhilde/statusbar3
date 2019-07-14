@@ -4934,6 +4934,24 @@ fi
 done
 
 
+# Build all routines that don't need explicit dependency checks
+$as_echo "#define BUILD_BATTERY 1" >>confdefs.h
+
+$as_echo "#define BUILD_CPU_TEMP 1" >>confdefs.h
+
+$as_echo "#define BUILD_CPU_USAGE 1" >>confdefs.h
+
+$as_echo "#define BUILD_FAN 1" >>confdefs.h
+
+$as_echo "#define BUILD_LOAD 1" >>confdefs.h
+
+$as_echo "#define BUILD_RAM 1" >>confdefs.h
+
+$as_echo "#define BUILD_TIME 1" >>confdefs.h
+
+$as_echo "#define BUILD_WEATHER 1" >>confdefs.h
+
+
 if test "$volume_headers" = "yes" -a "$volume_lib" != "no"; then :
   $as_echo "#define BUILD_VOLUME 1" >>confdefs.h
 
