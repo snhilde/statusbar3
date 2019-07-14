@@ -913,6 +913,7 @@ static void *sb_volume_routine(void *thunk)
 			break;
 		} else {
 			perc = sb_normalize_perc((decibels - min) * 100 / (max - min));
+			perc = rint((float)perc / 10) * 10; /* round to nearest ten */
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "Vol %ld%%", perc);
 			pthread_mutex_unlock(&(routine->mutex));
