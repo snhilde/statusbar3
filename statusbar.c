@@ -833,12 +833,12 @@ static SB_BOOL sb_volume_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **sn
 		snd_mixer_selem_id_set_index(snd_id, index);
 		snd_mixer_selem_id_set_name(snd_id, name);
 		*snd_elem = snd_mixer_find_selem(*mixer, snd_id);
+		snd_mixer_selem_id_free(snd_id);
 		if (*snd_elem == NULL) {
 			SB_PRINT_ERROR("Failed to find element", NULL);
 		} else if (snd_mixer_selem_has_playback_volume(*snd_elem) == 0) {
 			SB_PRINT_ERROR("Element does not have playback volume", NULL);
 		} else {
-			snd_mixer_selem_id_free(snd_id);
 			return SB_TRUE;
 		}
 	}
