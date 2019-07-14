@@ -128,18 +128,18 @@ static void *sb_battery_routine(void *thunk)
 	long now;
 	long perc;
 
-	if (!sb_get_path(path, sizeof(path), "/sys/class/power_supply", "type", "Battery", routine))
-		return NULL;
-	if (!sb_read_file(buf, sizeof(buf), path, "charge_full", routine))
-		return NULL;
-
-	max = atol(buf);
-	if (max <= 0) {
-		SB_PRINT_ERROR("Failed to read max level");
-		return NULL;
+	if (!sb_get_path(path, sizeof(path), "/sys/class/power_supply", "type", "Battery", routine)) {
+		routine->print = SB_FALSE;
+	} else if (!sb_read_file(buf, sizeof(buf), path, "charge_full", routine)) {
+		routine->print = SB_FALSE;
+	} else {
+		max = atol(buf);
+		if (max <= 0) {
+			SB_PRINT_ERROR("Failed to read max level");
+			routine->print = SB_FALSE;
+		}
 	}
 
-	routine->print = SB_TRUE;
 	while (routine->print) {
 		SB_START_TIMER;
 
