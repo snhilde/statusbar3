@@ -639,13 +639,12 @@ static void *sb_ram_routine(void *thunk)
 	total_pages = sysconf(_SC_PHYS_PAGES);
 	if (page_size < 0 || total_pages < 0) {
 		SB_PRINT_ERROR("Failed to get page info");
-		return NULL;
+		routine->print = SB_FALSE;
+	} else {
+		/* get total bytes as a decimal in human-readable format */
+		total_bytes_f = sb_calc_magnitude(total_pages*page_size, &total_bytes_prefix);
 	}
 
-	/* get total bytes as a decimal in human-readable format */
-	total_bytes_f = sb_calc_magnitude(total_pages*page_size, &total_bytes_prefix);
-
-	routine->print = SB_TRUE;
 	while (routine->print) {
 		SB_START_TIMER;
 
