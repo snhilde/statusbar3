@@ -219,7 +219,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 		return NULL;
 
 	routine->print = SB_TRUE;
-	while(1) {
+	while (routine->print) {
 		SB_START_TIMER;
 
 		if (!sb_read_file(contents, sizeof(contents), path, filename, routine))
