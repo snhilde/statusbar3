@@ -7,15 +7,6 @@
 #include <dirent.h>
 #include <math.h>
 
-#define BUILD_BATTERY
-#define BUILD_CPU_TEMP
-#define BUILD_CPU_USAGE
-#define BUILD_FAN
-#define BUILD_LOAD
-#define BUILD_RAM
-#define BUILD_TIME
-#define BUILD_WEATHER
-
 #ifdef BUILD_DISK
   #include <sys/statvfs.h>
 #endif
