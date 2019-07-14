@@ -781,7 +781,6 @@ static void *sb_todo_routine(void *thunk)
 			/* advance line pointer until it hits the first non-blank character */
 			if (!line[i].isempty) {
 				line[i].line[strlen(line[i].line)-1] = '\0';
-			line1_ptr += sb_todo_count_blanks(line1, &l1_isempty);
 				line[i].ptr += sb_todo_count_blanks(line[i].line, &line[i].isempty);
 			}
 		}
@@ -1148,6 +1147,7 @@ int main(int argc, char *argv[])
 	size_t             num_routines;
 	int                i;
 	enum sb_routine_e  index;
+	enum sb_routine_e  next;
 	sb_routine_t      *routine_object;
 
 	num_routines = sizeof(chosen_routines) / sizeof(*chosen_routines);
@@ -1162,10 +1162,11 @@ int main(int argc, char *argv[])
 	/* step through each routine chosen in config.h and set it up */
 	for (i=0; i<num_routines; i++) {
 		index          = chosen_routines[i].routine;
+		next           = chosen_routines[i+1].routine;
 		routine_object = &(routine_array[index]);
 
 		/* string onto routine list */
-		routine_object->next = routine_array + chosen_routines[i+1].routine;
+		routine_object->next = &(routine_array[next]);
 
 		/* initialize the routine */
 		routine_object->routine = index;
