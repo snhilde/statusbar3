@@ -270,7 +270,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 	} old, new;
 
 	routine->print = SB_TRUE;
-	while(1) {
+	while (routine->print) {
 		SB_START_TIMER;
 
 		fd = fopen(path, "r");
