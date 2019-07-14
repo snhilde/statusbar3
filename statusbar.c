@@ -4,7 +4,8 @@
 #define SBLENGTH 10240
 
 #define SB_PRINT_ERROR(msg, arg) \
-		fprintf(stderr, "%s routine: " msg " %s\n", routine->name, arg?arg:"");
+		{ const char *_arg = arg; \
+		  fprintf(stderr, "%s routine: " msg " %s\n", routine->name, _arg); }
 
 #define SB_START_TIMER \
 	clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
