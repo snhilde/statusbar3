@@ -1003,9 +1003,9 @@ static void *sb_wifi_routine(void *thunk)
 
 #ifdef BUILD_WIFI
 	SB_TIMER_VARS;
-	int          sock;
 	struct iwreq iwr;
 	char         essid[IW_ESSID_MAX_SIZE + 1];
+	int          sock;
 
 	if (!sb_wifi_init(&iwr, essid, sizeof(essid), routine))
 		routine->print = SB_FALSE;
