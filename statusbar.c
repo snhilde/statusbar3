@@ -259,8 +259,9 @@ static void *sb_cpu_usage_routine(void *thunk)
 
 #ifdef BUILD_CPU_USAGE
 	SB_TIMER_VARS;
-	FILE              *fd;
-	static const char *path = "/proc/stat";
+	static const char *base     = "/proc/";
+	static const char *filename = "stat";
+	char               contents[128];
 	unsigned long      used;
 	unsigned long      total;
 	long               perc;
@@ -274,16 +275,10 @@ static void *sb_cpu_usage_routine(void *thunk)
 	while (routine->print) {
 		SB_START_TIMER;
 
-		fd = fopen(path, "r");
-		if (fd == NULL) {
-			SB_PRINT_ERROR("Failed to open", path);
+		if (!sb_read_file(contents, sizeof(contents), base, filename, routine))
 			break;
-		} else if (fscanf(fd, "cpu %lu %lu %lu %lu", &new.user, &new.nice, &new.system, &new.idle) < 4) {
-			SB_PRINT_ERROR("Failed to read", path);
-			break;
-		} else if (fclose(fd) != 0) {
-			SB_PRINT_ERROR("Failed to close", path);
-			break;
+		if (sscanf(contents, "cpu %lu %lu %lu %lu", &new.user, &new.nice, &new.system, &new.idle) != 4 ) {
+			SB_PRINT_ERROR("Failed to read /proc/stat", NULL);
 		}
 
 		used  = (new.user-old.user) + (new.nice-old.nice) + (new.system-old.system);
@@ -302,9 +297,6 @@ static void *sb_cpu_usage_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-
-	if (fd != NULL)
-		fclose(fd);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
