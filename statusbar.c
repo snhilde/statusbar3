@@ -845,8 +845,10 @@ static SB_BOOL sb_volume_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **sn
 
 	if (snd_id != NULL)
 		snd_mixer_selem_id_free(snd_id);
-	if (*mixer != NULL)
+	if (*mixer != NULL) {
 		snd_mixer_close(*mixer);
+		snd_mixer_free(*mixer);
+	}
 
 	return SB_FALSE;
 }
@@ -901,6 +903,7 @@ static void *sb_volume_routine(void *thunk)
 		SB_SLEEP;
 	}
 	snd_mixer_close(mixer);
+	snd_mixer_free(mixer);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
