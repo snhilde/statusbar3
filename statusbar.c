@@ -455,24 +455,18 @@ static void *sb_load_routine(void *thunk)
 
 #ifdef BUILD_LOAD
 	SB_TIMER_VARS;
-	FILE              *fd;
-	static const char *path = "/proc/loadavg";
+	static const char *base     = "/proc/";
+	static const char *filename = "loadavg";
+	char               contents[128];
 	double             av[3];
 
 	while (routine->print) {
 		SB_START_TIMER;
 
-		fd = fopen(path, "r");
-		if (fd == NULL) {
-			SB_PRINT_ERROR("Failed to open", path);
+		if (!sb_read_file(contents, sizeof(contents), base, filename, routine))
 			break;
-		} else if (fscanf(fd, "%lf %lf %lf", &av[0], &av[1], &av[2]) < 3) {
-			SB_PRINT_ERROR("Failed to read", path);
-			break;
-		} else if (fclose(fd) != 0) {
-			SB_PRINT_ERROR("Failed to close", path);
-			break;
-		}
+		if (sscanf(contents, "%lf %lf %lf", &av[0], &av[1], &av[2]) != 3)
+			SB_PRINT_ERROR("Failed to read /proc/loadavg", NULL);
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "%.2f, %.2f, %.2f", av[0], av[1], av[2]);
@@ -481,9 +475,6 @@ static void *sb_load_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-
-	if (fd != NULL)
-		fclose(fd);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
