@@ -85,7 +85,8 @@ static const char *routine_names[] = {
 	"TODO",
 	"Volume",
 	"Weather",
-	"Wifi"
+	"Wifi",
+	"Delimiter"
 };
 
 /* This array will hold all the routine objects. Because it is global, it is zero'd out on
