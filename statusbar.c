@@ -911,7 +911,7 @@ static void *sb_volume_routine(void *thunk)
 	}
 
 	routine->print = SB_TRUE;
-	while(1) {
+	while (routine->print) {
 		SB_START_TIMER;
 
 		if (snd_mixer_handle_events(mixer) < 0) {
