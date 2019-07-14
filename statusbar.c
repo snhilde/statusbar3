@@ -140,7 +140,7 @@ static void *sb_battery_routine(void *thunk)
 	}
 
 	routine->print = SB_TRUE;
-	while(1) {
+	while (routine->print) {
 		SB_START_TIMER;
 
 		if (!sb_read_file(buf, sizeof(buf), path, "charge_now", routine))
