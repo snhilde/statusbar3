@@ -832,7 +832,7 @@ static void *sb_todo_routine(void *thunk)
 #ifdef BUILD_VOLUME
 static SB_BOOL sb_volume_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **snd_elem, sb_routine_t *routine)
 {
-	static const char    *card   = "default";
+	static const char    *card   = "hw:0";
 	snd_mixer_selem_id_t *snd_id = NULL;
 	static const int      index  = 0;
 	static const char    *name   = "Master";
