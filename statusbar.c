@@ -680,7 +680,8 @@ static void *sb_time_routine(void *thunk)
 		pthread_mutex_unlock(&(routine->mutex));
 
 		clock_gettime(CLOCK_REALTIME, &finish_tp);
-		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) +
+				(labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
 
 		if (usleep((routine->interval * 1000000) - elapsed_usec) != 0) {
 			SB_PRINT_ERROR("Error sleeping", NULL);
