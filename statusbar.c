@@ -710,6 +710,8 @@ static int sb_todo_count_blanks(const char *line, SB_BOOL *is_empty)
 			while (line[i] && isblank(line[i]) != 0) {
 				i++;
 			}
+			if (line[i] == '\n' || line[i] == '\0')
+				*is_empty = SB_TRUE;
 			return i;
 		case '\n':
 			*is_empty = SB_TRUE;
