@@ -574,9 +574,8 @@ static void *sb_network_routine(void *thunk)
 	long              diff;
 
 	if (!sb_network_get_paths(&files[0], &files[1], routine))
-		return NULL;
+		routine->print = SB_FALSE;
 
-	routine->print = SB_TRUE;
 	while (routine->print) {
 		SB_START_TIMER;
 
