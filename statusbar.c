@@ -549,11 +549,11 @@ static void *sb_network_routine(void *thunk)
 
 #ifdef BUILD_NETWORK
 	SB_TIMER_VARS;
-	int               i;
-	SB_BOOL           error;
-	struct sb_file_t  files[2] = {0};
-	FILE             *fd;
-	long              diff;
+	struct sb_file_t files[2] = {0};
+	SB_BOOL          error;
+	int              i;
+	char             contents[128];
+	long             diff;
 
 	if (!sb_network_get_paths(&files[0], &files[1], routine))
 		routine->print = SB_FALSE;
@@ -564,15 +564,10 @@ static void *sb_network_routine(void *thunk)
 		error = SB_FALSE;
 		for (i=0; i<2 && !error; i++) {
 			files[i].old_bytes = files[i].new_bytes;
-			fd                 = fopen(files[i].path, "r");
-			if (fd == NULL) {
-				SB_PRINT_ERROR("Failed to open", files[i].path);
+			if (!sb_read_file(contents, sizeof(contents), files[i].path, NULL, routine)) {
 				error = SB_TRUE;
-			} else if (fscanf(fd, "%ld", &files[i].new_bytes) < 1) {
+			} else if (sscanf(contents, "%ld", &files[i].new_bytes) != 1) {
 				SB_PRINT_ERROR("Failed to read", files[i].path);
-				error = SB_TRUE;
-			} else if (fclose(fd) != 0) {
-				SB_PRINT_ERROR("Failed to close", files[i].path);
 				error = SB_TRUE;
 			} else {
 				diff             = files[i].new_bytes - files[i].old_bytes;
@@ -590,9 +585,6 @@ static void *sb_network_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-
-	if (fd != NULL)
-		fclose(fd);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
