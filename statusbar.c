@@ -899,13 +899,13 @@ static void *sb_volume_routine(void *thunk)
 	long              min;
 	long              max;
 	int               mute = 0;
-	long              volume;
+	long              decibels;
 	long              perc;
 
 	if (!sb_volume_get_snd_elem(&mixer, &snd_elem, routine))
 		return NULL;
-	if (snd_mixer_selem_get_playback_volume_range(snd_elem, &min, &max) != 0) {
-		SB_PRINT_ERROR("Failed to get volume range");
+	if (snd_mixer_selem_get_playback_dB_range(snd_elem, &min, &max) != 0) {
+		SB_PRINT_ERROR("Failed to get decibels range");
 		snd_mixer_close(mixer);
 		return NULL;
 	}
@@ -924,11 +924,11 @@ static void *sb_volume_routine(void *thunk)
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "mute");
 			pthread_mutex_unlock(&(routine->mutex));
-		} else if (snd_mixer_selem_get_playback_volume(snd_elem, SND_MIXER_SCHN_MONO, &volume) != 0) {
-			SB_PRINT_ERROR("Failed to get volume");
+		} else if (snd_mixer_selem_get_playback_dB(snd_elem, SND_MIXER_SCHN_MONO, &decibels) != 0) {
+			SB_PRINT_ERROR("Failed to get decibels");
 			break;
 		} else {
-			perc = sb_normalize_perc((volume - min) * 100 / (max - min));
+			perc = sb_normalize_perc((decibels - min) * 100 / (max - min));
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "Vol %ld%%", perc);
 			pthread_mutex_unlock(&(routine->mutex));
