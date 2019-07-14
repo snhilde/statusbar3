@@ -279,7 +279,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		if (!sb_read_file(contents, sizeof(contents), path, NULL, routine))
 			break;
 		if (sscanf(contents, "cpu %lu %lu %lu %lu", &new.user, &new.nice, &new.system, &new.idle) != 4 ) {
-			SB_PRINT_ERROR("Failed to read /proc/stat", NULL);
+			SB_PRINT_ERROR("Failed to read", path);
 		}
 
 		used  = (new.user-old.user) + (new.nice-old.nice) + (new.system-old.system);
