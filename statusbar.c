@@ -687,7 +687,6 @@ static void *sb_time_routine(void *thunk)
 	char      time_str[64];
 	SB_BOOL   blink = SB_FALSE;
 
-	routine->print = SB_TRUE;
 	while (routine->print) {
 		clock_gettime(CLOCK_REALTIME, &start_tp);
 
