@@ -1162,10 +1162,13 @@ int main(int argc, char *argv[])
 	/* step through each routine chosen in config.h and set it up */
 	for (i=0; i<num_routines; i++) {
 		index          = chosen_routines[i].routine;
-		next           = chosen_routines[i+1].routine;
 		routine_object = &(routine_array[index]);
 
 		/* string onto routine list */
+		if (i+1 < num_routines)
+			next = chosen_routines[i+1].routine;
+		else
+			next = NULL;
 		routine_object->next = &(routine_array[next]);
 
 		/* initialize the routine */
@@ -1187,8 +1190,6 @@ int main(int argc, char *argv[])
 			pthread_create(&(routine_object->thread), NULL, routine_object->thread_func, (void *)routine_object);
 		}
 	}
-	/* properly terminate the routine list */
-	routine_object->next = NULL;
 
 	/* print loop */
 	sb_print();
