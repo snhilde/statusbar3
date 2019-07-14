@@ -213,12 +213,12 @@ static void *sb_cpu_temp_routine(void *thunk)
 	char contents[128];
 	long now;
 
-	if (!sb_get_path(path, sizeof(path), "/sys/class/hwmon", "name", "coretemp", routine))
-		return NULL;
-	if (!sb_cpu_temp_get_filename(path, filename, sizeof(filename), routine))
-		return NULL;
+	if (!sb_get_path(path, sizeof(path), "/sys/class/hwmon", "name", "coretemp", routine)) {
+		routine->print = SB_FALSE;
+	} else if (!sb_cpu_temp_get_filename(path, filename, sizeof(filename), routine)) {
+		routine->print = SB_FALSE;
+	}
 
-	routine->print = SB_TRUE;
 	while (routine->print) {
 		SB_START_TIMER;
 
