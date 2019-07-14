@@ -894,15 +894,13 @@ static void *sb_volume_routine(void *thunk)
 	long              decibels;
 	long              perc;
 
-	if (!sb_volume_get_snd_elem(&mixer, &snd_elem, routine))
-		return NULL;
-	if (snd_mixer_selem_get_playback_dB_range(snd_elem, &min, &max) != 0) {
+	if (!sb_volume_get_snd_elem(&mixer, &snd_elem, routine)) {
+		routine->print = SB_FALSE;
+	} else if (snd_mixer_selem_get_playback_dB_range(snd_elem, &min, &max) != 0) {
 		SB_PRINT_ERROR("Failed to get decibels range");
-		snd_mixer_close(mixer);
-		return NULL;
+		routine->print = SB_FALSE;
 	}
 
-	routine->print = SB_TRUE;
 	while (routine->print) {
 		SB_START_TIMER;
 
