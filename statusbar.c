@@ -72,7 +72,11 @@ static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const cha
 		fclose(fd);
 		return SB_FALSE;
 	}
-	fclose(fd);
+
+	if (fclose(fd) != 0) {
+		SB_PRINT_ERROR("Failed to close", path);
+		return SB_FALSE;
+	}
 
 	return SB_TRUE;
 }
