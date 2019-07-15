@@ -460,6 +460,8 @@ static void *sb_fan_routine(void *thunk)
 		routine->print = SB_FALSE;
 	} else {
 		max = atol(contents);
+		if (max < 0)
+			routine->print = SB_FALSE;
 	}
 
 	while (routine->print) {
