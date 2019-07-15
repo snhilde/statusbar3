@@ -813,6 +813,7 @@ static void *sb_todo_routine(void *thunk)
 
 	snprintf(path, sizeof(path), "%s/.TODO", getenv("HOME"));
 
+	routine->color = routine->color_normal;
 	while (routine->print) {
 		SB_START_TIMER;
 
