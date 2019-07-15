@@ -952,6 +952,13 @@ static void *sb_volume_routine(void *thunk)
 		} else {
 			perc = sb_normalize_perc((decibels-min)*100/(max-min));
 			perc = rint((float)perc / 10) * 10; /* round to nearest ten */
+			if (perc < 80) {
+				routine->color = routine->color_normal;
+			} else if (perc < 100) {
+				routine->color = routine->color_warning;
+			} else {
+				routine->color = routine->color_error;
+			}
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "Vol %ld%%", perc);
 			pthread_mutex_unlock(&(routine->mutex));
