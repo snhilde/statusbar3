@@ -1059,12 +1059,7 @@ static void *sb_wifi_routine(void *thunk)
 {
 	/* First, we are going to loop through all network interfaces, checking for an SSID.
 	 * When we first find one, we'll break out of the loop and use that interface as
-	 * the wireless network.
-	 *
-	 * TODO:
-	 * - if init fails, try again later
-	 * - handle break and reattach at a later time
-	 */
+	 * the wireless network. */
 	sb_routine_t *routine = thunk;
 
 #ifdef BUILD_WIFI
@@ -1089,6 +1084,7 @@ static void *sb_wifi_routine(void *thunk)
 		}
 
 		if (ioctl(sock, SIOCGIWESSID, &iwr) < 0) {
+			/* wait for interval, try again */
 		} else {
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "%s", essid);
