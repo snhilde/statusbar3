@@ -301,6 +301,13 @@ static void *sb_cpu_usage_routine(void *thunk)
 		used  = (new.user-old.user) + (new.nice-old.nice) + (new.system-old.system);
 		total = (new.user-old.user) + (new.nice-old.nice) + (new.system-old.system) + (new.idle-old.idle);
 		perc  = sb_normalize_perc((used*100)/total);
+		if (perc < 75) {
+			routine->color = routine->color_normal;
+		} else if (perc < 90) {
+			routine->color = routine->color_warning;
+		} else {
+			routine->color = routine->color_error;
+		}
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "%2lu%% CPU", perc);
