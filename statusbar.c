@@ -243,6 +243,13 @@ static void *sb_cpu_temp_routine(void *thunk)
 		}
 
 		now /= 1000; /* convert to celsius */
+		if (now < 80) {
+			routine->color = routine->color_normal;
+		} else if (now < 100) {
+			routine->color = routine->color_warning;
+		} else {
+			routine->color = routine->color_error;
+		}
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "%ld °C", now);
