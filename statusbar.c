@@ -462,6 +462,8 @@ static void *sb_fan_routine(void *thunk)
 			SB_PRINT_ERROR("Failed to read current fan speed", NULL);
 			break;
 		}
+		/* TODO: get max and change color based on percent */
+		routine->color = routine->color_warning;
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "%ld RPM", now);
