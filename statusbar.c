@@ -399,19 +399,6 @@ static void *sb_disk_routine(void *thunk)
 
 /* --- FAN ROUTINE --- */
 #ifdef BUILD_FAN
-static SB_BOOL sb_fan_get_max(const char path[], long *max, sb_routine_t *routine)
-{
-	char contents[128] = {0};
-
-	if (!sb_read_file(contents, sizeof(contents), path, "_max", routine)) {
-		fprintf(stderr, "%s routine: Failed to read %s_max\n", routine->name, path);
-		return SB_FALSE;
-	}
-
-	*max = atol(contents);
-	return SB_TRUE;
-}
-
 static SB_BOOL sb_fan_get_path(char path[], size_t size, sb_routine_t *routine)
 {
 	static const char *base = "/sys/class/hwmon";
@@ -462,14 +449,17 @@ static void *sb_fan_routine(void *thunk)
 #ifdef BUILD_FAN
 	SB_TIMER_VARS;
 	char path[512];
-	long max;
 	char contents[128];
+	long max;
 	long now;
 
 	if (!sb_fan_get_path(path, sizeof(path), routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_fan_get_max(path, &max, routine)) {
+	} else if (!sb_read_file(contents, sizeof(contents), path, "_max", routine)) {
+		fprintf(stderr, "%s routine: Failed to read %s_max\n", routine->name, path);
 		routine->print = SB_FALSE;
+	} else {
+		max = atol(contents);
 	}
 
 	while (routine->print) {
