@@ -364,9 +364,10 @@ static void *sb_disk_routine(void *thunk)
 			avail = (long)sb_calc_magnitude(stats.f_bfree *stats.f_bsize, &avail_unit);
 			total = (long)sb_calc_magnitude(stats.f_blocks*stats.f_bsize, &total_unit);
 			/* chose highest warning for any filesystem */
-			if ((avail*100)/total > 75) {
+			perc = sb_normalize_perc((avail*100)/total);
+			if (perc > 75) {
 				routine->color = routine->color_warning;
-				if ((avail*100)/total > 90) {
+				if (perc > 90) {
 					routine->color = routine->color_error;
 				}
 			}
