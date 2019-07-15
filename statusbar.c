@@ -157,6 +157,13 @@ static void *sb_battery_routine(void *thunk)
 		}
 
 		perc = sb_normalize_perc((now * 100) / max);
+		if (perc > 25) {
+			routine->color = routine->color_normal;
+		} else if (perc > 10) {
+			routine->color = routine->color_warning;
+		} else {
+			routine->color = routine->color_error;
+		}
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "%ld%% BAT", perc);
