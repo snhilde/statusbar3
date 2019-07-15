@@ -15,8 +15,10 @@
 
 #define SB_SLEEP \
 		elapsed_usec = (finish_tp.tv_sec - start_tp.tv_sec) + ((finish_tp.tv_nsec - start_tp.tv_nsec) / 1000); \
-		if (usleep(routine->interval - elapsed_usec) != 0) { \
-			SB_PRINT_ERROR("Error sleeping", NULL); \
+		if (elapsed_usec < routine->interval) { \
+			if (usleep(routine->interval - elapsed_usec) != 0) { \
+				SB_PRINT_ERROR("Error sleeping", NULL); \
+			} \
 		}
 
 #define SB_TIMER_VARS \
@@ -683,8 +685,10 @@ static void *sb_time_routine(void *thunk)
 		elapsed_usec = (finish_tp.tv_sec - start_tp.tv_sec) +
 				((finish_tp.tv_nsec - start_tp.tv_nsec) / 1000);
 
-		if (usleep(routine->interval - elapsed_usec) != 0) {
-			SB_PRINT_ERROR("Error sleeping", NULL);
+		if (elapsed_usec < routine->interval) {
+			if (usleep(routine->interval - elapsed_usec) != 0) {
+				SB_PRINT_ERROR("Error sleeping", NULL);
+			}
 		}
 	}
 #endif
@@ -1052,6 +1056,7 @@ static void sb_print(void)
 	size_t        offset;
 	sb_routine_t *routine;
 	size_t        len;
+	long          interval = 1000000;
 
 	dpy  = XOpenDisplay(NULL);
 	root = RootWindow(dpy, DefaultScreen(dpy));
@@ -1115,8 +1120,11 @@ static void sb_print(void)
 		SB_STOP_TIMER;
 		elapsed_usec = (finish_tp.tv_sec - start_tp.tv_sec) +
 				((finish_tp.tv_nsec - start_tp.tv_nsec) / 1000);
-		if (usleep(1000000 - elapsed_usec) != 0) {
-			fprintf(stderr, "Print routine: Error sleeping\n");
+
+		if (elapsed_usec < interval) {
+			if (usleep(interval - elapsed_usec) != 0) {
+				fprintf(stderr, "Print routine: Error sleeping\n");
+			}
 		}
 	}
 
