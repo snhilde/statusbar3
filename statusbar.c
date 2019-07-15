@@ -991,6 +991,7 @@ static void *sb_weather_routine(void *thunk)
 #ifdef BUILD_WEATHER
 	SB_TIMER_VARS;
 
+	routine->color = routine->color_normal;
 	while (routine->print) {
 		SB_START_TIMER;
 
