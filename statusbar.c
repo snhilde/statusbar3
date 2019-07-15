@@ -158,11 +158,11 @@ static void *sb_battery_routine(void *thunk)
 
 		perc = sb_normalize_perc((now*100)/max);
 		if (perc > 25) {
-			routine->color = routine->color_normal;
+			routine->color = routine->colors.normal;
 		} else if (perc > 10) {
-			routine->color = routine->color_warning;
+			routine->color = routine->colors.warning;
 		} else {
-			routine->color = routine->color_error;
+			routine->color = routine->colors.error;
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
@@ -244,11 +244,11 @@ static void *sb_cpu_temp_routine(void *thunk)
 
 		now /= 1000; /* convert to celsius */
 		if (now < 80) {
-			routine->color = routine->color_normal;
+			routine->color = routine->colors.normal;
 		} else if (now < 100) {
-			routine->color = routine->color_warning;
+			routine->color = routine->colors.warning;
 		} else {
-			routine->color = routine->color_error;
+			routine->color = routine->colors.error;
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
@@ -302,11 +302,11 @@ static void *sb_cpu_usage_routine(void *thunk)
 		total = (new.user-old.user) + (new.nice-old.nice) + (new.system-old.system) + (new.idle-old.idle);
 		perc  = sb_normalize_perc((used*100)/total);
 		if (perc < 75) {
-			routine->color = routine->color_normal;
+			routine->color = routine->colors.normal;
 		} else if (perc < 90) {
-			routine->color = routine->color_warning;
+			routine->color = routine->colors.warning;
 		} else {
-			routine->color = routine->color_error;
+			routine->color = routine->colors.error;
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
@@ -354,7 +354,7 @@ static void *sb_disk_routine(void *thunk)
 		 * can safely add to the routine's output for the entire loop. */
 		pthread_mutex_lock(&(routine->mutex));
 		*routine->output = '\0';
-		routine->color = routine->color_normal; /* start at normal */
+		routine->color = routine->colors.normal; /* start at normal */
 
 		num_filesystems = sizeof(filesystems) / sizeof(*filesystems);
 		for (i=0; i<num_filesystems; i++) {
@@ -367,9 +367,9 @@ static void *sb_disk_routine(void *thunk)
 			/* chose highest warning for any filesystem */
 			perc = sb_normalize_perc((avail*100)/total);
 			if (perc > 75) {
-				routine->color = routine->color_warning;
+				routine->color = routine->colors.warning;
 				if (perc > 90) {
-					routine->color = routine->color_error;
+					routine->color = routine->colors.error;
 				}
 			}
 
@@ -465,7 +465,7 @@ static void *sb_fan_routine(void *thunk)
 			break;
 		}
 		/* TODO: get max and change color based on percent */
-		routine->color = routine->color_warning;
+		routine->color = routine->colors.warning;
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "%ld RPM", now);
@@ -504,11 +504,11 @@ static void *sb_load_routine(void *thunk)
 			SB_PRINT_ERROR("Failed to read", path);
 
 		if (av[0] < 1 && av[1] < 1 && av[2] < 1) {
-			routine->color = routine->color_normal;
+			routine->color = routine->colors.normal;
 		} else if (av[0] < 2 && av[1] < 2 && av[2] < 2) {
-			routine->color = routine->color_warning;
+			routine->color = routine->colors.warning;
 		} else {
-			routine->color = routine->color_error;
+			routine->color = routine->colors.error;
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
@@ -600,7 +600,7 @@ static void *sb_network_routine(void *thunk)
 	if (!sb_network_get_paths(&files[0], &files[1], routine))
 		routine->print = SB_FALSE;
 
-	routine->color = routine->color_normal;
+	routine->color = routine->colors.normal;
 	while (routine->print) {
 		SB_START_TIMER;
 
@@ -616,9 +616,9 @@ static void *sb_network_routine(void *thunk)
 				files[i].reduced = (long)sb_calc_magnitude(files[i].new_bytes - files[i].old_bytes, &files[i].unit);
 				if (files[i].unit == 'B' || files[i].unit == 'K') {
 				} else if (files[i].unit == 'M') {
-					routine->color = routine->color_warning;
+					routine->color = routine->colors.warning;
 				} else {
-					routine->color = routine->color_error;
+					routine->color = routine->colors.error;
 				}
 			}
 		}
@@ -681,11 +681,11 @@ static void *sb_ram_routine(void *thunk)
 
 		perc = sb_normalize_perc((avail_bytes_f*100)/total_bytes_f);
 		if (perc < 75) {
-			routine->color = routine->color_normal;
+			routine->color = routine->colors.normal;
 		} else if (perc < 90) {
-			routine->color = routine->color_warning;
+			routine->color = routine->colors.warning;
 		} else {
-			routine->color = routine->color_error;
+			routine->color = routine->colors.error;
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
@@ -719,7 +719,7 @@ static void *sb_time_routine(void *thunk)
 	char      time_str[64];
 	SB_BOOL   blink = SB_FALSE;
 
-	routine->color = routine->color_normal;
+	routine->color = routine->colors.normal;
 	while (routine->print) {
 		clock_gettime(CLOCK_REALTIME, &start_tp);
 
@@ -814,7 +814,7 @@ static void *sb_todo_routine(void *thunk)
 
 	snprintf(path, sizeof(path), "%s/.TODO", getenv("HOME"));
 
-	routine->color = routine->color_normal;
+	routine->color = routine->colors.normal;
 	while (routine->print) {
 		SB_START_TIMER;
 
@@ -954,11 +954,11 @@ static void *sb_volume_routine(void *thunk)
 			perc = sb_normalize_perc((decibels-min)*100/(max-min));
 			perc = rint((float)perc / 10) * 10; /* round to nearest ten */
 			if (perc < 80) {
-				routine->color = routine->color_normal;
+				routine->color = routine->colors.normal;
 			} else if (perc < 100) {
-				routine->color = routine->color_warning;
+				routine->color = routine->colors.warning;
 			} else {
-				routine->color = routine->color_error;
+				routine->color = routine->colors.error;
 			}
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "Vol %ld%%", perc);
@@ -992,7 +992,7 @@ static void *sb_weather_routine(void *thunk)
 #ifdef BUILD_WEATHER
 	SB_TIMER_VARS;
 
-	routine->color = routine->color_normal;
+	routine->color = routine->colors.normal;
 	while (routine->print) {
 		SB_START_TIMER;
 
@@ -1084,7 +1084,7 @@ static void *sb_wifi_routine(void *thunk)
 	if (!sb_wifi_init(&iwr, essid, sizeof(essid), routine))
 		routine->print = SB_FALSE;
 
-	routine->color = routine->color_normal;
+	routine->color = routine->colors.normal;
 	while (routine->print) {
 		SB_START_TIMER;
 
@@ -1264,13 +1264,13 @@ int main(int argc, char *argv[])
 		) {
 			fprintf(stderr, "%s: color must be RGB hex (\"#RRGGBB\")", routine_names[index]);
 		} else {
-			routine_object->thread_func   = possible_routines[index].callback;
-			routine_object->interval      = chosen_routines[i].seconds * 1000000;
-			routine_object->color_normal  = chosen_routines[i].color_normal;
-			routine_object->color_warning = chosen_routines[i].color_warning;
-			routine_object->color_error   = chosen_routines[i].color_error;
-			routine_object->name          = routine_names[index];
-			routine_object->print         = SB_TRUE;
+			routine_object->thread_func    = possible_routines[index].callback;
+			routine_object->interval       = chosen_routines[i].seconds * 1000000;
+			routine_object->colors.normal  = chosen_routines[i].color_normal;
+			routine_object->colors.warning = chosen_routines[i].color_warning;
+			routine_object->colors.error   = chosen_routines[i].color_error;
+			routine_object->name           = routine_names[index];
+			routine_object->print          = SB_TRUE;
 
 			/* create thread */
 			pthread_mutex_init(&(routine_object->mutex), NULL);
