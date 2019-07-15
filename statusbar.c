@@ -500,6 +500,7 @@ static void *sb_load_routine(void *thunk)
 			break;
 		if (sscanf(contents, "%lf %lf %lf", &av[0], &av[1], &av[2]) != 3)
 			SB_PRINT_ERROR("Failed to read", path);
+
 		if (av[0] < 1 && av[1] < 1 && av[2] < 1) {
 			routine->color = routine->color_normal;
 		} else if (av[0] < 2 && av[1] < 2 && av[2] < 2) {
@@ -597,6 +598,7 @@ static void *sb_network_routine(void *thunk)
 	if (!sb_network_get_paths(&files[0], &files[1], routine))
 		routine->print = SB_FALSE;
 
+	routine->color = routine->color_normal;
 	while (routine->print) {
 		SB_START_TIMER;
 
@@ -610,6 +612,12 @@ static void *sb_network_routine(void *thunk)
 				error = SB_TRUE;
 			} else {
 				files[i].reduced = (long)sb_calc_magnitude(files[i].new_bytes - files[i].old_bytes, &files[i].unit);
+				if (files[i].unit == 'B' || files[i].unit == 'K') {
+				} else if (files[i].unit == 'M') {
+					routine->color = routine->color_warning;
+				} else {
+					routine->color = routine->color_error;
+				}
 			}
 		}
 		if (error)
