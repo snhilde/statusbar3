@@ -14,7 +14,7 @@
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 
 #define SB_SLEEP \
-		elapsed_usec = (finish_tp.tv_sec - start_tp.tv_sec) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000); \
+		elapsed_usec = (finish_tp.tv_sec - start_tp.tv_sec) + ((finish_tp.tv_nsec - start_tp.tv_nsec) / 1000); \
 		if (usleep(routine->interval - elapsed_usec) != 0) { \
 			SB_PRINT_ERROR("Error sleeping", NULL); \
 		}
@@ -681,7 +681,7 @@ static void *sb_time_routine(void *thunk)
 
 		clock_gettime(CLOCK_REALTIME, &finish_tp);
 		elapsed_usec = (finish_tp.tv_sec - start_tp.tv_sec) +
-				(labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
+				((finish_tp.tv_nsec - start_tp.tv_nsec) / 1000);
 
 		if (usleep(routine->interval - elapsed_usec) != 0) {
 			SB_PRINT_ERROR("Error sleeping", NULL);
@@ -1113,7 +1113,8 @@ static void sb_print(void)
 		XSync(dpy, False);
 
 		SB_STOP_TIMER;
-		elapsed_usec = (finish_tp.tv_sec - start_tp.tv_sec) + (labs(start_tp.tv_nsec - finish_tp.tv_nsec) / 1000);
+		elapsed_usec = (finish_tp.tv_sec - start_tp.tv_sec) +
+				((finish_tp.tv_nsec - start_tp.tv_nsec) / 1000);
 		if (usleep(1000000 - elapsed_usec) != 0) {
 			fprintf(stderr, "Print routine: Error sleeping\n");
 		}
