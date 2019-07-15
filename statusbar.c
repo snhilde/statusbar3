@@ -1181,7 +1181,7 @@ int main(int argc, char *argv[])
 			fprintf(stderr, "%s: color must be RGB hex (\"#RRGGBB\")", routine_names[index]);
 		} else {
 			routine_object->thread_func = possible_routines[index].callback;
-			routine_object->interval    = chosen_routines[i].seconds;
+			routine_object->interval    = chosen_routines[i].seconds * 1000000;
 			routine_object->color       = chosen_routines[i].color;
 			routine_object->name        = routine_names[index];
 			routine_object->print       = SB_TRUE;
