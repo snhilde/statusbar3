@@ -425,7 +425,7 @@ static SB_BOOL sb_fan_get_path(char path[], size_t size, sb_routine_t *routine)
 			while ((devent=readdir(device))) {
 				if (strncasecmp(devent->d_name, "fan", 3) == 0 && strncasecmp(devent->d_name+4, "_output", 7) == 0) {
 					/* We found a fan. */
-					snprintf(path, size, "%s/%s/device/%.3s", base, dirent->d_name, devent->d_name);
+					snprintf(path, size, "%s/%s/device/%.4s", base, dirent->d_name, devent->d_name);
 					closedir(device);
 					closedir(dir);
 					return SB_TRUE;
@@ -460,6 +460,7 @@ static void *sb_fan_routine(void *thunk)
 		fprintf(stderr, "%s routine: Failed to read %s_max\n", routine->name, path);
 		routine->print = SB_FALSE;
 	} else {
+		strncat(path, "_output", sizeof(path)-strlen(path)-1);
 		max = atol(contents);
 		if (max < 0)
 			routine->print = SB_FALSE;
