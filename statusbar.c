@@ -452,6 +452,7 @@ static void *sb_fan_routine(void *thunk)
 	char contents[128];
 	long max;
 	long now;
+	long perc;
 
 	if (!sb_fan_get_path(path, sizeof(path), routine)) {
 		routine->print = SB_FALSE;
@@ -475,8 +476,14 @@ static void *sb_fan_routine(void *thunk)
 			SB_PRINT_ERROR("Failed to read current fan speed", NULL);
 			break;
 		}
-		/* TODO: get max and change color based on percent */
-		routine->color = routine->colors.warning;
+		perc = sb_normalize_perc((now*100)/max);
+		if (perc < 75) {
+			routine->color = routine->colors.normal;
+		} else if (perc < 90) {
+			routine->color = routine->colors.warning;
+		} else {
+			routine->color = routine->colors.error;
+		}
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "%ld RPM", now);
