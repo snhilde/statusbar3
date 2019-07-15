@@ -593,19 +593,20 @@ static void *sb_network_routine(void *thunk)
 
 #ifdef BUILD_NETWORK
 	SB_TIMER_VARS;
-	struct sb_file_t files[2]    = {0};
+	struct sb_file_t files[2] = {0};
 	SB_BOOL          error;
 	int              i;
 	char             contents[128];
-	int              color_level = 1;
+	int              color_level;
 
 	if (!sb_network_get_paths(&files[0], &files[1], routine))
 		routine->print = SB_FALSE;
 
-	routine->color = routine->colors.normal;
 	while (routine->print) {
 		SB_START_TIMER;
 
+		color_level    = 1;
+		routine->color = routine->colors.normal;
 		error = SB_FALSE;
 		for (i=0; i<2 && !error; i++) {
 			files[i].old_bytes = files[i].new_bytes;
