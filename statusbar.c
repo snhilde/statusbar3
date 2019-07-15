@@ -319,9 +319,9 @@ static void *sb_disk_routine(void *thunk)
 	size_t         num_filesystems;
 	int            i;
 	struct statvfs stats;
-	float          avail;
+	long           avail;
 	char           avail_unit;
-	float          total;
+	long           total;
 	char           total_unit;
 	char           output[512];
 
@@ -339,9 +339,9 @@ static void *sb_disk_routine(void *thunk)
 				SB_PRINT_ERROR("Failed to get stats for", filesystems[i].path)
 				break;
 			}
-			avail = sb_calc_magnitude(stats.f_bfree *stats.f_bsize, &avail_unit);
-			total = sb_calc_magnitude(stats.f_blocks*stats.f_bsize, &total_unit);
-			snprintf(output, sizeof(output), "%s: %.1f%c/%.1f%c",
+			avail = (long)sb_calc_magnitude(stats.f_bfree *stats.f_bsize, &avail_unit);
+			total = (long)sb_calc_magnitude(stats.f_blocks*stats.f_bsize, &total_unit);
+			snprintf(output, sizeof(output), "%s: %ld%c/%ld%c",
 					filesystems[i].display_name, avail, avail_unit, total, total_unit);
 			strncat(routine->output, output, sizeof(routine->output)-strlen(routine->output)-1);
 
