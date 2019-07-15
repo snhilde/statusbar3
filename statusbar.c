@@ -31,7 +31,7 @@ static float sb_calc_magnitude(long number, char *unit)
 {
 	/* This will calculate how many commas the number would have. */
 	int  i;
-	char symbols[] = "BKMGTP";
+	const char symbols[] = "BKMGTP";
 
 	if (number < 1000) {
 		*unit = 'B';
@@ -655,24 +655,24 @@ static void *sb_ram_routine(void *thunk)
 
 #ifdef BUILD_RAM
 	SB_TIMER_VARS
-	long  page_size;
-	long  total_pages;
-	float total;
-	char  total_unit;
-	float avail;
-	char  avail_unit;
-	long  perc;
+	long page_size;
+	long total_pages;
+	long total;
+	char total_unit;
+	long avail;
+	char avail_unit;
+	long perc;
 
 	page_size   = sysconf(_SC_PAGESIZE);
 	total_pages = sysconf(_SC_PHYS_PAGES);
 	/* get total bytes as a decimal in human-readable format */
-	total = sb_calc_magnitude(total_pages*page_size, &total_unit);
+	total = total_pages * page_size;
 
 	while (routine->print) {
 		SB_START_TIMER;
 
 		/* get available memory */
-		avail = sb_calc_magnitude(sysconf(_SC_AVPHYS_PAGES)*page_size, &avail_unit);
+		avail = sysconf(_SC_AVPHYS_PAGES) * page_size;
 		perc = sb_normalize_perc((avail*100)/total);
 		if (perc < 75) {
 			routine->color = routine->colors.normal;
@@ -684,7 +684,8 @@ static void *sb_ram_routine(void *thunk)
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "%.1f%c free/%.1f%c",
-				avail, avail_unit, total, total_unit);
+				sb_calc_magnitude(avail, &avail_unit), avail_unit,
+				sb_calc_magnitude(total, &total_unit), total_unit);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
