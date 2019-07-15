@@ -353,6 +353,7 @@ static void *sb_disk_routine(void *thunk)
 		 * can safely add to the routine's output for the entire loop. */
 		pthread_mutex_lock(&(routine->mutex));
 		*routine->output = '\0';
+		routine->color = routine->color_normal; /* start at normal */
 
 		num_filesystems = sizeof(filesystems) / sizeof(*filesystems);
 		for (i=0; i<num_filesystems; i++) {
@@ -362,6 +363,15 @@ static void *sb_disk_routine(void *thunk)
 			}
 			avail = (long)sb_calc_magnitude(stats.f_bfree *stats.f_bsize, &avail_unit);
 			total = (long)sb_calc_magnitude(stats.f_blocks*stats.f_bsize, &total_unit);
+			/* chose highest warning for any filesystem */
+			if ((avail*100)/total > 75) {
+				routine->color = routine->color_warning;
+				if ((avail*100)/total > 90) {
+					routine->color = routine->color_error;
+				}
+			}
+
+
 			snprintf(output, sizeof(output), "%s: %ld%c/%ld%c",
 					filesystems[i].display_name, avail, avail_unit, total, total_unit);
 			strncat(routine->output, output, sizeof(routine->output)-strlen(routine->output)-1);
