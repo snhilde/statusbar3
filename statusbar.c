@@ -665,8 +665,14 @@ static void *sb_ram_routine(void *thunk)
 
 	page_size   = sysconf(_SC_PAGESIZE);
 	total_pages = sysconf(_SC_PHYS_PAGES);
-	/* get total bytes as a decimal in human-readable format */
+
+	/* calculate available and total bytes */
+	avail = sysconf(_SC_AVPHYS_PAGES) * page_size;
 	total = total_pages * page_size;
+
+	/* calculate units now so we have something to print on first loop */
+	sb_calc_magnitude(avail, &avail_unit);
+	sb_calc_magnitude(total, &total_unit);
 
 	while (routine->print) {
 		SB_START_TIMER;
