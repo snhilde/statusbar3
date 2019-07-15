@@ -466,9 +466,11 @@ static void *sb_fan_routine(void *thunk)
 	char contents[128];
 	long now;
 
-	if (!sb_fan_get_path(path, sizeof(path), routine))
+	if (!sb_fan_get_path(path, sizeof(path), routine)) {
 		routine->print = SB_FALSE;
-	if (!sb_fan_get_max(path, &max, routine));
+	} else if (!sb_fan_get_max(path, &max, routine)) {
+		routine->print = SB_FALSE;
+	}
 
 	while (routine->print) {
 		SB_START_TIMER;
