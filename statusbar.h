@@ -63,6 +63,7 @@ typedef struct sb_routine {
 	const char        *color_normal;  /* Font color for normal values. */
 	const char        *color_warning; /* Font color when routine is in warning range. */
 	const char        *color_error;   /* Font color when routine has an error. */
+	const char        *color;         /* Font color for each print cycle. */
 	pthread_t          thread;        /* Thread assigned to this routine. */
 	pthread_mutex_t    mutex;         /* Mutex assigned to this routine. This will be used to
 	                                     lock output when reading from or writing to it. */
