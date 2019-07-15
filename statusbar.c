@@ -1083,6 +1083,7 @@ static void *sb_wifi_routine(void *thunk)
 	if (!sb_wifi_init(&iwr, essid, sizeof(essid), routine))
 		routine->print = SB_FALSE;
 
+	routine->color = routine->color_normal;
 	while (routine->print) {
 		SB_START_TIMER;
 
