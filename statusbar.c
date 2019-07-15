@@ -656,19 +656,17 @@ static void *sb_ram_routine(void *thunk)
 #ifdef BUILD_RAM
 	SB_TIMER_VARS
 	long page_size;
-	long total_pages;
 	long total;
 	char total_unit;
 	long avail;
 	char avail_unit;
 	long perc;
 
-	page_size   = sysconf(_SC_PAGESIZE);
-	total_pages = sysconf(_SC_PHYS_PAGES);
+	page_size = sysconf(_SC_PAGESIZE);
 
 	/* calculate available and total bytes */
 	avail = sysconf(_SC_AVPHYS_PAGES) * page_size;
-	total = total_pages * page_size;
+	total = sysconf(_SC_PHYS_PAGES)   * page_size;
 
 	/* calculate units now so we have something to print on first loop */
 	sb_calc_magnitude(avail, &avail_unit);
