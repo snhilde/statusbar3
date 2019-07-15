@@ -156,7 +156,7 @@ static void *sb_battery_routine(void *thunk)
 			break;
 		}
 
-		perc = sb_normalize_perc((now * 100) / max);
+		perc = sb_normalize_perc((now*100)/max);
 		if (perc > 25) {
 			routine->color = routine->color_normal;
 		} else if (perc > 10) {
@@ -654,6 +654,7 @@ static void *sb_ram_routine(void *thunk)
 	long  avail_bytes;
 	float avail_bytes_f;
 	char  avail_bytes_prefix;
+	long  perc;
 
 	page_size   = sysconf(_SC_PAGESIZE);
 	total_pages = sysconf(_SC_PHYS_PAGES);
@@ -675,6 +676,15 @@ static void *sb_ram_routine(void *thunk)
 			break;
 		}
 		avail_bytes_f = sb_calc_magnitude(avail_bytes, &avail_bytes_prefix);
+
+		perc = sb_normalize_perc((avail_bytes_f*100)/total_bytes_f);
+		if (perc < 75) {
+			routine->color = routine->color_normal;
+		} else if (perc < 90) {
+			routine->color = routine->color_warning;
+		} else {
+			routine->color = routine->color_error;
+		}
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "%.1f%c free/%.1f%c",
@@ -937,7 +947,7 @@ static void *sb_volume_routine(void *thunk)
 			SB_PRINT_ERROR("Failed to get decibels", NULL);
 			break;
 		} else {
-			perc = sb_normalize_perc((decibels - min) * 100 / (max - min));
+			perc = sb_normalize_perc((decibels-min)*100/(max-min));
 			perc = rint((float)perc / 10) * 10; /* round to nearest ten */
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "Vol %ld%%", perc);
