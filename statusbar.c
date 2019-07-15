@@ -344,6 +344,7 @@ static void *sb_disk_routine(void *thunk)
 	char           avail_unit;
 	long           total;
 	char           total_unit;
+	long           perc;
 	char           output[512];
 
 	while (routine->print) {
