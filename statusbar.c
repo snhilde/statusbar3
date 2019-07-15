@@ -346,6 +346,7 @@ static void *sb_disk_routine(void *thunk)
 	char           total_unit;
 	long           perc;
 	char           output[512];
+	int            color_level = 1;
 
 	while (routine->print) {
 		SB_START_TIMER;
@@ -354,8 +355,8 @@ static void *sb_disk_routine(void *thunk)
 		 * can safely add to the routine's output for the entire loop. */
 		pthread_mutex_lock(&(routine->mutex));
 		*routine->output = '\0';
-		routine->color = routine->colors.normal; /* start at normal */
 
+		routine->color  = routine->colors.normal; /* start at normal */
 		num_filesystems = sizeof(filesystems) / sizeof(*filesystems);
 		for (i=0; i<num_filesystems; i++) {
 			if (statvfs(filesystems[i].path, &stats) != 0) {
@@ -366,13 +367,13 @@ static void *sb_disk_routine(void *thunk)
 			total = (long)sb_calc_magnitude(stats.f_blocks*stats.f_bsize, &total_unit);
 			/* chose highest warning for any filesystem */
 			perc = sb_normalize_perc((avail*100)/total);
-			if (perc > 75) {
+			if (perc >= 90) {
+				color_level    = 3;
+				routine->color = routine->colors.error;
+			} else if (perc >= 75 && color_level < 3) {
+				color_level    = 2;
 				routine->color = routine->colors.warning;
-				if (perc > 90) {
-					routine->color = routine->colors.error;
-				}
 			}
-
 
 			snprintf(output, sizeof(output), "%s: %ld%c/%ld%c",
 					filesystems[i].display_name, avail, avail_unit, total, total_unit);
