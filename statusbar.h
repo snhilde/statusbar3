@@ -57,7 +57,7 @@ typedef struct sb_routine {
 	                                   access the routine's flags and to match it to various
 	                                   checks and calls. */
 	const char        *name;        /* Printable name of routine. */
-	long               interval;    /* How often to call routine in seconds. */
+	long               interval;    /* How often to call routine in microseconds. */
 	char               output[256]; /* String of data that each routine will output for
 	                                   master status bar string to copy */
 	const char        *color;       /* Font color */
