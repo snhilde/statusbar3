@@ -677,7 +677,7 @@ static void *sb_ram_routine(void *thunk)
 
 		/* get available memory */
 		avail = sysconf(_SC_AVPHYS_PAGES) * page_size;
-		perc = sb_normalize_perc((avail*100)/total);
+		perc  = sb_normalize_perc((avail*100)/total);
 		if (perc < 75) {
 			routine->color = routine->colors.normal;
 		} else if (perc < 90) {
