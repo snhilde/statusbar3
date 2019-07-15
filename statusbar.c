@@ -346,7 +346,7 @@ static void *sb_disk_routine(void *thunk)
 	char           total_unit;
 	long           perc;
 	char           output[512];
-	int            color_level = 1;
+	int            color_level;
 
 	while (routine->print) {
 		SB_START_TIMER;
@@ -356,6 +356,7 @@ static void *sb_disk_routine(void *thunk)
 		pthread_mutex_lock(&(routine->mutex));
 		*routine->output = '\0';
 
+		color_level     = 1;
 		routine->color  = routine->colors.normal; /* start at normal */
 		num_filesystems = sizeof(filesystems) / sizeof(*filesystems);
 		for (i=0; i<num_filesystems; i++) {
