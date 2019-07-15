@@ -53,26 +53,28 @@ typedef enum _SB_BOOL {
 
 /* Routine object declaration */
 typedef struct sb_routine {
-	enum sb_routine_e  routine;       /* Number assigned to each routine. This is used to
-	                                     access the routine's flags and to match it to various
-	                                     checks and calls. */
-	const char        *name;          /* Printable name of routine. */
-	long               interval;      /* How often to call routine in microseconds. */
-	char               output[256];   /* String of data that each routine will output for
-	                                     master status bar string to copy. */
-	const char        *color_normal;  /* Font color for normal values. */
-	const char        *color_warning; /* Font color when routine is in warning range. */
-	const char        *color_error;   /* Font color when routine has an error. */
-	const char        *color;         /* Font color for each print cycle. */
-	pthread_t          thread;        /* Thread assigned to this routine. */
-	pthread_mutex_t    mutex;         /* Mutex assigned to this routine. This will be used to
-	                                     lock output when reading from or writing to it. */
+	enum sb_routine_e  routine;     /* Number assigned to each routine. This is used to
+	                                   access the routine's flags and to match it to various
+	                                   checks and calls. */
+	const char        *name;        /* Printable name of routine. */
+	long               interval;    /* How often to call routine in microseconds. */
+	char               output[256]; /* String of data that each routine will output for
+	                                   master status bar string to copy. */
+	const char        *color;       /* Font color for each print cycle. */
+	const struct {
+		const char    *normal;      /* Font color for normal values. */
+		const char    *warning;     /* Font color when routine is in warning range. */
+		const char    *error;       /* Font color when routine has an error. */
+	} colors;
+	pthread_t          thread;      /* Thread assigned to this routine. */
+	pthread_mutex_t    mutex;       /* Mutex assigned to this routine. This will be used to
+	                                   lock output when reading from or writing to it. */
 	void            *(*thread_func)(void *); /* Callback function for thread. */
-	struct sb_routine *next;          /* Pointer to next routine in list. This is how we are
-	                                     going to keep track of the order or routines for
-	                                     printing to the status bar. */
-	SB_BOOL            print;         /* SB_TRUE (default) means print to statusbar.
-									     SB_FALSE means thread has exited and this routine should not be printed. */
+	struct sb_routine *next;        /* Pointer to next routine in list. This is how we are
+	                                   going to keep track of the order or routines for
+	                                   printing to the status bar. */
+	SB_BOOL            print;       /* SB_TRUE (default) means print to statusbar.
+									   SB_FALSE means thread has exited and this routine should not be printed. */
 } sb_routine_t;
 
 static const char *routine_names[] = {
