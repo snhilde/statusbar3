@@ -504,12 +504,12 @@ static void *sb_load_routine(void *thunk)
 		if (sscanf(contents, "%lf %lf %lf", &av[0], &av[1], &av[2]) != 3)
 			SB_PRINT_ERROR("Failed to read", path);
 
-		if (av[0] < 1 && av[1] < 1 && av[2] < 1) {
-			routine->color = routine->colors.normal;
-		} else if (av[0] < 2 && av[1] < 2 && av[2] < 2) {
+		if (av[0] > 2 || av[1] > 2 || av[2] > 2) {
+			routine->color = routine->colors.error;
+		} else if (av[0] > 1 || av[1] > 1 || av[2] > 1) {
 			routine->color = routine->colors.warning;
 		} else {
-			routine->color = routine->colors.error;
+			routine->color = routine->colors.normal;
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
