@@ -61,7 +61,7 @@ typedef struct sb_routine {
 	char               output[256]; /* String of data that each routine will output for
 	                                   master status bar string to copy. */
 	const char        *color;       /* Font color for each print cycle. */
-	const struct {
+	struct {
 		const char    *normal;      /* Font color for normal values. */
 		const char    *warning;     /* Font color when routine is in warning range. */
 		const char    *error;       /* Font color when routine has an error. */
