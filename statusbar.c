@@ -1186,14 +1186,20 @@ int main(int argc, char *argv[])
 		if (index == DELIMITER) {
 			snprintf(routine_object->output, sizeof(routine_object->output), ";");
 			routine_object->print = SB_TRUE;
-		} else if (strlen(chosen_routines[i].color) != 7) {
+		} else if (
+			strlen(chosen_routines[i].color_normal)  != 7 ||
+			strlen(chosen_routines[i].color_warning) != 7 ||
+			strlen(chosen_routines[i].color_error)   != 7
+		) {
 			fprintf(stderr, "%s: color must be RGB hex (\"#RRGGBB\")", routine_names[index]);
 		} else {
-			routine_object->thread_func = possible_routines[index].callback;
-			routine_object->interval    = chosen_routines[i].seconds * 1000000;
-			routine_object->color       = chosen_routines[i].color;
-			routine_object->name        = routine_names[index];
-			routine_object->print       = SB_TRUE;
+			routine_object->thread_func   = possible_routines[index].callback;
+			routine_object->interval      = chosen_routines[i].seconds * 1000000;
+			routine_object->color_normal  = chosen_routines[i].color_normal;
+			routine_object->color_warning = chosen_routines[i].color_warning;
+			routine_object->color_error   = chosen_routines[i].color_error;
+			routine_object->name          = routine_names[index];
+			routine_object->print         = SB_TRUE;
 
 			/* create thread */
 			pthread_mutex_init(&(routine_object->mutex), NULL);
