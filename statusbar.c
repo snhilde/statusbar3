@@ -593,10 +593,11 @@ static void *sb_network_routine(void *thunk)
 
 #ifdef BUILD_NETWORK
 	SB_TIMER_VARS;
-	struct sb_file_t files[2] = {0};
+	struct sb_file_t files[2]    = {0};
 	SB_BOOL          error;
 	int              i;
 	char             contents[128];
+	int              color_level = 1;
 
 	if (!sb_network_get_paths(&files[0], &files[1], routine))
 		routine->print = SB_FALSE;
@@ -616,9 +617,11 @@ static void *sb_network_routine(void *thunk)
 			} else {
 				files[i].reduced = (long)sb_calc_magnitude(files[i].new_bytes - files[i].old_bytes, &files[i].unit);
 				if (files[i].unit == 'B' || files[i].unit == 'K') {
-				} else if (files[i].unit == 'M') {
+				} else if (files[i].unit == 'M' && color_level < 3) {
+					color_level    = 2;
 					routine->color = routine->colors.warning;
 				} else {
+					color_level    = 3;
 					routine->color = routine->colors.error;
 				}
 			}
