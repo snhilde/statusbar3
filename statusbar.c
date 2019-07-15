@@ -718,6 +718,7 @@ static void *sb_time_routine(void *thunk)
 	char      time_str[64];
 	SB_BOOL   blink = SB_FALSE;
 
+	routine->color = routine->color_normal;
 	while (routine->print) {
 		clock_gettime(CLOCK_REALTIME, &start_tp);
 
