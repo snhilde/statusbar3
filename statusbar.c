@@ -500,6 +500,13 @@ static void *sb_load_routine(void *thunk)
 			break;
 		if (sscanf(contents, "%lf %lf %lf", &av[0], &av[1], &av[2]) != 3)
 			SB_PRINT_ERROR("Failed to read", path);
+		if (av[0] < 1 && av[1] < 1 && av[2] < 1) {
+			routine->color = routine->color_normal;
+		} else if (av[0] < 2 && av[1] < 2 && av[2] < 2) {
+			routine->color = routine->color_warning;
+		} else {
+			routine->color = routine->color_error;
+		}
 
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "%.2f, %.2f, %.2f", av[0], av[1], av[2]);
