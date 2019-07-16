@@ -8,7 +8,7 @@
 		  fprintf(stderr, "%s routine: " msg " %s\n", routine->name, _arg); }
 
 #define SB_START_TIMER \
-	clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
+		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
 #define SB_STOP_TIMER \
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
@@ -53,6 +53,13 @@ static long sb_normalize_perc(long num)
 		return 0;
 
 	return num;
+}
+
+static void *sb_null_cb(void *thunk)
+{
+	/* empty function to satisfy TIME not having a proper thread */
+	(void)thunk;
+	return NULL;
 }
 
 static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const char *file, sb_routine_t *routine)
@@ -243,7 +250,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 		}
 
 		now /= 1000; /* convert to celsius */
-		if (now < 80) {
+		if (now < 75) {
 			routine->color = routine->colors.normal;
 		} else if (now < 100) {
 			routine->color = routine->colors.warning;
@@ -423,6 +430,9 @@ static SB_BOOL sb_fan_get_path(char path[], size_t size, sb_routine_t *routine)
 		if (device != NULL) {
 			/* step through each file in base/hwmon#/device and find any fans */
 			while ((devent=readdir(device))) {
+				if (strncasecmp(devent->d_name, ".", 1) == 0 || strncasecmp(devent->d_name, "..", 2) == 0)
+					continue;
+
 				if (strncasecmp(devent->d_name, "fan", 3) == 0 && strncasecmp(devent->d_name+4, "_output", 7) == 0) {
 					/* We found a fan. */
 					snprintf(path, size, "%s/%s/device/%.4s", base, dirent->d_name, devent->d_name);
@@ -711,62 +721,6 @@ static void *sb_ram_routine(void *thunk)
 
 		SB_STOP_TIMER;
 		SB_SLEEP;
-	}
-#endif
-
-	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
-	routine->print = SB_FALSE;
-	return NULL;
-}
-
-
-/* --- TIME ROUTINE --- */
-static void *sb_time_routine(void *thunk)
-{
-	/* For this routine, we are not using the SB_START_TIMER and SB_STOP_TIMER
-	 * macros because we need to use CLOCK_REALTIME to get the actual system time.
-	 */
-	sb_routine_t *routine = thunk;
-
-#ifdef BUILD_TIME
-	SB_TIMER_VARS;
-	struct tm tm;
-	char      time_str[64];
-	SB_BOOL   blink = SB_FALSE;
-
-	routine->color = routine->colors.normal;
-	while (routine->print) {
-		clock_gettime(CLOCK_REALTIME, &start_tp);
-
-
-		/* convert time from seconds since epoch to local time */
-		memset(&tm, 0, sizeof(tm));
-		localtime_r(&start_tp.tv_sec, &tm);
-
-		memset(&time_str, 0, sizeof(time_str));
-		strftime(time_str, sizeof(time_str)-1, time_format, &tm);
-
-		if (blink) {
-			*strchr(time_str, ':') = ' ';
-			blink = SB_FALSE;
-		} else {
-			blink = SB_TRUE;
-		}
-
-		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output), "%s", time_str);
-		pthread_mutex_unlock(&(routine->mutex));
-
-		clock_gettime(CLOCK_REALTIME, &finish_tp);
-		elapsed_usec = (finish_tp.tv_sec - start_tp.tv_sec) +
-				((finish_tp.tv_nsec - start_tp.tv_nsec) / 1000);
-
-		if (elapsed_usec < routine->interval) {
-			if (usleep(routine->interval - elapsed_usec) != 0) {
-				SB_PRINT_ERROR("Error sleeping", NULL);
-			}
-		}
 	}
 #endif
 
@@ -1129,15 +1083,31 @@ static void *sb_wifi_routine(void *thunk)
 
 
 /* --- PRINT LOOP --- */
+static void sb_print_get_time(char buf[], size_t size, struct timespec *start_tp, SB_BOOL blink)
+{
+	struct tm tm;
+
+	/* convert time from seconds since epoch to local time */
+	memset(&tm, 0, sizeof(tm));
+	localtime_r(&(start_tp->tv_sec), &tm);
+
+	strftime(buf, size-1, time_format, &tm);
+
+	if (blink)
+		*strchr(buf, ':') = ' ';
+}
+
 static void sb_print(void)
 {
+	/* Here, we are not using the SB_START_TIMER and SB_STOP_TIMER macros,
+ 	 * because we need to use CLOCK_REALTIME to get the actual system time. */
 	SB_TIMER_VARS
 	Display      *dpy;
 	Window        root;
-
-	char          full_output[SBLENGTH];
 	size_t        offset;
 	sb_routine_t *routine;
+	char          full_output[SBLENGTH];
+	SB_BOOL       blink    = SB_TRUE;
 	size_t        len;
 	long          interval = 1000000;
 
@@ -1145,7 +1115,7 @@ static void sb_print(void)
 	root = RootWindow(dpy, DefaultScreen(dpy));
 
 	while (1) {
-		SB_START_TIMER;
+		clock_gettime(CLOCK_REALTIME, &start_tp); /* START TIMER */
 
 		offset  = 0;
 		for (routine = routine_list; routine != NULL; routine = routine->next) {
@@ -1155,6 +1125,12 @@ static void sb_print(void)
 				memcpy(full_output+offset, ";", 1);
 				offset += 1;
 				continue;
+			} else if (routine->routine == TIME) {
+				if (blink)
+					blink = SB_FALSE;
+				else
+					blink = SB_TRUE;
+				sb_print_get_time(routine->output, sizeof(routine->output), &start_tp, blink);
 			}
 
 			pthread_mutex_lock(&(routine->mutex));
@@ -1200,7 +1176,7 @@ static void sb_print(void)
 		XStoreName(dpy, root, full_output);
 		XSync(dpy, False);
 
-		SB_STOP_TIMER;
+		clock_gettime(CLOCK_REALTIME, &finish_tp); /* STOP TIMER */
 		elapsed_usec = (finish_tp.tv_sec - start_tp.tv_sec) +
 				((finish_tp.tv_nsec - start_tp.tv_nsec) / 1000);
 
@@ -1228,7 +1204,7 @@ static const struct thread_routines_t {
 	{ LOAD,       sb_load_routine       },
 	{ NETWORK,    sb_network_routine    },
 	{ RAM,        sb_ram_routine        },
-	{ TIME,       sb_time_routine       },
+	{ TIME,       sb_null_cb            },
 	{ TODO,       sb_todo_routine       },
 	{ VOLUME,     sb_volume_routine     },
 	{ WEATHER,    sb_weather_routine    },
@@ -1281,6 +1257,7 @@ int main(int argc, char *argv[])
 			routine_object->colors.normal  = chosen_routines[i].color_normal;
 			routine_object->colors.warning = chosen_routines[i].color_warning;
 			routine_object->colors.error   = chosen_routines[i].color_error;
+			routine_object->color          = routine_object->colors.normal;
 			routine_object->name           = routine_names[index];
 			routine_object->print          = SB_TRUE;
 
