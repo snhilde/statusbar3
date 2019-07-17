@@ -39,3 +39,6 @@ static const struct {
 
 /* Format of the clock (see strftime(3) for conversion specifications). */
 const char *time_format = "%b %d - %I:%M";
+
+/* Zip Code for weather data. */
+const char *zip_code = "90210";
