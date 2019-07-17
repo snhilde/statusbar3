@@ -996,7 +996,7 @@ static size_t sb_weather_read_cb(char *buffer, size_t size, size_t num, void *th
 	return size * num;
 }
 
-static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon)
+static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon, sb_routine_t *routine)
 {
 	char *response;
 	char  url[128] = {0};
@@ -1038,7 +1038,7 @@ static void *sb_weather_routine(void *thunk)
 	if (curl == NULL) {
 		fprintf(stderr, "%s routine: Failed to initialize curl handle\n", routine->name);
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_get_coordinates(curl, &lat, &lon)) {
+	} else if (!sb_weather_get_coordinates(curl, &lat, &lon, routine)) {
 		routine->print = SB_FALSE;
 	}
 
