@@ -987,6 +987,12 @@ static void *sb_weather_routine(void *thunk)
 	SB_TIMER_VARS;
 	CURL *curl;
 
+	curl = curl_easy_init();
+	if (curl == NULL) {
+		fprintf(stderr, "%s routine: Failed to initialize curl handle\n", routine->name);
+		routine->print = SB_FALSE;
+	}
+
 	routine->color = routine->colors.normal;
 	while (routine->print) {
 		SB_START_TIMER;
