@@ -1276,7 +1276,10 @@ int main(int argc, char *argv[])
 			 * functions of other libraries that are similarly thread unsafe, it could
 			 * conflict with any other thread that uses these other libraries."
 			 */
-			sb_weather_global_init();
+			if (sb_weather_global_init() != 0) {
+				fprintf(stderr, "Weather routine: Failed to initialize global libcurl\n");
+				continue;
+			}
 		}
 
 		if (index == DELIMITER) {
