@@ -1012,6 +1012,7 @@ static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon)
 
 	/* For performance reasons, we're going to find substrings of parsing the JSON. */
 
+	free(response);
 	return SB_TRUE;
 }
 #endif
