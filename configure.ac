@@ -97,12 +97,12 @@ AC_DEFINE([BUILD_RAM])
 AC_DEFINE([BUILD_TIME])
 AC_DEFINE([BUILD_WEATHER])
 
-AS_IF([test "$disk_headers"   = "yes"], [AC_DEFINE([BUILD_DISK])])
-AS_IF([test "$todo_headers"   = "yes"], [AC_DEFINE([BUILD_TODO])])
-AS_IF([test "$net_headers"    = "yes"], [AC_DEFINE([BUILD_NETWORK])])
-AS_IF([test "$net_headers"    = "yes" -a "$wifi_headers" = "yes"], [AC_DEFINE([BUILD_WIFI])])
-AS_IF([test "$volume_headers" = "yes" -a "$volume_lib" != "no"], [AC_DEFINE([BUILD_VOLUME])])
-AS_IF([test "$weather_headers" = "yes" -a "$weather_lib" != "no"], [AC_DEFINE([BUILD_WEATHER])])
+AS_IF([test "$disk_headers"    = "yes"], [AC_DEFINE([BUILD_DISK])])
+AS_IF([test "$todo_headers"    = "yes"], [AC_DEFINE([BUILD_TODO])])
+AS_IF([test "$net_headers"     = "yes"], [AC_DEFINE([BUILD_NETWORK])])
+AS_IF([test "$net_headers"     = "yes" -a "$wifi_headers"  = "yes"], [AC_DEFINE([BUILD_WIFI])])
+AS_IF([test "$volume_headers"  = "yes" -a "$volume_lib"   != "no"],  [AC_DEFINE([BUILD_VOLUME])])
+AS_IF([test "$weather_headers" = "yes" -a "$weather_lib"  != "no"],  [AC_DEFINE([BUILD_WEATHER])])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
