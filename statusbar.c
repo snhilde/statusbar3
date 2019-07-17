@@ -972,6 +972,8 @@ static int sb_weather_global_init(void)
 #ifdef BUILD_WEATHER
 	return curl_global_init(CURL_GLOBAL_SSL);
 #else
+	/* Triggered if user selects WEATHER as routine to run in config.h but
+ 	 * doesn't have library to build routine. */
 	fprintf(stderr, "Weather routine: Not building weather routine\n");
 	return 0;
 #endif
