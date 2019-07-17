@@ -998,8 +998,9 @@ static size_t sb_weather_read_cb(char *buffer, size_t size, size_t num, void *th
 
 static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon)
 {
-	char *response;
-	char url[128] = {0};
+	char  *response;
+	CURLU *url;
+	char   url[128] = {0};
 
 	response = calloc(1, sizeof(*response));
 
