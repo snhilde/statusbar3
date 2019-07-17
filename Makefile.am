@@ -1,18 +1,13 @@
 AUTOMAKE_OPTIONS=foreign
 
-INCDIR=     /usr/include
-X11_INCDIR= /usr/include/X11
-
-LIBDIR=     /usr/lib/x86_64-linux-gnu
-X11_LIBDIR= /usr/lib/X11
-
 CFLAGS= -g -O0 -Wall \
         -DVERSION=\"$(VERSION)\" \
         -DPROG="\"$(PACKAGE)\"" \
-        -I ${INCDIR} \
-	    -I ${X11_INCDIR}
+        -I /usr/include \
+        -I /usr/include/X11
 
-LDFLAGS= -L ${LIBDIR} \
-	     -L ${X11_LIBDIR}
+LDFLAGS= -L /usr/lib/x86_64-linux-gnu \
+         -L /usr/local/lib \
+         -L /usr/lib/X11
 
 bin_PROGRAMS= statusbar
