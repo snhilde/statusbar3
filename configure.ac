@@ -95,7 +95,6 @@ AC_DEFINE([BUILD_FAN])
 AC_DEFINE([BUILD_LOAD])
 AC_DEFINE([BUILD_RAM])
 AC_DEFINE([BUILD_TIME])
-AC_DEFINE([BUILD_WEATHER])
 
 AS_IF([test "$disk_headers"    = "yes"], [AC_DEFINE([BUILD_DISK])])
 AS_IF([test "$todo_headers"    = "yes"], [AC_DEFINE([BUILD_TODO])])
