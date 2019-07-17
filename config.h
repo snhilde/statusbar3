@@ -39,6 +39,3 @@ static const struct {
 
 /* Format of the clock (see strftime(3) for conversion specifications). */
 const char *time_format = "%b %d - %I:%M";
-
-/* Use 1 to display keyboard brightness with screen brightness or 0 to not. */
-#define SHOW_KBD 1
