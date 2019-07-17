@@ -973,6 +973,7 @@ static void *sb_weather_routine(void *thunk)
 
 #ifdef BUILD_WEATHER
 	SB_TIMER_VARS;
+	CURL *handle;
 
 	routine->color = routine->colors.normal;
 	while (routine->print) {
