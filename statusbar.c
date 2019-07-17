@@ -967,6 +967,14 @@ static void *sb_volume_routine(void *thunk)
 
 
 /* --- WEATHER ROUTINE --- */
+static void sb_weather_global_init(void)
+{
+#ifdef BUILD_WEATHER
+#else
+	fprintf(stderr, "Weather routine: Not building weather routine\n");
+#endif
+}
+
 static void *sb_weather_routine(void *thunk)
 {
 	sb_routine_t *routine = thunk;
@@ -1266,7 +1274,9 @@ int main(int argc, char *argv[])
 			 * functions of other libraries that are similarly thread unsafe, it could
 			 * conflict with any other thread that uses these other libraries."
 			 */
+			sb_weather_global_init();
 		}
+
 		if (index == DELIMITER) {
 			snprintf(routine_object->output, sizeof(routine_object->output), ";");
 			routine_object->print = SB_TRUE;
