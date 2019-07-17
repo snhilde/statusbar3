@@ -982,6 +982,8 @@ static int sb_weather_global_init(void)
 #ifdef BUILD_WEATHER
 static SB_BOOL sb_weather_read_response(const char *response, float *lat, float *lon, sb_routine_t *routine)
 {
+	char *beg;
+	char *end;
 
 	return SB_TRUE;
 }
@@ -1006,8 +1008,6 @@ static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon, sb
 {
 	char *response;
 	char  url[128] = {0};
-	char *beg;
-	char *end;
 	long  code;
 	char *type; /* this will get free'd during curl_easy_cleanup() */
 
