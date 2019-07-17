@@ -28,9 +28,6 @@ static const struct {
 };
 SB_BOOL color_text = SB_TRUE; /* SB_FALSE to not color text, or if status2d patch is not installed */
 
-/* Format of the clock (see strftime(3) for conversion specifications). */
-const char *time_format = "%b %d - %I:%M";
-
 /* Which mounted filesystems to display for the disk routine. */
 static const struct {
 	const char *path;
@@ -39,6 +36,9 @@ static const struct {
 	{ "/"    , "root" },
 	{ "/home", "home" },
 };
+
+/* Format of the clock (see strftime(3) for conversion specifications). */
+const char *time_format = "%b %d - %I:%M";
 
 /* Use 1 to display keyboard brightness with screen brightness or 0 to not. */
 #define SHOW_KBD 1
