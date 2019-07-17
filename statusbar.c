@@ -967,11 +967,13 @@ static void *sb_volume_routine(void *thunk)
 
 
 /* --- WEATHER ROUTINE --- */
-static void sb_weather_global_init(void)
+static int sb_weather_global_init(void)
 {
 #ifdef BUILD_WEATHER
+	return curl_global_init(CURL_GLOBAL_SSL);
 #else
 	fprintf(stderr, "Weather routine: Not building weather routine\n");
+	return 0;
 #endif
 }
 
