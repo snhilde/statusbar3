@@ -1006,6 +1006,7 @@ static void *sb_weather_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
+	curl_easy_cleanup(curl);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
