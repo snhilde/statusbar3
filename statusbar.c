@@ -991,21 +991,11 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 	long  code;
 	char *end;
 
-	if (strncmp(response, "{\"status\":", 10) != 0) {
-		fprintf(stderr, "%s routine: Failed to get coordinates: Unknown response returned\n", routine->name);
-		return SB_FALSE;
-	}
 	response += 10; /* move forward to the beginning of the status code */
-
-	code     = strtol(response, &end, 10);
-	response = end;
+	code      = strtol(response, &end, 10);
+	response  = end;
 	if (code != 1) {
 		/* we have an error, get the message and bail */
-		if (strncmp(response, ",\"msg\":\"", 8) != 0) {
-			fprintf(stderr, "%s routine: Failed to get coordinates: Error code %ld returned but failed to get message\n",
-					routine->name, code);
-			return SB_FALSE;
-		}
 		response += 8; /* move forward to the beginning of the error message */
 		end = strchr(response, '"'); /* get entire error message */
 		fprintf(stderr, "%s routine: Failed to get coordinates: %.*s (%ld)\n",
@@ -1013,33 +1003,17 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 		return SB_FALSE;
 	}
 
-	/* move forward to the latitude */
-	if (strncmp(response, ",\"output\":[{\"zip\":\"", 19) != 0) {
-		fprintf(stderr, "%s routine: Failed to get coordinates: Bad message returned (part 1)\n", routine->name);
-		return SB_FALSE;
-	}
-	response += 19;
+	response += 19; /* move forward to the zip code */
 	if (strncmp(response, zip_code, 5) != 0) {
 		fprintf(stderr, "%s routine: Failed to get coordinates: Incorrect zip code returned (%.*s)\n",
 				routine->name, 5, response);
 		return SB_FALSE;
 	}
-	response += 5;
-	if (strncmp(response, "\",\"latitude\":\"", 14) != 0) {
-		fprintf(stderr, "%s routine: Failed to get coordinates: Bad message returned (part 2)\n", routine->name);
-		return SB_FALSE;
-	}
-	response += 14;
 
+	response += 19; /* move forward to the latitude */
 	*lat = strtof(response, &end);
 
-	response = end;
-	if (strncmp(response, "\",\"longitude\":\"", 15) != 0) {
-		fprintf(stderr, "%s routine: Failed to get coordinates: Bad message returned (part 3)\n", routine->name);
-		return SB_FALSE;
-	}
-	response += 15;
-
+	response = end + 15; /* move forward to the longitude */
 	*lon = strtof(response, &end);
 
 	return SB_TRUE;
