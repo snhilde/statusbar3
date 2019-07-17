@@ -1002,6 +1002,7 @@ static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon, sb
 	char  url[128] = {0};
 	char *beg;
 	char *end;
+	long  code;
 
 	response = calloc(1, sizeof(*response));
 
