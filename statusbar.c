@@ -990,6 +990,14 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 	 */
 	char *beg;
 	char *end;
+	int   code;
+
+	if (strncmp(response, "{\"status\":", 10) != 0) {
+		fprintf(stderr, "%s routine: Unknown response returned\n", routine->name);
+		return SB_FALSE;
+	}
+	response += 10; /* move forward to the beginning of the status code */
+	code      = atoi(response);
 
 	return SB_TRUE;
 }
