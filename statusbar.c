@@ -980,6 +980,12 @@ static int sb_weather_global_init(void)
 }
 
 #ifdef BUILD_WEATHER
+static SB_BOOL sb_weather_read_response(const char *response, float *lat, float *lon, sb_routine_t *routine)
+{
+
+	return SB_TRUE;
+}
+
 static size_t sb_weather_read_cb(char *buffer, size_t size, size_t num, void *thunk)
 {
 	char   **data = thunk;
