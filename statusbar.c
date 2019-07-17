@@ -1221,6 +1221,7 @@ static void sb_print(void)
 			}
 		}
 	}
+	curl_global_cleanup(); /* Same lack of thread-safety as curl_global_init(). */
 
 	fprintf(stderr, "Closing print loop, exiting program...\n");
 	exit(EXIT_FAILURE);
