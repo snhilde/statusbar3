@@ -530,8 +530,10 @@ static void *sb_load_routine(void *thunk)
 
 		if (!sb_read_file(contents, sizeof(contents), path, NULL, routine))
 			break;
-		if (sscanf(contents, "%lf %lf %lf", &av[0], &av[1], &av[2]) != 3)
+		if (sscanf(contents, "%lf %lf %lf", &av[0], &av[1], &av[2]) != 3) {
 			SB_PRINT_ERROR("Failed to read", path);
+			break;
+		}
 
 		if (av[0] > 2 || av[1] > 2 || av[2] > 2) {
 			routine->color = routine->colors.error;
