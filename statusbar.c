@@ -998,6 +998,9 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 	}
 	response += 10; /* move forward to the beginning of the status code */
 	code      = atoi(response);
+	if (code != 1) {
+		/* we have an error, get the message and bail */
+	}
 
 	return SB_TRUE;
 }
