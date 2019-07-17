@@ -1327,6 +1327,11 @@ int main(int argc, char *argv[])
 			 * functions of other libraries that are similarly thread unsafe, it could
 			 * conflict with any other thread that uses these other libraries."
 			 */
+			if (strlen(zip_code) != 5 || strspn(zip_code, "0123456789") != 5) {
+				fprintf(stderr, "Weather routine: Zip Code must be 5 digits\n");
+				continue;
+			}
+
 			if (sb_weather_global_init() != 0) {
 				fprintf(stderr, "Weather routine: Failed to initialize global libcurl\n");
 				continue;
