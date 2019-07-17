@@ -982,6 +982,7 @@ static int sb_weather_global_init(void)
 #ifdef BUILD_WEATHER
 static SB_BOOL sb_weather_read_response(const char *response, float *lat, float *lon, sb_routine_t *routine)
 {
+	/* For performance reasons, we're going to find substrings of parsing the JSON. */
 	char *beg;
 	char *end;
 
