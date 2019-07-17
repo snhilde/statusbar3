@@ -73,6 +73,9 @@ AC_CHECK_HEADERS([linux/wireless.h],
 AC_CHECK_HEADERS([alsa/asoundlib.h],
 				 [volume_headers="yes"],
 				 [AC_MSG_NOTICE([Missing <alsa/asoundlib.h>, not running volume routine])])
+AC_CHECK_HEADERS([curl/curl.h],
+				 [weather_headers="yes"],
+				 [AC_MSG_NOTICE([Missing <curl/curl.h>, not running weather routine])])
 
 # Check for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
