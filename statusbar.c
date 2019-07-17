@@ -996,10 +996,11 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 		return SB_FALSE;
 	}
 	response += 10; /* move forward to the beginning of the status code */
-	code      = strtol(response, &end, 10);
+
+	code     = strtol(response, &end, 10);
+	response = end;
 	if (code != 1) {
 		/* we have an error, get the message and bail */
-		response = end;
 		if (strncmp(response, ",\"msg\":\"", 8) != 0) {
 			fprintf(stderr, "%s routine: Failed to get coordinates: Error code %ld returned but failed to get message\n",
 					routine->name, code);
@@ -1011,6 +1012,35 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 				routine->name, (int)(end-response), response, code);
 		return SB_FALSE;
 	}
+
+	/* move forward to the latitude */
+	if (strncmp(response, ",\"output\":[{\"zip\":\"", 19) != 0) {
+		fprintf(stderr, "%s routine: Failed to get coordinates: Bad message returned (part 1)\n", routine->name);
+		return SB_FALSE;
+	}
+	response += 19;
+	if (strncmp(response, zip_code, 5) != 0) {
+		fprintf(stderr, "%s routine: Failed to get coordinates: Incorrect zip code returned (%.*s)\n",
+				routine->name, 5, response);
+		return SB_FALSE;
+	}
+	response += 5;
+	if (strncmp(response, "\",\"latitude\":\"", 14) != 0) {
+		fprintf(stderr, "%s routine: Failed to get coordinates: Bad message returned (part 2)\n", routine->name);
+		return SB_FALSE;
+	}
+	response += 14;
+
+	*lat = strtof(response, &end);
+
+	response = end;
+	if (strncmp(response, "\",\"longitude\":\"", 15) != 0) {
+		fprintf(stderr, "%s routine: Failed to get coordinates: Bad message returned (part 3)\n", routine->name);
+		return SB_FALSE;
+	}
+	response += 15;
+
+	*lon = strtof(response, &end);
 
 	return SB_TRUE;
 }
@@ -1033,10 +1063,10 @@ static size_t sb_weather_read_cb(char *buffer, size_t size, size_t num, void *th
 
 static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon, sb_routine_t *routine)
 {
-	char *response;
-	char  url[128] = {0};
-	long  code;
-	char *type; /* this will get free'd during curl_easy_cleanup() */
+	char  *response;
+	char   url[128] = {0};
+	long   code;
+	char  *type; /* this will get free'd during curl_easy_cleanup() */
 
 	response = calloc(1, sizeof(*response));
 
@@ -1092,6 +1122,7 @@ static void *sb_weather_routine(void *thunk)
 	} else if (!sb_weather_get_coordinates(curl, &lat, &lon, routine)) {
 		routine->print = SB_FALSE;
 	}
+	printf("lat: %f, lon: %f\n", lat, lon);
 
 	routine->color = routine->colors.normal;
 	while (routine->print) {
