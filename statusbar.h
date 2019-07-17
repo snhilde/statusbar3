@@ -29,6 +29,10 @@
   #include <alsa/asoundlib.h>
 #endif
 
+#ifdef BUILD_WEATHER
+  #include <curl/curl.h>
+#endif
+
 enum sb_routine_e {
 	BATTERY = 0,
 	CPU_TEMP ,
