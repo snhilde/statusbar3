@@ -1032,9 +1032,10 @@ static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon, sb
 		return SB_FALSE;
 	}
 
-	/* For performance reasons, we're going to find substrings of parsing the JSON. */
-	beg = strchr(response, ':') + 1; /* start of the number after the first : */
-	end = strchr(beg, ',');          /* end of the number */
+	if (!sb_weather_read_response(response, lat, lon, routine)) {
+		free(response);
+		return SB_FALSE;
+	}
 
 	free(response);
 	return SB_TRUE;
