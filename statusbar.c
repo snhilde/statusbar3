@@ -303,6 +303,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 			break;
 		if (sscanf(contents, "cpu %lu %lu %lu %lu", &new.user, &new.nice, &new.system, &new.idle) != 4 ) {
 			SB_PRINT_ERROR("Failed to read", path);
+			break;
 		}
 
 		used  = (new.user-old.user) + (new.nice-old.nice) + (new.system-old.system);
