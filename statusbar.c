@@ -1074,7 +1074,7 @@ static void *sb_wifi_routine(void *thunk)
 		}
 
 		if (ioctl(sock, SIOCGIWESSID, &iwr) < 0) {
-			routine->color = routine->colors.error;
+			routine->color = routine->colors.warning;
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "Not Connected");
 			pthread_mutex_unlock(&(routine->mutex));
