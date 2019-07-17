@@ -1001,8 +1001,7 @@ static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon)
 	char *response;
 	char url[128] = {0};
 
-	response  = malloc(1);
-	*response = '\0';
+	response = calloc(1, sizeof(*response));
 
 	snprintf(url, sizeof(url)-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
 	curl_easy_setopt(curl, CURLOPT_URL, url);
