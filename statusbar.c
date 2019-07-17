@@ -1009,7 +1009,9 @@ static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon)
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, sb_weather_read_cb);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-	curl_easy_perform(curl);
+	if (curl_easy_perform(curl) != CURLE_OK) {
+	} else if () {
+	}
 
 	/* For performance reasons, we're going to find substrings of parsing the JSON. */
 
