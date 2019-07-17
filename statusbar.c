@@ -979,17 +979,29 @@ static int sb_weather_global_init(void)
 #endif
 }
 
+#ifdef BUILD_WEATHER
+static SB_BOOL sb_weather_get_coordinates(float *lat, float *lon)
+{
+
+	return SB_TRUE;
+}
+#endif
+
 static void *sb_weather_routine(void *thunk)
 {
 	sb_routine_t *routine = thunk;
 
 #ifdef BUILD_WEATHER
 	SB_TIMER_VARS;
-	CURL *curl;
+	CURL  *curl;
+	float  lat;
+	float  lon;
 
 	curl = curl_easy_init();
 	if (curl == NULL) {
 		fprintf(stderr, "%s routine: Failed to initialize curl handle\n", routine->name);
+		routine->print = SB_FALSE;
+	} else if (!sb_weather_get_coordinates(&lat, &lon)) {
 		routine->print = SB_FALSE;
 	}
 
