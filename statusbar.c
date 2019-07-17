@@ -1010,12 +1010,19 @@ static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon, sb
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, sb_weather_read_cb);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
 	if (curl_easy_perform(curl) != CURLE_OK) {
 		fprintf(stderr, "%s routine: Failed to perform easy curl\n", routine->name);
 		free(response);
 		return SB_FALSE;
 	}
+
 	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
+	if (code != 200) {
+		fprintf(stderr, "%s routine: curl returned status code of %ld\n", routine->name, code);
+		free(response);
+		return SB_FALSE;
+	}
 
 	/* For performance reasons, we're going to find substrings of parsing the JSON. */
 	beg = strchr(response, ':') + 1; /* start of the number after the first : */
