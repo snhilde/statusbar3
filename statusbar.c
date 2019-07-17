@@ -980,7 +980,7 @@ static int sb_weather_global_init(void)
 }
 
 #ifdef BUILD_WEATHER
-static SB_BOOL sb_weather_get_coordinates(float *lat, float *lon)
+static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon)
 {
 
 	return SB_TRUE;
@@ -1001,7 +1001,7 @@ static void *sb_weather_routine(void *thunk)
 	if (curl == NULL) {
 		fprintf(stderr, "%s routine: Failed to initialize curl handle\n", routine->name);
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_get_coordinates(&lat, &lon)) {
+	} else if (!sb_weather_get_coordinates(curl, &lat, &lon)) {
 		routine->print = SB_FALSE;
 	}
 
