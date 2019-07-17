@@ -1280,12 +1280,13 @@ int main(int argc, char *argv[])
 				fprintf(stderr, "Weather routine: Failed to initialize global libcurl\n");
 				continue;
 			}
-		}
-
-		if (index == DELIMITER) {
+		} else if (index == DELIMITER) {
 			snprintf(routine_object->output, sizeof(routine_object->output), ";");
 			routine_object->print = SB_TRUE;
-		} else if (
+			continue;
+		}
+
+		if (
 			strlen(chosen_routines[i].color_normal)  != 7 ||
 			strlen(chosen_routines[i].color_warning) != 7 ||
 			strlen(chosen_routines[i].color_error)   != 7
