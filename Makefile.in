@@ -191,8 +191,8 @@ CCDEPMODE = @CCDEPMODE@
 CFLAGS = -g -O0 -Wall \
         -DVERSION=\"$(VERSION)\" \
         -DPROG="\"$(PACKAGE)\"" \
-        -I ${INCDIR} \
-	    -I ${X11_INCDIR}
+        -I /usr/include \
+        -I /usr/include/X11
 
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
@@ -210,8 +210,9 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-LDFLAGS = -L ${LIBDIR} \
-	     -L ${X11_LIBDIR}
+LDFLAGS = -L /usr/lib/x86_64-linux-gnu \
+         -L /usr/local/lib \
+         -L /usr/lib/X11
 
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
@@ -276,10 +277,6 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
-INCDIR = /usr/include
-X11_INCDIR = /usr/include/X11
-LIBDIR = /usr/lib/x86_64-linux-gnu
-X11_LIBDIR = /usr/lib/X11
 all: all-am
 
 .SUFFIXES:
