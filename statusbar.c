@@ -1007,10 +1007,11 @@ static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon)
 	url = curl_url();
 	if (url == NULL) {
 	} else if (curl_url_set(url, CURLUPART_URL, "https://api.promaptools.com", 0) == 0) {
+	} else if (curl_url_set(url, CURLUPART_PATH , "/service/us/zip-lat-lng/get/", 0) == 0) {
 	}
 
 
-	snprintf(url, sizeof(url)-1, "/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
+	snprintf(url, sizeof(url)-1, "?zip=%s&key=17o8dysaCDrgv1c", zip_code);
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, sb_weather_read_cb);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
