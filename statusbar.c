@@ -982,7 +982,12 @@ static int sb_weather_global_init(void)
 #ifdef BUILD_WEATHER
 static SB_BOOL sb_weather_read_response(const char *response, float *lat, float *lon, sb_routine_t *routine)
 {
-	/* For performance reasons, we're going to find substrings of parsing the JSON. */
+	/* For performance reasons, we're going to find substrings instead of parsing the JSON.
+ 	 * A successful response will look something like this:
+	 * {"status":1,"output":[{"zip":"90210","latitude":"34.103131","longitude":"-118.416253"}]}
+	 * An unsuccessful response will look something like this:
+	 * {"status":-3,"msg":"No results found"}
+	 */
 	char *beg;
 	char *end;
 
