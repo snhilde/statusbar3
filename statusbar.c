@@ -997,7 +997,7 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 	if (code != 1) {
 		/* we have an error, get the message and bail */
 		response += 8; /* move forward to the beginning of the error message */
-		end = strchr(response, '"'); /* get entire error message */
+		end       = strchr(response, '"'); /* get entire error message */
 		fprintf(stderr, "%s routine: Failed to get coordinates: %.*s (%ld)\n",
 				routine->name, (int)(end-response), response, code);
 		return SB_FALSE;
@@ -1011,10 +1011,10 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 	}
 
 	response += 19; /* move forward to the latitude */
-	*lat = strtof(response, &end);
+	*lat      = strtof(response, &end);
 
 	response = end + 15; /* move forward to the longitude */
-	*lon = strtof(response, &end);
+	*lon     = strtof(response, &end);
 
 	return SB_TRUE;
 }
@@ -1096,7 +1096,6 @@ static void *sb_weather_routine(void *thunk)
 	} else if (!sb_weather_get_coordinates(curl, &lat, &lon, routine)) {
 		routine->print = SB_FALSE;
 	}
-	printf("lat: %f, lon: %f\n", lat, lon);
 
 	routine->color = routine->colors.normal;
 	while (routine->print) {
