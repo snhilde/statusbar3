@@ -988,21 +988,28 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 	 * An unsuccessful response will look something like this:
 	 * {"status":-3,"msg":"No results found"}
 	 */
+	long  code;
 	char *end;
-	int   code;
 
 	if (strncmp(response, "{\"status\":", 10) != 0) {
-		fprintf(stderr, "%s routine: Unknown response returned\n", routine->name);
+		fprintf(stderr, "%s routine: Failed to get coordinates: Unknown response returned\n", routine->name);
 		return SB_FALSE;
 	}
 	response += 10; /* move forward to the beginning of the status code */
 	code      = strtol(response, &end, 10);
 	if (code != 1) {
 		/* we have an error, get the message and bail */
-		if (strncmp(end, ",\"msg\":\"", 8) != 0) {
+		response = end;
+		if (strncmp(response, ",\"msg\":\"", 8) != 0) {
 			fprintf(stderr, "%s routine: Failed to get coordinates: Error code %ld returned but failed to get message\n",
 					routine->name, code);
+			return SB_FALSE;
 		}
+		response += 8; /* move forward to the beginning of the error message */
+		end = strchr(response, '"'); /* get entire error message */
+		fprintf(stderr, "%s routine: Failed to get coordinates: %.*s (%ld)\n",
+				routine->name, (int)(end-response), response, code);
+		return SB_FALSE;
 	}
 
 	return SB_TRUE;
