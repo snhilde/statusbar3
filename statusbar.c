@@ -1014,6 +1014,8 @@ static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon)
 	}
 
 	/* For performance reasons, we're going to find substrings of parsing the JSON. */
+	beg = strchr(response, ':') + 1; /* start of the number after the first : */
+	end = strchr(beg, ',');          /* end of the number */
 
 	free(response);
 	return SB_TRUE;
