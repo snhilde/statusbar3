@@ -700,11 +700,11 @@ static void *sb_ram_routine(void *thunk)
 	if (avail < 1 || total < 1) {
 		fprintf(stderr, "%s routine: Failed to get memory amounts\n", routine->name);
 		routine->print = SB_FALSE;
+	} else {
+		/* calculate units now so we have something to print on first loop */
+		sb_calc_magnitude(avail, &avail_unit);
+		sb_calc_magnitude(total, &total_unit);
 	}
-
-	/* calculate units now so we have something to print on first loop */
-	sb_calc_magnitude(avail, &avail_unit);
-	sb_calc_magnitude(total, &total_unit);
 
 	while (routine->print) {
 		SB_START_TIMER;
