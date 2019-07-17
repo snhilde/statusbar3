@@ -22,7 +22,7 @@ AC_CHECK_LIB([X11], [XStoreName],
 AC_CHECK_LIB([asound], [snd_mixer_open],
 			 [],
 			 [volume_lib="no"; AC_MSG_NOTICE([libasound check failed, not running volume routine])])
-AC_CHECK_LIB([libcurl], [curl_easy_init],
+AC_CHECK_LIB([curl], [curl_easy_init],
 			 [],
 			 [weather_lib="no"; AC_MSG_NOTICE([libcurl check failed, not running weather routine])])
 
