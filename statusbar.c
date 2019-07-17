@@ -697,6 +697,10 @@ static void *sb_ram_routine(void *thunk)
 	/* calculate available and total bytes */
 	avail = sysconf(_SC_AVPHYS_PAGES) * page_size;
 	total = sysconf(_SC_PHYS_PAGES)   * page_size;
+	if (avail < 1 || total < 1) {
+		fprintf(stderr, "%s routine: Failed to get memory amounts\n", routine->name);
+		routine->print = SB_FALSE;
+	}
 
 	/* calculate units now so we have something to print on first loop */
 	sb_calc_magnitude(avail, &avail_unit);
