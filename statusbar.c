@@ -1003,6 +1003,7 @@ static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon, sb
 	char *beg;
 	char *end;
 	long  code;
+	char *type; /* this will get free'd during curl_easy_cleanup() */
 
 	response = calloc(1, sizeof(*response));
 
@@ -1020,6 +1021,13 @@ static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon, sb
 	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
 	if (code != 200) {
 		fprintf(stderr, "%s routine: curl returned status code of %ld\n", routine->name, code);
+		free(response);
+		return SB_FALSE;
+	}
+
+    curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &type);
+	if (strcasecmp(type, "application/json") != 0) {
+		fprintf(stderr, "%s routine: Mismatch content type (%s)\n", routine->name, type);
 		free(response);
 		return SB_FALSE;
 	}
