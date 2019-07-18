@@ -1042,7 +1042,7 @@ static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, cha
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_perform_curl(CURL *curl, char **response, sb_routine_t *routine)
+static SB_BOOL sb_weather_perform_curl(CURL *curl, sb_routine_t *routine)
 {
 	long  code;
 	char *type; /* this will get free'd during curl_easy_cleanup() */
@@ -1101,9 +1101,11 @@ static void *sb_weather_routine(void *thunk)
 
 	if (!sb_weather_init_curl(curl, routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_perform_curl(curl, &response, routine)) {
+	} else if (!sb_weather_perform_curl(curl, routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_read_coordinates(curl, response, url, sizeof(url), routine)) {
+		routine->print = SB_FALSE;
+	} else if (!sb_weather_perform_curl(curl, routine)) {
 		routine->print = SB_FALSE;
 	}
 
