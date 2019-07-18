@@ -1057,19 +1057,14 @@ static SB_BOOL sb_weather_read_coordinates(const char *response, float *lat, flo
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon, sb_routine_t *routine)
+static SB_BOOL sb_weather_perform_curl(CURL *curl, char url[], char **response, sb_routine_t *routine)
 {
-	char *response;
-	char  url[128] = {0};
 	long  code;
 	char *type; /* this will get free'd during curl_easy_cleanup() */
 
-	response = calloc(1, sizeof(*response));
+	*response = calloc(1, sizeof(**response));
 
-	snprintf(url, sizeof(url)-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
 	curl_easy_setopt(curl, CURLOPT_URL, url);
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, sb_weather_read_cb);
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
 	if (curl_easy_perform(curl) != CURLE_OK) {
 		fprintf(stderr, "%s routine: Failed to perform easy curl\n", routine->name);
@@ -1091,12 +1086,20 @@ static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon, sb
 		return SB_FALSE;
 	}
 
-	if (!sb_weather_read_coordinates(response, lat, lon, routine)) {
-		free(response);
+	return SB_TRUE;
+}
+
+static SB_BOOL sb_weather_init_curl(CURL *curl, sb_routine_t *routine)
+{
+	curl = curl_easy_init();
+	if (curl == NULL) {
+		fprintf(stderr, "%s routine: Failed to initialize curl handle\n", routine->name);
 		return SB_FALSE;
 	}
 
-	free(response);
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, sb_weather_read_cb);
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
 	return SB_TRUE;
 }
 #endif
@@ -1108,14 +1111,18 @@ static void *sb_weather_routine(void *thunk)
 #ifdef BUILD_WEATHER
 	SB_TIMER_VARS;
 	CURL  *curl;
+	char   url[128];
+	char  *response;
 	float  lat;
 	float  lon;
 	char   hourly_url[512] = {0};
 	char   daily_url[512]  = {0};
 
-	curl = curl_easy_init();
-	if (curl == NULL) {
-		fprintf(stderr, "%s routine: Failed to initialize curl handle\n", routine->name);
+	snprintf(url, sizeof(url)-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
+
+	if (!sb_weather_init_curl(curl, routine)) {
+		routine->print = SB_FALSE;
+	} else if (!sb_weather_perform_curl(curl, url, &response, routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_get_coordinates(curl, &lat, &lon, routine)) {
 		routine->print = SB_FALSE;
