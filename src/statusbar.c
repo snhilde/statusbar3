@@ -1002,8 +1002,9 @@ static SB_BOOL sb_weather_set_up_handle(CURL *curl, float lat, float lon, sb_rou
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_get_urls(CURL *curl, char hourly_url[], size_t hourly_size, char daily_url[], size_t daily_size, sb_routine_t *routine)
+static SB_BOOL sb_weather_get_urls(CURL *curl, char hourly_url[], size_t hourly_size, char daily_url[], size_t daily_size, float lat, float lon, sb_routine_t *routine)
 {
+	char  *response;
 
 	return SB_TRUE;
 }
@@ -1109,7 +1110,7 @@ static void *sb_weather_routine(void *thunk)
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_get_coordinates(curl, &lat, &lon, routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_get_urls(curl, hourly_url, sizeof(hourly_url), daily_url, sizeof(daily_url), routine)) {
+	} else if (!sb_weather_get_urls(curl, hourly_url, sizeof(hourly_url), daily_url, sizeof(daily_url), lat, lon, routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_set_up_handle(curl, lat, lon, routine)) {
 		routine->print = SB_FALSE;
