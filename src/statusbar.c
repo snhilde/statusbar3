@@ -980,7 +980,7 @@ static int sb_weather_global_init(void)
 }
 
 #ifdef BUILD_WEATHER
-static size_t sb_weather_read_cb(char *buffer, size_t size, size_t num, void *thunk)
+static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *thunk)
 {
 	char   **data = thunk;
 	size_t   len;
@@ -1078,7 +1078,7 @@ static SB_BOOL sb_weather_init_curl(CURL *curl, sb_routine_t *routine)
 	snprintf(url, sizeof(url)-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, sb_weather_read_cb);
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, sb_weather_curl_cb);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
 	return SB_TRUE;
