@@ -997,7 +997,7 @@ static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *th
 	return size * num;
 }
 
-static SB_BOOL sb_weather_read_coordinates(const char *response, float *lat, float *lon, sb_routine_t *routine)
+static SB_BOOL sb_weather_read_coordinates(const char *response, char url[], size_t size, sb_routine_t *routine)
 {
  	/* A successful response will look something like this:
 	 * {"status":1,"output":[{"zip":"90210","latitude":"34.103131","longitude":"-118.416253"}]}
@@ -1088,24 +1088,21 @@ static void *sb_weather_routine(void *thunk)
 #ifdef BUILD_WEATHER
 	SB_TIMER_VARS;
 	CURL  *curl;
-	char   url[128];
 	char  *response;
-	float  lat;
-	float  lon;
-	char   hourly_url[512] = {0};
-	char   daily_url[512]  = {0};
+	char   url[128];
 
 	response = calloc(1, sizeof(*response));
 
 	if (!sb_weather_init_curl(curl, routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_perform_curl(curl, zip_url, &response, routine)) {
+	} else if (!sb_weather_perform_curl(curl, &response, routine)) {
 		routine->print = SB_FALSE;
+	} else if (!sb_weather_read_coordinates(response, url, sizeof(url), routine)) {
+		routine->print = SB_FALSE;
+
 	} else if (!sb_weather_build_url) {
 		routine->print = SB_FALSE;
 
-	} else if (!sb_weather_get_coordinates(curl, &lat, &lon, routine)) {
-		routine->print = SB_FALSE;
 	}
 
 	routine->color = routine->colors.normal;
