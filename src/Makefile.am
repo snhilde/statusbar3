@@ -11,3 +11,4 @@ LDFLAGS= -L /usr/lib/x86_64-linux-gnu \
          -L /usr/lib/X11
 
 bin_PROGRAMS= statusbar
+statusbar_SOURCES= statusbar.c cJSON.c
