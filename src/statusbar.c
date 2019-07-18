@@ -996,7 +996,7 @@ static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *th
 	return size * num;
 }
 
-static SB_BOOL sb_weather_read_coordinates(const char *response, char url[], size_t size, sb_routine_t *routine)
+static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, char url[], size_t size, sb_routine_t *routine)
 {
  	/* A successful response will look something like this:
 	 * {"status":1,"output":[{"zip":"90210","latitude":"34.103131","longitude":"-118.416253"}]}
@@ -1035,6 +1035,7 @@ static SB_BOOL sb_weather_read_coordinates(const char *response, char url[], siz
 
 	/* Write next URL, which is for getting the zone and identifiers of the area. */
 	snprintf(url, size-1, "https://api.weather.gov/points/%.4f,%.4f", lat, lon);
+	curl_easy_setopt(curl, CURLOPT_URL, url);
 
 	cJSON_Delete(json);
 	free(response);
@@ -1102,12 +1103,8 @@ static void *sb_weather_routine(void *thunk)
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_perform_curl(curl, &response, routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_read_coordinates(response, url, sizeof(url), routine)) {
+	} else if (!sb_weather_read_coordinates(curl, response, url, sizeof(url), routine)) {
 		routine->print = SB_FALSE;
-
-	} else if (!sb_weather_build_url) {
-		routine->print = SB_FALSE;
-
 	}
 
 	routine->color = routine->colors.normal;
