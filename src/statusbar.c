@@ -1090,7 +1090,7 @@ static void *sb_weather_routine(void *thunk)
 	SB_TIMER_VARS;
 	CURL  *curl;
 	char   zip_url[128];
-	char   points_url[128];
+	char   url[128];
 	char  *response;
 	float  lat;
 	float  lon;
