@@ -980,6 +980,12 @@ static int sb_weather_global_init(void)
 }
 
 #ifdef BUILD_WEATHER
+static SB_BOOL sb_weather_set_up_handle(CURL *curl, float lat, float lon, sb_routine_t *routine)
+{
+
+	return SB_TRUE;
+}
+
 static SB_BOOL sb_weather_read_response(const char *response, float *lat, float *lon, sb_routine_t *routine)
 {
 	/* For performance reasons, we're going to find substrings instead of parsing the JSON.
@@ -1094,6 +1100,8 @@ static void *sb_weather_routine(void *thunk)
 		fprintf(stderr, "%s routine: Failed to initialize curl handle\n", routine->name);
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_get_coordinates(curl, &lat, &lon, routine)) {
+		routine->print = SB_FALSE;
+	} else if (!sb_weather_set_up_handle(curl, lat, lon, routine)) {
 		routine->print = SB_FALSE;
 	}
 
