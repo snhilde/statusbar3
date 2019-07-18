@@ -103,5 +103,5 @@ AS_IF([test "$net_headers"     = "yes" -a "$wifi_headers"  = "yes"], [AC_DEFINE(
 AS_IF([test "$volume_headers"  = "yes" -a "$volume_lib"   != "no"],  [AC_DEFINE([BUILD_VOLUME])])
 AS_IF([test "$weather_headers" = "yes" -a "$weather_lib"  != "no"],  [AC_DEFINE([BUILD_WEATHER])])
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
