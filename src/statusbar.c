@@ -996,6 +996,11 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 	cJSON *json;
 
 	json = cJSON_Parse(response);
+	if (json == NULL) {
+		fprintf(stderr, "%s routine: Failed to parse zip code response\n", routine->name);
+		cJSON_Delete(json);
+		return SB_FALSE;
+	}
 
 	cJSON_Delete(json);
 	return SB_TRUE;
