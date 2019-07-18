@@ -31,6 +31,7 @@
 
 #ifdef BUILD_WEATHER
   #include <curl/curl.h>
+  #include "cJSON.h"
 #endif
 
 enum sb_routine_e {

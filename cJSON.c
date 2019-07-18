@@ -1,3 +1,5 @@
+#ifdef BUILD_WEATHER
+
 /*
   Copyright (c) 2009-2017 Dave Gamble and cJSON contributors
 
@@ -2971,3 +2973,5 @@ CJSON_PUBLIC(void) cJSON_free(void *object)
 {
     global_hooks.deallocate(object);
 }
+
+#endif
