@@ -996,28 +996,6 @@ static size_t sb_weather_read_cb(char *buffer, size_t size, size_t num, void *th
 	return size * num;
 }
 
-static SB_BOOL sb_weather_set_up_handle(CURL *curl, float lat, float lon, sb_routine_t *routine)
-{
-
-	return SB_TRUE;
-}
-
-static SB_BOOL sb_weather_get_urls(CURL *curl, char hourly_url[], size_t hourly_size, char daily_url[], size_t daily_size, float lat, float lon, sb_routine_t *routine)
-{
-	char *response;
-	char  url[128] = {0};
-
-	response = calloc(1, sizeof(*response));
-
-	snprintf(url, sizeof(url)-1, "https://api.weather.gov/points/%.4f%%2C%.4f", lat, lon);
-	curl_easy_setopt(curl, CURLOPT_URL, url);
-
-	curl_easy_perform(curl);
-
-	free(response);
-	return SB_TRUE;
-}
-
 static SB_BOOL sb_weather_read_coordinates(const char *response, float *lat, float *lon, sb_routine_t *routine)
 {
  	/* A successful response will look something like this:
@@ -1111,24 +1089,22 @@ static void *sb_weather_routine(void *thunk)
 #ifdef BUILD_WEATHER
 	SB_TIMER_VARS;
 	CURL  *curl;
-	char   url[128];
+	char   zip_url[128];
+	char   points_url[128];
 	char  *response;
 	float  lat;
 	float  lon;
 	char   hourly_url[512] = {0};
 	char   daily_url[512]  = {0};
 
-	snprintf(url, sizeof(url)-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
+	snprintf(zip_url, sizeof(zip_url)-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
+	snprintf(url, sizeof(url)-1, "https://api.weather.gov/points/%.4f%%2C%.4f", lat, lon);
 
 	if (!sb_weather_init_curl(curl, routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_perform_curl(curl, url, &response, routine)) {
+	} else if (!sb_weather_perform_curl(curl, zip_url, &response, routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_get_coordinates(curl, &lat, &lon, routine)) {
-		routine->print = SB_FALSE;
-	} else if (!sb_weather_get_urls(curl, hourly_url, sizeof(hourly_url), daily_url, sizeof(daily_url), lat, lon, routine)) {
-		routine->print = SB_FALSE;
-	} else if (!sb_weather_set_up_handle(curl, lat, lon, routine)) {
 		routine->print = SB_FALSE;
 	}
 
