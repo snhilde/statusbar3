@@ -1007,6 +1007,8 @@ static SB_BOOL sb_weather_read_coordinates(const char *response, char url[], siz
 	cJSON *json;
 	cJSON *tmp;
 	cJSON *num;
+	float  lat;
+	float  lon;
 
 	json = cJSON_Parse(response);
 	if (json == NULL) {
@@ -1027,12 +1029,13 @@ static SB_BOOL sb_weather_read_coordinates(const char *response, char url[], siz
 	tmp = cJSON_GetArrayItem(tmp, 0);
 
 	num  = cJSON_GetObjectItem(tmp, "latitude");
-	*lat = atof(num->valuestring);
+	lat = atof(num->valuestring);
 
 	num  = cJSON_GetObjectItem(tmp, "longitude");
-	*lon = atof(num->valuestring);
+	lon = atof(num->valuestring);
 
 	cJSON_Delete(json);
+	free(response);
 	return SB_TRUE;
 }
 
