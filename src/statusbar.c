@@ -966,6 +966,7 @@ static void *sb_volume_routine(void *thunk)
 }
 
 
+	snprintf(url, sizeof(url)-1, "https://api.weather.gov/points/%.4f%%2C%.4f", lat, lon);
 /* --- WEATHER ROUTINE --- */
 static int sb_weather_global_init(void)
 {
@@ -1040,25 +1041,20 @@ static SB_BOOL sb_weather_perform_curl(CURL *curl, char **response, sb_routine_t
 	long  code;
 	char *type; /* this will get free'd during curl_easy_cleanup() */
 
-	*response = calloc(1, sizeof(**response));
-
 	if (curl_easy_perform(curl) != CURLE_OK) {
 		fprintf(stderr, "%s routine: Failed to perform easy curl\n", routine->name);
-		free(response);
 		return SB_FALSE;
 	}
 
 	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
 	if (code != 200) {
 		fprintf(stderr, "%s routine: curl returned status code of %ld\n", routine->name, code);
-		free(response);
 		return SB_FALSE;
 	}
 
     curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &type);
 	if (strcasecmp(type, "application/json") != 0) {
 		fprintf(stderr, "%s routine: Mismatch content type (%s)\n", routine->name, type);
-		free(response);
 		return SB_FALSE;
 	}
 
@@ -1099,6 +1095,8 @@ static void *sb_weather_routine(void *thunk)
 	char   hourly_url[512] = {0};
 	char   daily_url[512]  = {0};
 
+	response = calloc(1, sizeof(*response));
+
 	if (!sb_weather_init_curl(curl, routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_perform_curl(curl, zip_url, &response, routine)) {
@@ -1123,6 +1121,7 @@ static void *sb_weather_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
+	free(response);
 	curl_easy_cleanup(curl);
 #endif
 
