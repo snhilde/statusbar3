@@ -1004,7 +1004,8 @@ static SB_BOOL sb_weather_set_up_handle(CURL *curl, float lat, float lon, sb_rou
 
 static SB_BOOL sb_weather_get_urls(CURL *curl, char hourly_url[], size_t hourly_size, char daily_url[], size_t daily_size, float lat, float lon, sb_routine_t *routine)
 {
-	char  *response;
+	char *response;
+	char  url[128] = {0};
 
 	return SB_TRUE;
 }
@@ -1050,10 +1051,10 @@ static SB_BOOL sb_weather_read_coordinates(const char *response, float *lat, flo
 
 static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon, sb_routine_t *routine)
 {
-	char  *response;
-	char   url[128] = {0};
-	long   code;
-	char  *type; /* this will get free'd during curl_easy_cleanup() */
+	char *response;
+	char  url[128] = {0};
+	long  code;
+	char *type; /* this will get free'd during curl_easy_cleanup() */
 
 	response = calloc(1, sizeof(*response));
 
