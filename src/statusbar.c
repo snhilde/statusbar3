@@ -1101,6 +1101,8 @@ static void *sb_weather_routine(void *thunk)
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_get_coordinates(curl, &lat, &lon, routine)) {
 		routine->print = SB_FALSE;
+	} else if (!sb_weather_get_urls(curl, hourly_url, daily_url, routine)) {
+		routine->print = SB_FALSE;
 	} else if (!sb_weather_set_up_handle(curl, lat, lon, routine)) {
 		routine->print = SB_FALSE;
 	}
