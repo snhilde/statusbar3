@@ -988,40 +988,16 @@ static SB_BOOL sb_weather_set_up_handle(CURL *curl, float lat, float lon, sb_rou
 
 static SB_BOOL sb_weather_read_response(const char *response, float *lat, float *lon, sb_routine_t *routine)
 {
-	/* For performance reasons, we're going to find substrings instead of parsing the JSON.
- 	 * A successful response will look something like this:
+ 	/* A successful response will look something like this:
 	 * {"status":1,"output":[{"zip":"90210","latitude":"34.103131","longitude":"-118.416253"}]}
 	 * An unsuccessful response will look something like this:
 	 * {"status":-3,"msg":"No results found"}
 	 */
-	long  code;
-	char *end;
+	cJSON *json;
 
-	response += 10; /* move forward to the beginning of the status code */
-	code      = strtol(response, &end, 10);
-	response  = end;
-	if (code != 1) {
-		/* we have an error, get the message and bail */
-		response += 8; /* move forward to the beginning of the error message */
-		end       = strchr(response, '"'); /* get entire error message */
-		fprintf(stderr, "%s routine: Failed to get coordinates: %.*s (%ld)\n",
-				routine->name, (int)(end-response), response, code);
-		return SB_FALSE;
-	}
+	json = cJSON_Parse(response);
 
-	response += 19; /* move forward to the zip code */
-	if (strncmp(response, zip_code, 5) != 0) {
-		fprintf(stderr, "%s routine: Failed to get coordinates: Incorrect zip code returned (%.*s)\n",
-				routine->name, 5, response);
-		return SB_FALSE;
-	}
-
-	response += 19; /* move forward to the latitude */
-	*lat      = strtof(response, &end);
-
-	response = end + 15; /* move forward to the longitude */
-	*lon     = strtof(response, &end);
-
+	cJSON_Delete(json);
 	return SB_TRUE;
 }
 
