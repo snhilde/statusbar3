@@ -994,12 +994,21 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 	 * {"status":-3,"msg":"No results found"}
 	 */
 	cJSON *json;
+	cJSON *status;
 
 	json = cJSON_Parse(response);
 	if (json == NULL) {
 		fprintf(stderr, "%s routine: Failed to parse zip code response\n", routine->name);
 		cJSON_Delete(json);
 		return SB_FALSE;
+	}
+
+	/* Check that we don't have an error status code. */
+	status = cJSON_GetObjectItemCaseSensitive(json, "status");
+	if (status->valueint != 1) {
+		fprintf(stderr, "%s routine: response returned code %d\n", routine->name, status->valueint);
+		cJSON_Delete(json);
+		return SB_TRUE;
 	}
 
 	cJSON_Delete(json);
