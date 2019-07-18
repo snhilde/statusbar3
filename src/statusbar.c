@@ -1007,6 +1007,11 @@ static SB_BOOL sb_weather_get_urls(CURL *curl, char hourly_url[], size_t hourly_
 	char *response;
 	char  url[128] = {0};
 
+	response = calloc(1, sizeof(*response));
+
+	snprintf(url, sizeof(url)-1, "https://api.weather.gov/points/%.4f%2C%.4f", lat, lon);
+	curl_easy_setopt(curl, CURLOPT_URL, url);
+
 	return SB_TRUE;
 }
 
