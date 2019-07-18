@@ -994,7 +994,7 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 	 * {"status":-3,"msg":"No results found"}
 	 */
 	cJSON *json;
-	cJSON *object;
+	cJSON *tmp;
 	cJSON *num;
 
 	json = cJSON_Parse(response);
@@ -1005,20 +1005,20 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 	}
 
 	/* Check that we don't have an error status code. */
-	object = cJSON_GetObjectItem(json, "status");
-	if (object->valueint != 1) {
-		fprintf(stderr, "%s routine: response returned code %d\n", routine->name, object->valueint);
+	tmp = cJSON_GetObjectItem(json, "status");
+	if (tmp->valueint != 1) {
+		fprintf(stderr, "%s routine: response returned code %d\n", routine->name, tmp->valueint);
 		cJSON_Delete(json);
 		return SB_TRUE;
 	}
 
-	object = cJSON_GetObjectItem(json, "output");
-	object = cJSON_GetArrayItem(object, 0);
+	tmp = cJSON_GetObjectItem(json, "output");
+	tmp = cJSON_GetArrayItem(tmp, 0);
 
-	num  = cJSON_GetObjectItem(object, "latitude");
+	num  = cJSON_GetObjectItem(tmp, "latitude");
 	*lat = atof(num->valuestring);
 
-	num  = cJSON_GetObjectItem(object, "longitude");
+	num  = cJSON_GetObjectItem(tmp, "longitude");
 	*lon = atof(num->valuestring);
 
 	cJSON_Delete(json);
