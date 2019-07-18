@@ -966,7 +966,6 @@ static void *sb_volume_routine(void *thunk)
 }
 
 
-	snprintf(url, sizeof(url)-1, "https://api.weather.gov/points/%.4f%%2C%.4f", lat, lon);
 /* --- WEATHER ROUTINE --- */
 static int sb_weather_global_init(void)
 {
@@ -1033,6 +1032,9 @@ static SB_BOOL sb_weather_read_coordinates(const char *response, char url[], siz
 
 	num  = cJSON_GetObjectItem(tmp, "longitude");
 	lon = atof(num->valuestring);
+
+	/* Write next URL, which is for getting the zone and identifiers of the area. */
+	snprintf(url, size-1, "https://api.weather.gov/points/%.4f,%.4f", lat, lon);
 
 	cJSON_Delete(json);
 	free(response);
