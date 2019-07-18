@@ -1002,7 +1002,7 @@ static SB_BOOL sb_weather_set_up_handle(CURL *curl, float lat, float lon, sb_rou
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_read_response(const char *response, float *lat, float *lon, sb_routine_t *routine)
+static SB_BOOL sb_weather_read_coordinates(const char *response, float *lat, float *lon, sb_routine_t *routine)
 {
  	/* A successful response will look something like this:
 	 * {"status":1,"output":[{"zip":"90210","latitude":"34.103131","longitude":"-118.416253"}]}
@@ -1075,7 +1075,7 @@ static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon, sb
 		return SB_FALSE;
 	}
 
-	if (!sb_weather_read_response(response, lat, lon, routine)) {
+	if (!sb_weather_read_coordinates(response, lat, lon, routine)) {
 		free(response);
 		return SB_FALSE;
 	}
