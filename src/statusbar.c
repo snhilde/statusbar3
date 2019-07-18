@@ -980,6 +980,22 @@ static int sb_weather_global_init(void)
 }
 
 #ifdef BUILD_WEATHER
+static size_t sb_weather_read_cb(char *buffer, size_t size, size_t num, void *thunk)
+{
+	char   **data = thunk;
+	size_t   len;
+	size_t   newlen;
+
+	len    = strlen(*data);
+	newlen = (size * num) + len + 1;
+	*data  = realloc(*data, newlen);
+
+	memcpy(*data+len, buffer, size*num);
+	(*data)[newlen] = '\0';
+
+	return size * num;
+}
+
 static SB_BOOL sb_weather_set_up_handle(CURL *curl, float lat, float lon, sb_routine_t *routine)
 {
 
@@ -1023,22 +1039,6 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 
 	cJSON_Delete(json);
 	return SB_TRUE;
-}
-
-static size_t sb_weather_read_cb(char *buffer, size_t size, size_t num, void *thunk)
-{
-	char   **data = thunk;
-	size_t   len;
-	size_t   newlen;
-
-	len    = strlen(*data);
-	newlen = (size * num) + len + 1;
-	*data  = realloc(*data, newlen);
-
-	memcpy(*data+len, buffer, size*num);
-	(*data)[newlen] = '\0';
-
-	return size * num;
 }
 
 static SB_BOOL sb_weather_get_coordinates(CURL *curl, float *lat, float *lon, sb_routine_t *routine)
