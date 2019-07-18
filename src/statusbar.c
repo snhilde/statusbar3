@@ -995,6 +995,8 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 	 */
 	cJSON *json;
 	cJSON *status;
+	cJSON *output;
+	cJSON *num;
 
 	json = cJSON_Parse(response);
 	if (json == NULL) {
@@ -1010,6 +1012,10 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 		cJSON_Delete(json);
 		return SB_TRUE;
 	}
+
+	status = cJSON_GetObjectItemCaseSensitive(json, "output");
+	num    = cJSON_GetObjectItemCaseSensitive(json, "latitude");
+	num    = cJSON_GetObjectItemCaseSensitive(json, "output");
 
 	cJSON_Delete(json);
 	return SB_TRUE;
