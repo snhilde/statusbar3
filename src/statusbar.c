@@ -1002,6 +1002,12 @@ static SB_BOOL sb_weather_set_up_handle(CURL *curl, float lat, float lon, sb_rou
 	return SB_TRUE;
 }
 
+static SB_BOOL sb_weather_get_urls(CURL *curl, char hourly_url[], daily_url[], sb_routine_t *routine)
+{
+
+	return SB_TRUE;
+}
+
 static SB_BOOL sb_weather_read_coordinates(const char *response, float *lat, float *lon, sb_routine_t *routine)
 {
  	/* A successful response will look something like this:
@@ -1094,6 +1100,8 @@ static void *sb_weather_routine(void *thunk)
 	CURL  *curl;
 	float  lat;
 	float  lon;
+	char   hourly_url[512] = {0};
+	char   daily_url[512]  = {0};
 
 	curl = curl_easy_init();
 	if (curl == NULL) {
