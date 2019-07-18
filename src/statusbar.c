@@ -1035,14 +1035,12 @@ static SB_BOOL sb_weather_read_coordinates(const char *response, float *lat, flo
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_perform_curl(CURL *curl, char url[], char **response, sb_routine_t *routine)
+static SB_BOOL sb_weather_perform_curl(CURL *curl, char **response, sb_routine_t *routine)
 {
 	long  code;
 	char *type; /* this will get free'd during curl_easy_cleanup() */
 
 	*response = calloc(1, sizeof(**response));
-
-	curl_easy_setopt(curl, CURLOPT_URL, url);
 
 	if (curl_easy_perform(curl) != CURLE_OK) {
 		fprintf(stderr, "%s routine: Failed to perform easy curl\n", routine->name);
@@ -1069,11 +1067,16 @@ static SB_BOOL sb_weather_perform_curl(CURL *curl, char url[], char **response, 
 
 static SB_BOOL sb_weather_init_curl(CURL *curl, sb_routine_t *routine)
 {
+	char url[128];
+
 	curl = curl_easy_init();
 	if (curl == NULL) {
 		fprintf(stderr, "%s routine: Failed to initialize curl handle\n", routine->name);
 		return SB_FALSE;
 	}
+
+	snprintf(url, sizeof(url)-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
+	curl_easy_setopt(curl, CURLOPT_URL, url);
 
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, sb_weather_read_cb);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
@@ -1089,7 +1092,6 @@ static void *sb_weather_routine(void *thunk)
 #ifdef BUILD_WEATHER
 	SB_TIMER_VARS;
 	CURL  *curl;
-	char   zip_url[128];
 	char   url[128];
 	char  *response;
 	float  lat;
@@ -1097,13 +1099,13 @@ static void *sb_weather_routine(void *thunk)
 	char   hourly_url[512] = {0};
 	char   daily_url[512]  = {0};
 
-	snprintf(zip_url, sizeof(zip_url)-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
-	snprintf(url, sizeof(url)-1, "https://api.weather.gov/points/%.4f%%2C%.4f", lat, lon);
-
 	if (!sb_weather_init_curl(curl, routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_perform_curl(curl, zip_url, &response, routine)) {
 		routine->print = SB_FALSE;
+	} else if (!sb_weather_build_url) {
+		routine->print = SB_FALSE;
+
 	} else if (!sb_weather_get_coordinates(curl, &lat, &lon, routine)) {
 		routine->print = SB_FALSE;
 	}
