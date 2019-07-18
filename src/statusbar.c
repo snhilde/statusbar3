@@ -1006,16 +1006,17 @@ static SB_BOOL sb_weather_read_response(const char *response, float *lat, float 
 	}
 
 	/* Check that we don't have an error status code. */
-	status = cJSON_GetObjectItemCaseSensitive(json, "status");
+	status = cJSON_GetObjectItem(json, "status");
 	if (status->valueint != 1) {
 		fprintf(stderr, "%s routine: response returned code %d\n", routine->name, status->valueint);
 		cJSON_Delete(json);
 		return SB_TRUE;
 	}
 
-	status = cJSON_GetObjectItemCaseSensitive(json, "output");
-	num    = cJSON_GetObjectItemCaseSensitive(json, "latitude");
-	num    = cJSON_GetObjectItemCaseSensitive(json, "output");
+	output = cJSON_GetObjectItem(json, "output");
+	output = cJSON_GetArrayItem(output, 0);
+	num    = cJSON_GetObjectItem(output, "latitude");
+	num    = cJSON_GetObjectItem(output, "longitude");
 
 	cJSON_Delete(json);
 	return SB_TRUE;
