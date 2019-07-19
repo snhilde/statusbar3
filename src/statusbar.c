@@ -1074,7 +1074,7 @@ static SB_BOOL sb_weather_read_properties(CURL *curl, const char *response, char
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, char url[], size_t size, sb_routine_t *routine)
+static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, sb_routine_t *routine)
 {
  	/* A successful response will look something like this:
 	 * {"status":1,"output":[{"zip":"90210","latitude":"34.103131","longitude":"-118.416253"}]}
@@ -1086,6 +1086,7 @@ static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, cha
 	cJSON *num;
 	float  lat;
 	float  lon;
+	char   url[128] = {0};
 
 	json = cJSON_Parse(response);
 	if (json == NULL) {
@@ -1112,7 +1113,7 @@ static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, cha
 	lon = atof(num->valuestring);
 
 	/* Write next URL, which is for getting the zone and identifiers of the area. */
-	snprintf(url, size-1, "https://api.weather.gov/points/%.4f,%.4f", lat, lon);
+	snprintf(url, sizeof(url)-1, "https://api.weather.gov/points/%.4f,%.4f", lat, lon);
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 
 	cJSON_Delete(json);
@@ -1134,6 +1135,7 @@ static SB_BOOL sb_weather_perform_curl(CURL *curl, char **response, const char *
 		fprintf(stderr, "%s routine: Failed to get %s: %s\n", routine->name, data, curl_easy_strerror(ret));
 		return SB_FALSE;
 	}
+	printf("%s\n", *response);
 
 	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
 	if (code != 200) {
@@ -1151,22 +1153,24 @@ static SB_BOOL sb_weather_perform_curl(CURL *curl, char **response, const char *
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_init_curl(CURL **curl, char errbuf[], struct curl_slist **headers, char url[], size_t size, char **response, sb_routine_t *routine)
+static SB_BOOL sb_weather_init_curl(CURL **curl, char errbuf[], struct curl_slist **headers, char **response, sb_routine_t *routine)
 {
+	char url[128] = {0};
+
 	*curl = curl_easy_init();
 	if (*curl == NULL) {
 		fprintf(stderr, "%s routine: Failed to initialize curl handle\n", routine->name);
 		return SB_FALSE;
 	}
 
-	snprintf(url, size-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
+	*headers = curl_slist_append(NULL, "accept: application/json");
+	curl_easy_setopt(*curl, CURLOPT_HTTPHEADER, *headers);
+
+	snprintf(url, sizeof(url)-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
 	curl_easy_setopt(*curl, CURLOPT_URL, url);
 
-	*headers = curl_slist_append(NULL, "accept: application/json");
-
-	curl_easy_setopt(*curl, CURLOPT_HTTPHEADER, *headers);
-	curl_easy_setopt(*curl, CURLOPT_USERAGENT, "curl/7.58.0");
 	curl_easy_setopt(*curl, CURLOPT_ERRORBUFFER, errbuf);
+	curl_easy_setopt(*curl, CURLOPT_USERAGENT, "curl/7.58.0");
 	curl_easy_setopt(*curl, CURLOPT_WRITEFUNCTION, sb_weather_curl_cb);
 	curl_easy_setopt(*curl, CURLOPT_WRITEDATA, response);
 	curl_easy_setopt(*curl, CURLOPT_SSL_VERIFYPEER, 0);
@@ -1188,11 +1192,11 @@ static void *sb_weather_routine(void *thunk)
 	char               url_hourly[128];
 	char              *response = NULL;
 
-	if (!sb_weather_init_curl(&curl, errbuf, &headers, url, sizeof(url), &response, routine)) {
+	if (!sb_weather_init_curl(&curl, errbuf, &headers, &response, routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_perform_curl(curl, &response, "coordinates", routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_read_coordinates(curl, response, url, sizeof(url), routine)) {
+	} else if (!sb_weather_read_coordinates(curl, response, routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_perform_curl(curl, &response, "properties", routine)) {
 		routine->print = SB_FALSE;
