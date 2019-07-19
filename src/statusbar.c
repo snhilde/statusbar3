@@ -996,7 +996,7 @@ static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *th
 	return size * num;
 }
 
-static SB_BOOL sb_weather_read_forecast(const char *response)
+static SB_BOOL sb_weather_read_forecast(const char *response, sb_routine_t *routine)
 {
 	cJSON *json;
 
@@ -1186,7 +1186,7 @@ static void *sb_weather_routine(void *thunk)
 
 		if (!sb_weather_perform_curl(curl, &response, "forecast", routine))
 			break;
-		if (!sb_weather_read_forecast(response))
+		if (!sb_weather_read_forecast(response, routine))
 			break;
 
 		/* TODO: run routine */
