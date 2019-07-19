@@ -996,10 +996,14 @@ static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *th
 	return size * num;
 }
 
-static SB_BOOL sb_weather_read_properties(CURL *curl, const char *response, char url[], size_t size, sb_routine_t *routine)
+static SB_BOOL sb_weather_read_properties(CURL *curl, const char *response, char url_daily[], size_t daily_size, char url_hourly[], size_t hourly_size, sb_routine_t *routine)
 {
 	cJSON *json;
-	cJSON *tmp;
+	cJSON *props;
+	cJSON *url;
+
+	memset(url_daily, 0, daily_size);
+	memset(url_hourly, 0, hourly_size);
 
 	json = cJSON_Parse(response);
 	if (json == NULL) {
@@ -1008,21 +1012,29 @@ static SB_BOOL sb_weather_read_properties(CURL *curl, const char *response, char
 		return SB_FALSE;
 	}
 
-	tmp = cJSON_GetObjectItem(json, "properties");
-	if (tmp == NULL) {
+	props = cJSON_GetObjectItem(json, "properties");
+	if (props == NULL) {
 		fprintf(stderr, "%s routine: Failed to find \"properties\" node\n", routine->name);
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
 
-	tmp = cJSON_GetObjectItem(tmp, "forecast");
-	if (tmp == NULL) {
+	url = cJSON_GetObjectItem(props, "forecast");
+	if (url == NULL) {
 		fprintf(stderr, "%s routine: Failed to find \"forecast\" node\n", routine->name);
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
+	strncpy(url_daily, url->valuestring, daily_size-1);
 
-	printf("whew\n");
+	url = cJSON_GetObjectItem(props, "forecastHourly");
+	if (url == NULL) {
+		fprintf(stderr, "%s routine: Failed to find \"forecastHourly\" node\n", routine->name);
+		cJSON_Delete(json);
+		return SB_FALSE;
+	}
+	strncpy(url_hourly, url->valuestring, hourly_size-1);
+
 	cJSON_Delete(json);
 	return SB_TRUE;
 }
@@ -1138,6 +1150,7 @@ static void *sb_weather_routine(void *thunk)
 	char               errbuf[CURL_ERROR_SIZE] = {0};
 	struct curl_slist *headers;
 	char               url[128];
+	char               url_hourly[128];
 	char              *response = NULL;
 
 	if (!sb_weather_init_curl(&curl, errbuf, &headers, url, sizeof(url), &response, routine)) {
@@ -1148,7 +1161,7 @@ static void *sb_weather_routine(void *thunk)
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_perform_curl(curl, &response, "properties", routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_read_properties(curl, response, url, sizeof(url), routine)) {
+	} else if (!sb_weather_read_properties(curl, response, url, sizeof(url), url_hourly, sizeof(url_hourly), routine)) {
 		routine->print = SB_FALSE;
 	}
 
