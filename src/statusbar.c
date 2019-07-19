@@ -1398,7 +1398,9 @@ static void sb_print(void)
 			}
 		}
 	}
+#ifdef BUILD_WEATHER
 	curl_global_cleanup(); /* Same lack of thread-safety as curl_global_init(). */
+#endif
 
 	fprintf(stderr, "Closing print loop, exiting program...\n");
 	exit(EXIT_FAILURE);
