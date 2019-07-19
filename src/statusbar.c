@@ -1068,9 +1068,8 @@ static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, cha
 
 static SB_BOOL sb_weather_perform_curl(CURL *curl, char **response, const char *data, sb_routine_t *routine)
 {
-	CURLcode  ret;
-	long      code;
-	char     *type; /* this will get free'd during curl_easy_cleanup() */
+	CURLcode ret;
+	long     code;
 
 	if (*response != NULL)
 		free(*response);
@@ -1088,16 +1087,10 @@ static SB_BOOL sb_weather_perform_curl(CURL *curl, char **response, const char *
 		return SB_FALSE;
 	}
 
-    curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &type);
-	if (strcasecmp(type, "application/json") != 0) {
-		fprintf(stderr, "%s routine: Mismatch content type (%s) for %s\n", routine->name, type, data);
-		return SB_FALSE;
-	}
-
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_init_curl(CURL **curl, char errbuf[], char url[], size_t size, char **response, sb_routine_t *routine)
+static SB_BOOL sb_weather_init_curl(CURL **curl, char errbuf[], struct curl_slist **headers, char url[], size_t size, char **response, sb_routine_t *routine)
 {
 	*curl = curl_easy_init();
 	if (*curl == NULL) {
@@ -1108,6 +1101,9 @@ static SB_BOOL sb_weather_init_curl(CURL **curl, char errbuf[], char url[], size
 	snprintf(url, size-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
 	curl_easy_setopt(*curl, CURLOPT_URL, url);
 
+	*headers = curl_slist_append(NULL, "accept: application/json");
+
+	curl_easy_setopt(*curl, CURLOPT_HTTPHEADER, *headers);
 	curl_easy_setopt(*curl, CURLOPT_USERAGENT, "curl/7.58.0");
 	curl_easy_setopt(*curl, CURLOPT_ERRORBUFFER, errbuf);
 	curl_easy_setopt(*curl, CURLOPT_WRITEFUNCTION, sb_weather_curl_cb);
@@ -1124,12 +1120,13 @@ static void *sb_weather_routine(void *thunk)
 
 #ifdef BUILD_WEATHER
 	SB_TIMER_VARS;
-	CURL  *curl = NULL;
-	char   errbuf[CURL_ERROR_SIZE] = {0};
-	char   url[128];
-	char  *response = NULL;
+	CURL              *curl = NULL;
+	char               errbuf[CURL_ERROR_SIZE] = {0};
+	struct curl_slist *headers;
+	char               url[128];
+	char              *response = NULL;
 
-	if (!sb_weather_init_curl(&curl, errbuf, url, sizeof(url), &response, routine)) {
+	if (!sb_weather_init_curl(&curl, errbuf, &headers, url, sizeof(url), &response, routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_perform_curl(curl, &response, "coordinates", routine)) {
 		routine->print = SB_FALSE;
@@ -1158,6 +1155,7 @@ static void *sb_weather_routine(void *thunk)
 		SB_SLEEP;
 	}
 	free(response);
+	curl_slist_free_all(headers);
 	curl_easy_cleanup(curl);
 #endif
 
