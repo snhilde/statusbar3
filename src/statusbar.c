@@ -1172,6 +1172,8 @@ static void *sb_weather_routine(void *thunk)
 
 		if (!sb_weather_perform_curl(curl, &response, "forecast", routine))
 			break;
+		if (!sb_weather_read_forecast(response))
+			break;
 
 		/* TODO: run routine */
 
