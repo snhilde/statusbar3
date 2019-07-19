@@ -1066,11 +1066,15 @@ static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, cha
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_perform_curl(CURL *curl, const char *data, sb_routine_t *routine)
+static SB_BOOL sb_weather_perform_curl(CURL *curl, char **response, const char *data, sb_routine_t *routine)
 {
 	CURLcode  ret;
 	long      code;
 	char     *type; /* this will get free'd during curl_easy_cleanup() */
+
+	if (*response != NULL)
+		free(*response);
+	*response = calloc(1, sizeof(**response));
 
 	ret = curl_easy_perform(curl);
 	if (ret != CURLE_OK) {
@@ -1101,12 +1105,6 @@ static SB_BOOL sb_weather_init_curl(CURL **curl, char errbuf[], char url[], size
 		return SB_FALSE;
 	}
 
-	*response = calloc(1, sizeof(**response));
-	if (*response == NULL) {
-		fprintf(stderr, "%s routine: Failed to allocate memory for the response\n", routine->name);
-		return SB_FALSE;
-	}
-
 	snprintf(url, size-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
 	curl_easy_setopt(*curl, CURLOPT_URL, url);
 
@@ -1127,15 +1125,15 @@ static void *sb_weather_routine(void *thunk)
 	CURL  *curl = NULL;
 	char   errbuf[CURL_ERROR_SIZE] = {0};
 	char   url[128];
-	char  *response;
+	char  *response = NULL;
 
 	if (!sb_weather_init_curl(&curl, errbuf, url, sizeof(url), &response, routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_perform_curl(curl, "coordinates", routine)) {
+	} else if (!sb_weather_perform_curl(curl, &response, "coordinates", routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_read_coordinates(curl, response, url, sizeof(url), routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_perform_curl(curl, "properties", routine)) {
+	} else if (!sb_weather_perform_curl(curl, &response, "properties", routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_read_properties(curl, response, url, sizeof(url), routine)) {
 		routine->print = SB_FALSE;
