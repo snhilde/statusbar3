@@ -1172,6 +1172,9 @@ static void *sb_weather_routine(void *thunk)
 	while (routine->print) {
 		SB_START_TIMER;
 
+		if (!sb_weather_perform_curl(curl, &response, "forecast", routine))
+			break;
+
 		/* TODO: run routine */
 
 		pthread_mutex_lock(&(routine->mutex));
