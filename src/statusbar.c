@@ -1226,7 +1226,8 @@ static void *sb_weather_routine(void *thunk)
 	if (strlen(errbuf) > 0)
 		fprintf(stderr, "%s: curl error: %s\n", routine->name, errbuf);
 
-	free(response);
+	if (free != NULL)
+		free(response);
 	curl_slist_free_all(headers);
 	curl_easy_cleanup(curl);
 #endif
