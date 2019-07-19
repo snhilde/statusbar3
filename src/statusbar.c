@@ -1034,7 +1034,6 @@ static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, cha
 	float  lat;
 	float  lon;
 
-	printf("%s\n", response);
 	json = cJSON_Parse(response);
 	if (json == NULL) {
 		fprintf(stderr, "%s routine: Failed to parse zip code response\n", routine->name);
@@ -1109,9 +1108,11 @@ static SB_BOOL sb_weather_init_curl(CURL **curl, char errbuf[], char url[], size
 	snprintf(url, size-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
 	curl_easy_setopt(*curl, CURLOPT_URL, url);
 
+	curl_easy_setopt(*curl, CURLOPT_USERAGENT, "curl/7.58.0");
 	curl_easy_setopt(*curl, CURLOPT_ERRORBUFFER, errbuf);
 	curl_easy_setopt(*curl, CURLOPT_WRITEFUNCTION, sb_weather_curl_cb);
 	curl_easy_setopt(*curl, CURLOPT_WRITEDATA, response);
+	curl_easy_setopt(*curl, CURLOPT_SSL_VERIFYPEER, 0);
 
 	return SB_TRUE;
 }
