@@ -1188,7 +1188,7 @@ static void *sb_weather_routine(void *thunk)
 	CURL              *curl = NULL;
 	char               errbuf[CURL_ERROR_SIZE] = {0};
 	struct curl_slist *headers;
-	char               url[128];
+	char               url_daily[128];
 	char               url_hourly[128];
 	char              *response = NULL;
 
@@ -1200,7 +1200,7 @@ static void *sb_weather_routine(void *thunk)
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_perform_curl(curl, &response, "properties", routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_read_properties(curl, response, url, sizeof(url), url_hourly, sizeof(url_hourly), routine)) {
+	} else if (!sb_weather_read_properties(curl, response, url_daily, sizeof(url_daily), url_hourly, sizeof(url_hourly), routine)) {
 		routine->print = SB_FALSE;
 	}
 
