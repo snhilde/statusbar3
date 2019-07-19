@@ -1021,7 +1021,7 @@ static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, cha
 	if (tmp->valueint != 1) {
 		fprintf(stderr, "%s routine: response returned code %d\n", routine->name, tmp->valueint);
 		cJSON_Delete(json);
-		return SB_TRUE;
+		return SB_FALSE;
 	}
 
 	tmp = cJSON_GetObjectItem(json, "output");
@@ -1038,17 +1038,18 @@ static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, cha
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 
 	cJSON_Delete(json);
-	free(response);
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_perform_curl(CURL *curl, sb_routine_t *routine)
+static SB_BOOL sb_weather_perform_curl(CURL *curl, const char *data, sb_routine_t *routine)
 {
-	long  code;
-	char *type; /* this will get free'd during curl_easy_cleanup() */
+	CURLcode  ret;
+	long      code;
+	char     *type; /* this will get free'd during curl_easy_cleanup() */
 
-	if (curl_easy_perform(curl) != CURLE_OK) {
-		fprintf(stderr, "%s routine: Failed to perform easy curl\n", routine->name);
+	ret = curl_easy_perform(curl);
+	if (ret != CURLE_OK) {
+		fprintf(stderr, "%s routine: Failed to get %s: %s\n", routine->name, data, curl_easy_strerror(ret));
 		return SB_FALSE;
 	}
 
@@ -1067,21 +1068,26 @@ static SB_BOOL sb_weather_perform_curl(CURL *curl, sb_routine_t *routine)
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_init_curl(CURL *curl, sb_routine_t *routine)
+static SB_BOOL sb_weather_init_curl(CURL **curl, char errbuf[], char url[], size_t size, char **response, sb_routine_t *routine)
 {
-	char url[128];
-
-	curl = curl_easy_init();
-	if (curl == NULL) {
+	*curl = curl_easy_init();
+	if (*curl == NULL) {
 		fprintf(stderr, "%s routine: Failed to initialize curl handle\n", routine->name);
 		return SB_FALSE;
 	}
 
-	snprintf(url, sizeof(url)-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
-	curl_easy_setopt(curl, CURLOPT_URL, url);
+	*response = calloc(1, sizeof(**response));
+	if (*response == NULL) {
+		fprintf(stderr, "%s routine: Failed to allocate memory for the response\n", routine->name);
+		return SB_FALSE;
+	}
 
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, sb_weather_curl_cb);
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+	snprintf(url, size-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
+	curl_easy_setopt(*curl, CURLOPT_URL, url);
+
+	curl_easy_setopt(*curl, CURLOPT_ERRORBUFFER, errbuf);
+	curl_easy_setopt(*curl, CURLOPT_WRITEFUNCTION, sb_weather_curl_cb);
+	curl_easy_setopt(*curl, CURLOPT_WRITEDATA, response);
 
 	return SB_TRUE;
 }
@@ -1093,21 +1099,25 @@ static void *sb_weather_routine(void *thunk)
 
 #ifdef BUILD_WEATHER
 	SB_TIMER_VARS;
-	CURL  *curl;
-	char  *response;
+	CURL  *curl = NULL;
+	char   errbuf[CURL_ERROR_SIZE] = {0};
 	char   url[128];
+	char  *response;
 
-	response = calloc(1, sizeof(*response));
-
-	if (!sb_weather_init_curl(curl, routine)) {
+	if (!sb_weather_init_curl(&curl, errbuf, url, sizeof(url), &response, routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_perform_curl(curl, routine)) {
+	} else if (!sb_weather_perform_curl(curl, "coordinates", routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_read_coordinates(curl, response, url, sizeof(url), routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_perform_curl(curl, routine)) {
+	} else if (!sb_weather_perform_curl(curl, "properties", routine)) {
+		routine->print = SB_FALSE;
+	} else if (!sb_weather_read_properties(curl, response, url, sizeof(url), routine)) {
 		routine->print = SB_FALSE;
 	}
+
+	if (strlen(errbuf) > 0)
+		fprintf(stderr, "%s: curl error: %s\n", routine->name, errbuf);
 
 	routine->color = routine->colors.normal;
 	while (routine->print) {
