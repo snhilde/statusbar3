@@ -1008,10 +1008,16 @@ static SB_BOOL sb_weather_read_properties(CURL *curl, const char *response, char
 		return SB_FALSE;
 	}
 
-	/* Check that we don't have an error status code. */
-	tmp = cJSON_GetObjectItem(json, "status");
-	if (tmp->valueint != 1) {
-		fprintf(stderr, "%s routine: response returned code %d\n", routine->name, tmp->valueint);
+	tmp = cJSON_GetObjectItem(json, "properties");
+	if (tmp == NULL) {
+		fprintf(stderr, "%s routine: Failed to find \"properties\" node\n", routine->name);
+		cJSON_Delete(json);
+		return SB_FALSE;
+	}
+
+	tmp = cJSON_GetObjectItem(tmp, "forecast");
+	if (tmp == NULL) {
+		fprintf(stderr, "%s routine: Failed to find \"forecast\" node\n", routine->name);
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
@@ -1068,8 +1074,9 @@ static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, cha
 
 static SB_BOOL sb_weather_perform_curl(CURL *curl, char **response, const char *data, sb_routine_t *routine)
 {
-	CURLcode ret;
-	long     code;
+	CURLcode  ret;
+	long      code;
+	char     *type; /* this will get free'd during curl_easy_cleanup() */
 
 	if (*response != NULL)
 		free(*response);
@@ -1084,6 +1091,13 @@ static SB_BOOL sb_weather_perform_curl(CURL *curl, char **response, const char *
 	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
 	if (code != 200) {
 		fprintf(stderr, "%s routine: curl returned %ld for %s\n", routine->name, code, data);
+		return SB_FALSE;
+	}
+
+	/* Check for content type equal to JSON or GeoJSON. */
+    curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &type);
+	if (strcasecmp(type, "application/json") != 0 && strcasecmp(type, "application/geo+json") != 0) {
+		fprintf(stderr, "%s routine: Mismatch content type (%s) for %s\n", routine->name, type, data);
 		return SB_FALSE;
 	}
 
