@@ -996,6 +996,31 @@ static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *th
 	return size * num;
 }
 
+static SB_BOOL sb_weather_read_properties(CURL *curl, const char *response, char url[], size_t size, sb_routine_t *routine)
+{
+	cJSON *json;
+	cJSON *tmp;
+
+	json = cJSON_Parse(response);
+	if (json == NULL) {
+		fprintf(stderr, "%s routine: Failed to parse properties response\n", routine->name);
+		cJSON_Delete(json);
+		return SB_FALSE;
+	}
+
+	/* Check that we don't have an error status code. */
+	tmp = cJSON_GetObjectItem(json, "status");
+	if (tmp->valueint != 1) {
+		fprintf(stderr, "%s routine: response returned code %d\n", routine->name, tmp->valueint);
+		cJSON_Delete(json);
+		return SB_FALSE;
+	}
+
+	printf("whew\n");
+	cJSON_Delete(json);
+	return SB_TRUE;
+}
+
 static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, char url[], size_t size, sb_routine_t *routine)
 {
  	/* A successful response will look something like this:
