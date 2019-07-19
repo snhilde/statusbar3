@@ -1034,6 +1034,7 @@ static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, cha
 	float  lat;
 	float  lon;
 
+	printf("%s\n", response);
 	json = cJSON_Parse(response);
 	if (json == NULL) {
 		fprintf(stderr, "%s routine: Failed to parse zip code response\n", routine->name);
