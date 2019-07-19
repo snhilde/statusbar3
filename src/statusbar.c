@@ -999,12 +999,33 @@ static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *th
 static SB_BOOL sb_weather_read_forecast(const char *response, sb_routine_t *routine)
 {
 	cJSON *json;
+	cJSON *tmp;
+	cJSON *period;
 
 	json = cJSON_Parse(response);
 	if (json == NULL) {
 		fprintf(stderr, "%s routine: Failed to parse forecast response\n", routine->name);
 		cJSON_Delete(json);
 		return SB_FALSE;
+	}
+
+	tmp = cJSON_GetObjectItem(json, "properties");
+	if (tmp == NULL) {
+		fprintf(stderr, "%s routine: Failed to find \"properties\" node\n", routine->name);
+		cJSON_Delete(json);
+		return SB_FALSE;
+	}
+
+	tmp = cJSON_GetObjectItem(tmp, "periods");
+	if (tmp == NULL) {
+		fprintf(stderr, "%s routine: Failed to find \"periods\" array node\n", routine->name);
+		cJSON_Delete(json);
+		return SB_FALSE;
+	}
+
+	cJSON_ArrayForEach(period, tmp) {
+		cJSON *temp = cJSON_GetObjectItem(period, "temperature");
+		printf("%d\n", temp->valueint);
 	}
 
 	return SB_TRUE;
@@ -1179,7 +1200,7 @@ static void *sb_weather_routine(void *thunk)
 		routine->print = SB_FALSE;
 	}
 
-	curl_easy_setopt(curl, CURLOPT_URL, url);
+	curl_easy_setopt(curl, CURLOPT_URL, url_hourly);
 	routine->color = routine->colors.normal;
 	while (routine->print) {
 		SB_START_TIMER;
