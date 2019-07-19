@@ -1025,9 +1025,9 @@ static SB_BOOL sb_weather_read_forecast(const char *response, sb_routine_t *rout
 
 	cJSON_ArrayForEach(period, tmp) {
 		cJSON *temp = cJSON_GetObjectItem(period, "temperature");
-		printf("%d\n", temp->valueint);
 	}
 
+	cJSON_Delete(json);
 	return SB_TRUE;
 }
 
