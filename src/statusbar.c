@@ -998,6 +998,14 @@ static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *th
 
 static SB_BOOL sb_weather_read_forecast(const char *response)
 {
+	cJSON *json;
+
+	json = cJSON_Parse(response);
+	if (json == NULL) {
+		fprintf(stderr, "%s routine: Failed to parse forecast response\n", routine->name);
+		cJSON_Delete(json);
+		return SB_FALSE;
+	}
 
 	return SB_TRUE;
 }
