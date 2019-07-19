@@ -1080,13 +1080,13 @@ static SB_BOOL sb_weather_perform_curl(CURL *curl, const char *data, sb_routine_
 
 	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
 	if (code != 200) {
-		fprintf(stderr, "%s routine: curl returned status code of %ld for %s\n", routine->name, code, data);
+		fprintf(stderr, "%s routine: %s: curl returned status code of %ld\n", data, routine->name, code);
 		return SB_FALSE;
 	}
 
     curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &type);
 	if (strcasecmp(type, "application/json") != 0) {
-		fprintf(stderr, "%s routine: Mismatch content type (%s) for %s\n", routine->name, type, data);
+		fprintf(stderr, "%s routine: %s: Mismatch content type (%s)\n", data, routine->name, type);
 		return SB_FALSE;
 	}
 
