@@ -1165,9 +1165,6 @@ static void *sb_weather_routine(void *thunk)
 		routine->print = SB_FALSE;
 	}
 
-	if (strlen(errbuf) > 0)
-		fprintf(stderr, "%s: curl error: %s\n", routine->name, errbuf);
-
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	routine->color = routine->colors.normal;
 	while (routine->print) {
@@ -1185,6 +1182,9 @@ static void *sb_weather_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
+	if (strlen(errbuf) > 0)
+		fprintf(stderr, "%s: curl error: %s\n", routine->name, errbuf);
+
 	free(response);
 	curl_slist_free_all(headers);
 	curl_easy_cleanup(curl);
