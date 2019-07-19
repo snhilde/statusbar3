@@ -1168,6 +1168,7 @@ static void *sb_weather_routine(void *thunk)
 	if (strlen(errbuf) > 0)
 		fprintf(stderr, "%s: curl error: %s\n", routine->name, errbuf);
 
+	curl_easy_setopt(curl, CURLOPT_URL, url);
 	routine->color = routine->colors.normal;
 	while (routine->print) {
 		SB_START_TIMER;
