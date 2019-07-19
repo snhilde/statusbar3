@@ -996,6 +996,12 @@ static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *th
 	return size * num;
 }
 
+static SB_BOOL sb_weather_read_forecast(const char *response)
+{
+
+	return SB_TRUE;
+}
+
 static SB_BOOL sb_weather_read_properties(CURL *curl, const char *response, char url_daily[], size_t daily_size, char url_hourly[], size_t hourly_size, sb_routine_t *routine)
 {
 	cJSON *json;
