@@ -980,6 +980,13 @@ static int sb_weather_global_init(void)
 }
 
 #ifdef BUILD_WEATHER
+struct sb_curl_t {
+	CURL   *curl;
+	char    url[128];
+	char   *response;
+	size_t  len;
+};
+
 static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *thunk)
 {
 	char   **data = thunk;
