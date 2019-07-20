@@ -980,7 +980,7 @@ static int sb_weather_global_init(void)
 }
 
 #ifdef BUILD_WEATHER
-struct sb_curl_t {
+struct sb_weather_t {
 	CURL   *curl;
 	char    url[128];
 	char   *response;
@@ -989,7 +989,7 @@ struct sb_curl_t {
 
 static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *thunk)
 {
-	struct sb_curl_t *info = thunk;
+	struct sb_weather_t *info = thunk;
 	size_t            newlen;
 
 	newlen         = info->len + (size * num) + 1;
@@ -1003,7 +1003,7 @@ static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *th
 	return size * num;
 }
 
-static SB_BOOL sb_weather_read_forecast(struct sb_curl_t *info, sb_routine_t *routine)
+static SB_BOOL sb_weather_read_forecast(struct sb_weather_t *info, sb_routine_t *routine)
 {
 	cJSON *json;
 	cJSON *tmp;
@@ -1038,7 +1038,7 @@ static SB_BOOL sb_weather_read_forecast(struct sb_curl_t *info, sb_routine_t *ro
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_read_properties(struct sb_curl_t *info, sb_routine_t *routine)
+static SB_BOOL sb_weather_read_properties(struct sb_weather_t *info, sb_routine_t *routine)
 {
 	cJSON *json;
 	cJSON *props;
@@ -1079,7 +1079,7 @@ static SB_BOOL sb_weather_read_properties(struct sb_curl_t *info, sb_routine_t *
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_read_coordinates(struct sb_curl_t *info, sb_routine_t *routine)
+static SB_BOOL sb_weather_read_coordinates(struct sb_weather_t *info, sb_routine_t *routine)
 {
  	/* A successful response will look something like this:
 	 * {"status":1,"output":[{"zip":"90210","latitude":"34.103131","longitude":"-118.416253"}]}
@@ -1124,7 +1124,7 @@ static SB_BOOL sb_weather_read_coordinates(struct sb_curl_t *info, sb_routine_t 
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_perform_curl(struct sb_curl_t *info, const char *data, sb_routine_t *routine)
+static SB_BOOL sb_weather_perform_curl(struct sb_weather_t *info, const char *data, sb_routine_t *routine)
 {
 	CURLcode  ret;
 	long      code;
@@ -1157,7 +1157,7 @@ static SB_BOOL sb_weather_perform_curl(struct sb_curl_t *info, const char *data,
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_init_curl(struct sb_curl_t *info, char errbuf[], struct curl_slist **headers, sb_routine_t *routine)
+static SB_BOOL sb_weather_init_curl(struct sb_weather_t *info, char errbuf[], struct curl_slist **headers, sb_routine_t *routine)
 {
 	memset(info, 0, sizeof(*info));
 
@@ -1189,7 +1189,7 @@ static void *sb_weather_routine(void *thunk)
 
 #ifdef BUILD_WEATHER
 	SB_TIMER_VARS;
-	struct sb_curl_t   info;
+	struct sb_weather_t   info;
 	char               errbuf[CURL_ERROR_SIZE] = {0};
 	struct curl_slist *headers;
 
