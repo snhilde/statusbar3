@@ -1078,7 +1078,7 @@ static SB_BOOL sb_weather_get_temperature(struct sb_weather_t *info, int *temp, 
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_get_forecast_url(struct sb_weather_t *info, sb_routine_t *routine)
+static SB_BOOL sb_weather_get_temperature_url(struct sb_weather_t *info, sb_routine_t *routine)
 {
 	cJSON *json;
 	cJSON *props;
@@ -1207,7 +1207,7 @@ static void *sb_weather_routine(void *thunk)
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_get_coordinates(&info, routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_get_forecast_url(&info, routine)) {
+	} else if (!sb_weather_get_temperature_url(&info, routine)) {
 		routine->print = SB_FALSE;
 	}
 
