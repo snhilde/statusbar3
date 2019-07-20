@@ -1151,7 +1151,7 @@ static SB_BOOL sb_weather_read_coordinates(struct sb_weather_t *info, sb_routine
 	num  = cJSON_GetObjectItem(tmp, "longitude");
 	lon = atof(num->valuestring);
 
-	/* Write next URL, which is for getting the zone and identifiers of the area. */
+	/* Write coordinates into next url, which is for getting the zone and identifiers of the area. */
 	snprintf(info->url, sizeof(info->url)-1, "https://api.weather.gov/points/%.4f,%.4f", lat, lon);
 	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
 
