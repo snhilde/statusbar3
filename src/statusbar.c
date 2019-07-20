@@ -1060,19 +1060,13 @@ static SB_BOOL sb_weather_read_properties(struct sb_weather_t *info, sb_routine_
 	}
 
 	/* url = cJSON_GetObjectItem(props, "forecast"); */
-	/* if (url == NULL) { */
-		/* fprintf(stderr, "%s routine: Failed to find \"forecast\" node\n", routine->name); */
-		/* cJSON_Delete(json); */
-		/* return SB_FALSE; */
-	/* } */
-	/* strncpy(url_daily, url->valuestring, daily_size-1); */
-
 	url = cJSON_GetObjectItem(props, "forecastHourly");
 	if (url == NULL) {
 		fprintf(stderr, "%s routine: Failed to find \"forecastHourly\" node\n", routine->name);
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
+
 	strncpy(info->url, url->valuestring, sizeof(info->url)-1);
 	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
 
