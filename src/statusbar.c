@@ -991,17 +991,18 @@ struct sb_weather_t {
 static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *thunk)
 {
 	struct sb_weather_t *info = thunk;
-	size_t               newlen;
+	size_t               buffer_len;
 
-	newlen         = info->len + (size * num) + 1;
-	info->response = realloc(info->response, newlen);
+	buffer_len     = size*num;
+	info->response = realloc(info->response, info->len + buffer_len + 1);
 
-	memcpy(info->response+info->len, buffer, size*num);
-	info->response[newlen] = '\0';
+	memcpy(info->response+info->len, buffer, buffer_len);
 
-	info->len += size * num;
+	info->len                 += buffer_len;
+	info->response[info->len]  = '\0';
 
-	return size * num;
+
+	return buffer_len;
 }
 
 static SB_BOOL sb_weather_read_forecast(struct sb_weather_t *info, int *temp, sb_routine_t *routine)
