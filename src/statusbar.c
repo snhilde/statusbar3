@@ -1001,7 +1001,6 @@ static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *th
 	info->len                 += buffer_len;
 	info->response[info->len]  = '\0';
 
-
 	return buffer_len;
 }
 
