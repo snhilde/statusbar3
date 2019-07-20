@@ -25,6 +25,9 @@ AC_CHECK_LIB([asound], [snd_mixer_open],
 AC_CHECK_LIB([curl], [curl_easy_init],
 			 [],
 			 [weather_lib="no"; AC_MSG_NOTICE([libcurl check failed, not running weather routine])])
+LIBCURL_CHECK_CONFIG(["yes"], [7.9.7],
+					 [],
+					 [weather_lib="no"; AC_MSG_NOTICE([libcurl check failed, not running weather routine])])
 
 # Check for standard header files.
 AC_PATH_X
