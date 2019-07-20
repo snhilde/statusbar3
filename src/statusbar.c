@@ -1124,6 +1124,9 @@ static SB_BOOL sb_weather_read_coordinates(struct sb_weather_t *info, sb_routine
 	float  lat;
 	float  lon;
 
+	if (!sb_weather_perform_curl(info, "coordinates", routine))
+		return SB_FALSE;
+
 	json = cJSON_Parse(info->response);
 	if (json == NULL) {
 		fprintf(stderr, "%s routine: Failed to parse zip code response\n", routine->name);
@@ -1194,8 +1197,6 @@ static void *sb_weather_routine(void *thunk)
 	int                 temp;
 
 	if (!sb_weather_init_curl(&info, errbuf, routine)) {
-		routine->print = SB_FALSE;
-	} else if (!sb_weather_perform_curl(&info, "coordinates", routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_read_coordinates(&info, routine)) {
 		routine->print = SB_FALSE;
