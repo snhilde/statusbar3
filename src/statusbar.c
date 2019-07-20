@@ -1047,7 +1047,7 @@ static SB_BOOL sb_weather_read_forecast(struct sb_weather_t *info, int *temp, sb
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_read_properties(struct sb_weather_t *info, sb_routine_t *routine)
+static SB_BOOL sb_weather_read_urls(struct sb_weather_t *info, sb_routine_t *routine)
 {
 	cJSON *json;
 	cJSON *props;
@@ -1201,7 +1201,7 @@ static void *sb_weather_routine(void *thunk)
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_perform_curl(&info, "properties", routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_read_properties(&info, routine)) {
+	} else if (!sb_weather_read_urls(&info, routine)) {
 		routine->print = SB_FALSE;
 	}
 
