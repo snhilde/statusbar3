@@ -1197,7 +1197,7 @@ static void *sb_weather_routine(void *thunk)
 	char                 errbuf[CURL_ERROR_SIZE] = {0};
 	int                  temp;
 
-	if (!sb_weather_init_curl(&info, errbuf, &headers, routine)) {
+	if (!sb_weather_init_curl(&info, errbuf, routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_perform_curl(&info, "coordinates", routine)) {
 		routine->print = SB_FALSE;
