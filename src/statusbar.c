@@ -1003,7 +1003,7 @@ static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *th
 	return size * num;
 }
 
-static SB_BOOL sb_weather_read_forecast(struct sb_weather_t *info, sb_routine_t *routine)
+static SB_BOOL sb_weather_read_forecast(struct sb_weather_t *info, int *temp, sb_routine_t *routine)
 {
 	cJSON *json;
 	cJSON *tmp;
@@ -1031,7 +1031,9 @@ static SB_BOOL sb_weather_read_forecast(struct sb_weather_t *info, sb_routine_t 
 	}
 
 	cJSON_ArrayForEach(period, tmp) {
-		cJSON *temp = cJSON_GetObjectItem(period, "temperature");
+		/* Get the first temperature and break. */
+		cJSON *tmp = cJSON_GetObjectItem(period, "temperature");
+		break;
 	}
 
 	cJSON_Delete(json);
