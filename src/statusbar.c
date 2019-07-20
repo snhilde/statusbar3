@@ -1187,7 +1187,6 @@ static SB_BOOL sb_weather_init_curl(struct sb_weather_t *info, char errbuf[], sb
 	curl_easy_setopt(info->curl, CURLOPT_USERAGENT, "curl/7.9.7+");
 	curl_easy_setopt(info->curl, CURLOPT_WRITEFUNCTION, sb_weather_curl_cb);
 	curl_easy_setopt(info->curl, CURLOPT_WRITEDATA, info);
-	curl_easy_setopt(info->curl, CURLOPT_SSL_VERIFYPEER, 0);
 
 	return SB_TRUE;
 }
