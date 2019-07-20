@@ -1033,6 +1033,7 @@ static SB_BOOL sb_weather_read_forecast(struct sb_weather_t *info, int *temp, sb
 	cJSON_ArrayForEach(period, tmp) {
 		/* Get the first temperature and break. */
 		cJSON *tmp = cJSON_GetObjectItem(period, "temperature");
+		*temp = tmp->valueint;
 		break;
 	}
 
