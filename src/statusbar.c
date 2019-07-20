@@ -1006,6 +1006,10 @@ static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *th
 
 static void sb_weather_reset_info(struct sb_weather_t *info)
 {
+	free(info->response);
+
+	info->response = NULL;
+	info->len      = 0;
 }
 
 static SB_BOOL sb_weather_read_forecast(struct sb_weather_t *info, int *temp, sb_routine_t *routine)
