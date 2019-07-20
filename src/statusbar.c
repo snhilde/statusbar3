@@ -1219,7 +1219,7 @@ static void *sb_weather_routine(void *thunk)
 			break;
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output), "weather: TODO");
+		snprintf(routine->output, sizeof(routine->output), "weather: %d °F", temp);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
