@@ -459,8 +459,6 @@ static SB_BOOL sb_fan_get_path(char path[], size_t size, sb_routine_t *routine)
 	closedir(dir);
 	return SB_FALSE;
 }
-#else
-	fprintf(stderr, "%s routine was selected, but it was not built during compilation. Check config.log\n", routine->name);
 #endif
 
 static void *sb_fan_routine(void *thunk)
@@ -514,7 +512,8 @@ static void *sb_fan_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
-
+#else
+	fprintf(stderr, "%s routine was selected, but it was not built during compilation. Check config.log\n", routine->name);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
