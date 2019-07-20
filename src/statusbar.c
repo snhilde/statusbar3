@@ -1195,6 +1195,7 @@ static void *sb_weather_routine(void *thunk)
 	struct sb_weather_t  info;
 	char                 errbuf[CURL_ERROR_SIZE] = {0};
 	struct curl_slist   *headers;
+	int                  temp;
 
 	if (!sb_weather_init_curl(&info, errbuf, &headers, routine)) {
 		routine->print = SB_FALSE;
@@ -1214,7 +1215,7 @@ static void *sb_weather_routine(void *thunk)
 
 		if (!sb_weather_perform_curl(&info, "forecast", routine))
 			break;
-		if (!sb_weather_read_forecast(&info, routine))
+		if (!sb_weather_read_forecast(&info, &temp, routine))
 			break;
 
 		pthread_mutex_lock(&(routine->mutex));
