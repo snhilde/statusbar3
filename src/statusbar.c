@@ -981,10 +981,11 @@ static int sb_weather_global_init(void)
 
 #ifdef BUILD_WEATHER
 struct sb_weather_t {
-	CURL   *curl;
-	char    url[128];
-	char   *response;
-	size_t  len;
+	CURL              *curl;
+	struct curl_slist *headers;
+	char               url[128];
+	char              *response;
+	size_t             len;
 };
 
 static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *thunk)
@@ -1194,7 +1195,6 @@ static void *sb_weather_routine(void *thunk)
 	SB_TIMER_VARS;
 	struct sb_weather_t  info;
 	char                 errbuf[CURL_ERROR_SIZE] = {0};
-	struct curl_slist   *headers;
 	int                  temp;
 
 	if (!sb_weather_init_curl(&info, errbuf, &headers, routine)) {
