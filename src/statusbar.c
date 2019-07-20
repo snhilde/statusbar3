@@ -990,7 +990,7 @@ struct sb_weather_t {
 static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *thunk)
 {
 	struct sb_weather_t *info = thunk;
-	size_t            newlen;
+	size_t               newlen;
 
 	newlen         = info->len + (size * num) + 1;
 	info->response = realloc(info->response, newlen);
@@ -1189,9 +1189,9 @@ static void *sb_weather_routine(void *thunk)
 
 #ifdef BUILD_WEATHER
 	SB_TIMER_VARS;
-	struct sb_weather_t   info;
-	char               errbuf[CURL_ERROR_SIZE] = {0};
-	struct curl_slist *headers;
+	struct sb_weather_t  info;
+	char                 errbuf[CURL_ERROR_SIZE] = {0};
+	struct curl_slist   *headers;
 
 	if (!sb_weather_init_curl(&info, errbuf, &headers, routine)) {
 		routine->print = SB_FALSE;
