@@ -1045,7 +1045,7 @@ static SB_BOOL sb_weather_get_temperature(struct sb_weather_t *info, int *temp, 
 	cJSON *json;
 	cJSON *tmp;
 
-	if (!sb_weather_perform_curl(&info, "forecast", routine))
+	if (!sb_weather_perform_curl(info, "forecast", routine))
 		return SB_FALSE;
 
 	json = cJSON_Parse(info->response);
