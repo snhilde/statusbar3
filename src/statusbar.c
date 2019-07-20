@@ -989,27 +989,27 @@ struct sb_curl_t {
 
 static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *thunk)
 {
-	char   **data = thunk;
-	size_t   len;
-	size_t   newlen;
+	struct sb_curl_t *info = thunk;
+	size_t            newlen;
 
-	len    = strlen(*data);
-	newlen = (size * num) + len + 1;
-	*data  = realloc(*data, newlen);
+	newlen         = info->len + (size * num) + 1;
+	info->response = realloc(info->response, newlen);
 
-	memcpy(*data+len, buffer, size*num);
-	(*data)[newlen] = '\0';
+	memcpy(info->response+info->len, buffer, size*num);
+	info->response[newlen] = '\0';
+
+	info->len += size * num;
 
 	return size * num;
 }
 
-static SB_BOOL sb_weather_read_forecast(const char *response, sb_routine_t *routine)
+static SB_BOOL sb_weather_read_forecast(struct sb_curl_t *info, sb_routine_t *routine)
 {
 	cJSON *json;
 	cJSON *tmp;
 	cJSON *period;
 
-	json = cJSON_Parse(response);
+	json = cJSON_Parse(info->response);
 	if (json == NULL) {
 		fprintf(stderr, "%s routine: Failed to parse forecast response\n", routine->name);
 		cJSON_Delete(json);
@@ -1038,16 +1038,13 @@ static SB_BOOL sb_weather_read_forecast(const char *response, sb_routine_t *rout
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_read_properties(CURL *curl, const char *response, char url_daily[], size_t daily_size, char url_hourly[], size_t hourly_size, sb_routine_t *routine)
+static SB_BOOL sb_weather_read_properties(struct sb_curl_t *info, sb_routine_t *routine)
 {
 	cJSON *json;
 	cJSON *props;
 	cJSON *url;
 
-	memset(url_daily, 0, daily_size);
-	memset(url_hourly, 0, hourly_size);
-
-	json = cJSON_Parse(response);
+	json = cJSON_Parse(info->response);
 	if (json == NULL) {
 		fprintf(stderr, "%s routine: Failed to parse properties response\n", routine->name);
 		cJSON_Delete(json);
@@ -1061,13 +1058,13 @@ static SB_BOOL sb_weather_read_properties(CURL *curl, const char *response, char
 		return SB_FALSE;
 	}
 
-	url = cJSON_GetObjectItem(props, "forecast");
-	if (url == NULL) {
-		fprintf(stderr, "%s routine: Failed to find \"forecast\" node\n", routine->name);
-		cJSON_Delete(json);
-		return SB_FALSE;
-	}
-	strncpy(url_daily, url->valuestring, daily_size-1);
+	/* url = cJSON_GetObjectItem(props, "forecast"); */
+	/* if (url == NULL) { */
+		/* fprintf(stderr, "%s routine: Failed to find \"forecast\" node\n", routine->name); */
+		/* cJSON_Delete(json); */
+		/* return SB_FALSE; */
+	/* } */
+	/* strncpy(url_daily, url->valuestring, daily_size-1); */
 
 	url = cJSON_GetObjectItem(props, "forecastHourly");
 	if (url == NULL) {
@@ -1075,13 +1072,14 @@ static SB_BOOL sb_weather_read_properties(CURL *curl, const char *response, char
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
-	strncpy(url_hourly, url->valuestring, hourly_size-1);
+	strncpy(info->url, url->valuestring, sizeof(info->url)-1);
+	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
 
 	cJSON_Delete(json);
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, sb_routine_t *routine)
+static SB_BOOL sb_weather_read_coordinates(struct sb_curl_t *info, sb_routine_t *routine)
 {
  	/* A successful response will look something like this:
 	 * {"status":1,"output":[{"zip":"90210","latitude":"34.103131","longitude":"-118.416253"}]}
@@ -1093,9 +1091,8 @@ static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, sb_
 	cJSON *num;
 	float  lat;
 	float  lon;
-	char   url[128] = {0};
 
-	json = cJSON_Parse(response);
+	json = cJSON_Parse(info->response);
 	if (json == NULL) {
 		fprintf(stderr, "%s routine: Failed to parse zip code response\n", routine->name);
 		cJSON_Delete(json);
@@ -1120,38 +1117,38 @@ static SB_BOOL sb_weather_read_coordinates(CURL *curl, const char *response, sb_
 	lon = atof(num->valuestring);
 
 	/* Write next URL, which is for getting the zone and identifiers of the area. */
-	snprintf(url, sizeof(url)-1, "https://api.weather.gov/points/%.4f,%.4f", lat, lon);
-	curl_easy_setopt(curl, CURLOPT_URL, url);
+	snprintf(info->url, sizeof(info->url)-1, "https://api.weather.gov/points/%.4f,%.4f", lat, lon);
+	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
 
 	cJSON_Delete(json);
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_perform_curl(CURL *curl, char **response, const char *data, sb_routine_t *routine)
+static SB_BOOL sb_weather_perform_curl(struct sb_curl_t *info, const char *data, sb_routine_t *routine)
 {
 	CURLcode  ret;
 	long      code;
 	char     *type; /* this will get free'd during curl_easy_cleanup() */
 
-	if (*response != NULL)
-		free(*response);
-	*response = calloc(1, sizeof(**response));
+	if (info->response != NULL)
+		free(info->response);
+	info->response = NULL;
+	info->len      = 0;
 
-	ret = curl_easy_perform(curl);
+	ret = curl_easy_perform(info->curl);
 	if (ret != CURLE_OK) {
 		fprintf(stderr, "%s routine: Failed to get %s: %s\n", routine->name, data, curl_easy_strerror(ret));
 		return SB_FALSE;
 	}
-	printf("%s\n", *response);
 
-	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &code);
+	curl_easy_getinfo(info->curl, CURLINFO_RESPONSE_CODE, &code);
 	if (code != 200) {
 		fprintf(stderr, "%s routine: curl returned %ld for %s\n", routine->name, code, data);
 		return SB_FALSE;
 	}
 
 	/* Check for content type equal to JSON or GeoJSON. */
-    curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &type);
+    curl_easy_getinfo(info->curl, CURLINFO_CONTENT_TYPE, &type);
 	if (strcasecmp(type, "application/json") != 0 && strcasecmp(type, "application/geo+json") != 0) {
 		fprintf(stderr, "%s routine: Mismatch content type (%s) for %s\n", routine->name, type, data);
 		return SB_FALSE;
@@ -1160,27 +1157,27 @@ static SB_BOOL sb_weather_perform_curl(CURL *curl, char **response, const char *
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_init_curl(CURL **curl, char errbuf[], struct curl_slist **headers, char **response, sb_routine_t *routine)
+static SB_BOOL sb_weather_init_curl(struct sb_curl_t *info, char errbuf[], struct curl_slist **headers, sb_routine_t *routine)
 {
-	char url[128] = {0};
+	memset(info, 0, sizeof(*info));
 
-	*curl = curl_easy_init();
-	if (*curl == NULL) {
+	info->curl = curl_easy_init();
+	if (info->curl == NULL) {
 		fprintf(stderr, "%s routine: Failed to initialize curl handle\n", routine->name);
 		return SB_FALSE;
 	}
 
 	*headers = curl_slist_append(NULL, "accept: application/json");
-	curl_easy_setopt(*curl, CURLOPT_HTTPHEADER, *headers);
+	curl_easy_setopt(info->curl, CURLOPT_HTTPHEADER, *headers);
 
-	snprintf(url, sizeof(url)-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
-	curl_easy_setopt(*curl, CURLOPT_URL, url);
+	snprintf(info->url, sizeof(info->url)-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
+	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
 
-	curl_easy_setopt(*curl, CURLOPT_ERRORBUFFER, errbuf);
-	curl_easy_setopt(*curl, CURLOPT_USERAGENT, "curl/7.58.0");
-	curl_easy_setopt(*curl, CURLOPT_WRITEFUNCTION, sb_weather_curl_cb);
-	curl_easy_setopt(*curl, CURLOPT_WRITEDATA, response);
-	curl_easy_setopt(*curl, CURLOPT_SSL_VERIFYPEER, 0);
+	curl_easy_setopt(info->curl, CURLOPT_ERRORBUFFER, errbuf);
+	curl_easy_setopt(info->curl, CURLOPT_USERAGENT, "curl/7.58.0");
+	curl_easy_setopt(info->curl, CURLOPT_WRITEFUNCTION, sb_weather_curl_cb);
+	curl_easy_setopt(info->curl, CURLOPT_WRITEDATA, info);
+	curl_easy_setopt(info->curl, CURLOPT_SSL_VERIFYPEER, 0);
 
 	return SB_TRUE;
 }
@@ -1192,33 +1189,29 @@ static void *sb_weather_routine(void *thunk)
 
 #ifdef BUILD_WEATHER
 	SB_TIMER_VARS;
-	CURL              *curl = NULL;
+	struct sb_curl_t   info;
 	char               errbuf[CURL_ERROR_SIZE] = {0};
 	struct curl_slist *headers;
-	char               url_daily[128];
-	char               url_hourly[128];
-	char              *response = NULL;
 
-	if (!sb_weather_init_curl(&curl, errbuf, &headers, &response, routine)) {
+	if (!sb_weather_init_curl(&info, errbuf, &headers, routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_perform_curl(curl, &response, "coordinates", routine)) {
+	} else if (!sb_weather_perform_curl(&info, "coordinates", routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_read_coordinates(curl, response, routine)) {
+	} else if (!sb_weather_read_coordinates(&info, routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_perform_curl(curl, &response, "properties", routine)) {
+	} else if (!sb_weather_perform_curl(&info, "properties", routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_read_properties(curl, response, url_daily, sizeof(url_daily), url_hourly, sizeof(url_hourly), routine)) {
+	} else if (!sb_weather_read_properties(&info, routine)) {
 		routine->print = SB_FALSE;
 	}
 
-	curl_easy_setopt(curl, CURLOPT_URL, url_hourly);
 	routine->color = routine->colors.normal;
 	while (routine->print) {
 		SB_START_TIMER;
 
-		if (!sb_weather_perform_curl(curl, &response, "forecast", routine))
+		if (!sb_weather_perform_curl(&info, "forecast", routine))
 			break;
-		if (!sb_weather_read_forecast(response, routine))
+		if (!sb_weather_read_forecast(&info, routine))
 			break;
 
 		/* TODO: run routine */
@@ -1233,10 +1226,10 @@ static void *sb_weather_routine(void *thunk)
 	if (strlen(errbuf) > 0)
 		fprintf(stderr, "%s: curl error: %s\n", routine->name, errbuf);
 
-	if (response != NULL)
-		free(response);
+	if (info.response != NULL)
+		free(info.response);
 	curl_slist_free_all(headers);
-	curl_easy_cleanup(curl);
+	curl_easy_cleanup(info.curl);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
