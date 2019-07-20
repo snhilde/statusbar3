@@ -1040,7 +1040,7 @@ static void sb_weather_reset_info(struct sb_weather_t *info)
 	info->len      = 0;
 }
 
-static SB_BOOL sb_weather_read_forecast(struct sb_weather_t *info, int *temp, sb_routine_t *routine)
+static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *temp, sb_routine_t *routine)
 {
 	cJSON *json;
 	cJSON *tmp;
@@ -1215,7 +1215,7 @@ static void *sb_weather_routine(void *thunk)
 	while (routine->print) {
 		SB_START_TIMER;
 
-		if (!sb_weather_read_forecast(&info, &temp, routine))
+		if (!sb_weather_get_forecast(&info, &temp, routine))
 			break;
 
 		pthread_mutex_lock(&(routine->mutex));
