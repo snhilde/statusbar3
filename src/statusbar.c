@@ -1225,6 +1225,7 @@ static void *sb_weather_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
+
 	if (strlen(errbuf) > 0)
 		fprintf(stderr, "%s: curl error: %s\n", routine->name, errbuf);
 
