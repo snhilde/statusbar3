@@ -1043,9 +1043,7 @@ static SB_BOOL sb_weather_read_forecast(struct sb_weather_t *info, int *temp, sb
 	*temp = tmp->valueint;
 
 	cJSON_Delete(json);
-	free(info->response);
-	info->response = NULL;
-	info->len      = 0;
+	sb_weather_reset_info(info);
 	return SB_TRUE;
 }
 
@@ -1081,9 +1079,7 @@ static SB_BOOL sb_weather_read_properties(struct sb_weather_t *info, sb_routine_
 	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
 
 	cJSON_Delete(json);
-	free(info->response);
-	info->response = NULL;
-	info->len      = 0;
+	sb_weather_reset_info(info);
 	return SB_TRUE;
 }
 
@@ -1129,9 +1125,7 @@ static SB_BOOL sb_weather_read_coordinates(struct sb_weather_t *info, sb_routine
 	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
 
 	cJSON_Delete(json);
-	free(info->response);
-	info->response = NULL;
-	info->len      = 0;
+	sb_weather_reset_info(info);
 	return SB_TRUE;
 }
 
