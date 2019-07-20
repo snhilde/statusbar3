@@ -1111,7 +1111,7 @@ static SB_BOOL sb_weather_read_urls(struct sb_weather_t *info, sb_routine_t *rou
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_read_coordinates(struct sb_weather_t *info, sb_routine_t *routine)
+static SB_BOOL sb_weather_get_coordinates(struct sb_weather_t *info, sb_routine_t *routine)
 {
  	/* A successful response will look something like this:
 	 * {"status":1,"output":[{"zip":"90210","latitude":"34.103131","longitude":"-118.416253"}]}
@@ -1198,7 +1198,7 @@ static void *sb_weather_routine(void *thunk)
 
 	if (!sb_weather_init_curl(&info, errbuf, routine)) {
 		routine->print = SB_FALSE;
-	} else if (!sb_weather_read_coordinates(&info, routine)) {
+	} else if (!sb_weather_get_coordinates(&info, routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_perform_curl(&info, "properties", routine)) {
 		routine->print = SB_FALSE;
