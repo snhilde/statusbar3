@@ -1004,6 +1004,34 @@ static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *th
 	return buffer_len;
 }
 
+static SB_BOOL sb_weather_perform_curl(struct sb_weather_t *info, const char *data, sb_routine_t *routine)
+{
+	CURLcode  ret;
+	long      code;
+	char     *type; /* this will get free'd during curl_easy_cleanup() */
+
+	ret = curl_easy_perform(info->curl);
+	if (ret != CURLE_OK) {
+		fprintf(stderr, "%s routine: Failed to get %s: %s\n", routine->name, data, curl_easy_strerror(ret));
+		return SB_FALSE;
+	}
+
+	curl_easy_getinfo(info->curl, CURLINFO_RESPONSE_CODE, &code);
+	if (code != 200) {
+		fprintf(stderr, "%s routine: curl returned %ld for %s\n", routine->name, code, data);
+		return SB_FALSE;
+	}
+
+	/* Check for content type equal to JSON or GeoJSON. */
+    curl_easy_getinfo(info->curl, CURLINFO_CONTENT_TYPE, &type);
+	if (strcasecmp(type, "application/json") != 0 && strcasecmp(type, "application/geo+json") != 0) {
+		fprintf(stderr, "%s routine: Mismatch content type (%s) for %s\n", routine->name, type, data);
+		return SB_FALSE;
+	}
+
+	return SB_TRUE;
+}
+
 static void sb_weather_reset_info(struct sb_weather_t *info)
 {
 	free(info->response);
@@ -1126,34 +1154,6 @@ static SB_BOOL sb_weather_read_coordinates(struct sb_weather_t *info, sb_routine
 
 	cJSON_Delete(json);
 	sb_weather_reset_info(info);
-	return SB_TRUE;
-}
-
-static SB_BOOL sb_weather_perform_curl(struct sb_weather_t *info, const char *data, sb_routine_t *routine)
-{
-	CURLcode  ret;
-	long      code;
-	char     *type; /* this will get free'd during curl_easy_cleanup() */
-
-	ret = curl_easy_perform(info->curl);
-	if (ret != CURLE_OK) {
-		fprintf(stderr, "%s routine: Failed to get %s: %s\n", routine->name, data, curl_easy_strerror(ret));
-		return SB_FALSE;
-	}
-
-	curl_easy_getinfo(info->curl, CURLINFO_RESPONSE_CODE, &code);
-	if (code != 200) {
-		fprintf(stderr, "%s routine: curl returned %ld for %s\n", routine->name, code, data);
-		return SB_FALSE;
-	}
-
-	/* Check for content type equal to JSON or GeoJSON. */
-    curl_easy_getinfo(info->curl, CURLINFO_CONTENT_TYPE, &type);
-	if (strcasecmp(type, "application/json") != 0 && strcasecmp(type, "application/geo+json") != 0) {
-		fprintf(stderr, "%s routine: Mismatch content type (%s) for %s\n", routine->name, type, data);
-		return SB_FALSE;
-	}
-
 	return SB_TRUE;
 }
 
