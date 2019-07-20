@@ -1008,7 +1008,6 @@ static SB_BOOL sb_weather_read_forecast(struct sb_weather_t *info, int *temp, sb
 {
 	cJSON *json;
 	cJSON *tmp;
-	cJSON *period;
 
 	json = cJSON_Parse(info->response);
 	if (json == NULL) {
@@ -1036,6 +1035,9 @@ static SB_BOOL sb_weather_read_forecast(struct sb_weather_t *info, int *temp, sb
 	*temp = tmp->valueint;
 
 	cJSON_Delete(json);
+	free(info->response);
+	info->response = NULL;
+	info->len      = 0;
 	return SB_TRUE;
 }
 
@@ -1071,6 +1073,9 @@ static SB_BOOL sb_weather_read_properties(struct sb_weather_t *info, sb_routine_
 	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
 
 	cJSON_Delete(json);
+	free(info->response);
+	info->response = NULL;
+	info->len      = 0;
 	return SB_TRUE;
 }
 
@@ -1116,6 +1121,9 @@ static SB_BOOL sb_weather_read_coordinates(struct sb_weather_t *info, sb_routine
 	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
 
 	cJSON_Delete(json);
+	free(info->response);
+	info->response = NULL;
+	info->len      = 0;
 	return SB_TRUE;
 }
 
@@ -1124,11 +1132,6 @@ static SB_BOOL sb_weather_perform_curl(struct sb_weather_t *info, const char *da
 	CURLcode  ret;
 	long      code;
 	char     *type; /* this will get free'd during curl_easy_cleanup() */
-
-	if (info->response != NULL)
-		free(info->response);
-	info->response = NULL;
-	info->len      = 0;
 
 	ret = curl_easy_perform(info->curl);
 	if (ret != CURLE_OK) {
