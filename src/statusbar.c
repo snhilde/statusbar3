@@ -1045,6 +1045,9 @@ static SB_BOOL sb_weather_read_forecast(struct sb_weather_t *info, int *temp, sb
 	cJSON *json;
 	cJSON *tmp;
 
+	if (!sb_weather_perform_curl(&info, "forecast", routine))
+		return SB_FALSE;
+
 	json = cJSON_Parse(info->response);
 	if (json == NULL) {
 		fprintf(stderr, "%s routine: Failed to parse forecast response\n", routine->name);
@@ -1212,8 +1215,6 @@ static void *sb_weather_routine(void *thunk)
 	while (routine->print) {
 		SB_START_TIMER;
 
-		if (!sb_weather_perform_curl(&info, "forecast", routine))
-			break;
 		if (!sb_weather_read_forecast(&info, &temp, routine))
 			break;
 
