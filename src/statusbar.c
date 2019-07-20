@@ -1004,6 +1004,14 @@ static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *th
 	return buffer_len;
 }
 
+static void sb_weather_reset_info(struct sb_weather_t *info)
+{
+	free(info->response);
+
+	info->response = NULL;
+	info->len      = 0;
+}
+
 static SB_BOOL sb_weather_perform_curl(struct sb_weather_t *info, const char *data, sb_routine_t *routine)
 {
 	CURLcode  ret;
@@ -1030,14 +1038,6 @@ static SB_BOOL sb_weather_perform_curl(struct sb_weather_t *info, const char *da
 	}
 
 	return SB_TRUE;
-}
-
-static void sb_weather_reset_info(struct sb_weather_t *info)
-{
-	free(info->response);
-
-	info->response = NULL;
-	info->len      = 0;
 }
 
 static SB_BOOL sb_weather_get_temperature(struct sb_weather_t *info, int *temp, sb_routine_t *routine)
