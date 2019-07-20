@@ -1161,7 +1161,7 @@ static SB_BOOL sb_weather_perform_curl(struct sb_weather_t *info, const char *da
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_weather_init_curl(struct sb_weather_t *info, char errbuf[], struct curl_slist **headers, sb_routine_t *routine)
+static SB_BOOL sb_weather_init_curl(struct sb_weather_t *info, char errbuf[], sb_routine_t *routine)
 {
 	memset(info, 0, sizeof(*info));
 
