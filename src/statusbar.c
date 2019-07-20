@@ -974,6 +974,8 @@ static void *sb_volume_routine(void *thunk)
 	}
 	if (snd_elem != NULL)
 		snd_mixer_elem_free(snd_elem);
+#else
+	fprintf(stderr, "%s routine was selected, but it was not built during compilation. Check config.log\n", routine->name);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
