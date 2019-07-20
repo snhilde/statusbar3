@@ -1171,8 +1171,8 @@ static SB_BOOL sb_weather_init_curl(struct sb_weather_t *info, char errbuf[], sb
 		return SB_FALSE;
 	}
 
-	*headers = curl_slist_append(NULL, "accept: application/json");
-	curl_easy_setopt(info->curl, CURLOPT_HTTPHEADER, *headers);
+	info->headers = curl_slist_append(NULL, "accept: application/json");
+	curl_easy_setopt(info->curl, CURLOPT_HTTPHEADER, info->headers);
 
 	snprintf(info->url, sizeof(info->url)-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
 	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
@@ -1231,7 +1231,8 @@ static void *sb_weather_routine(void *thunk)
 
 	if (info.response != NULL)
 		free(info.response);
-	curl_slist_free_all(headers);
+	if (info.headers != NULL)
+		curl_slist_free_all(info.headers);
 	curl_easy_cleanup(info.curl);
 #endif
 
