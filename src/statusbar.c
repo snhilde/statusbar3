@@ -1081,7 +1081,7 @@ static SB_BOOL sb_weather_read_urls(struct sb_weather_t *info, sb_routine_t *rou
 	cJSON *props;
 	cJSON *url;
 
-	if (!sb_weather_perform_curl(info, "properties", routine))
+	if (!sb_weather_perform_curl(info, "forecast url", routine))
 		return SB_FALSE;
 
 	json = cJSON_Parse(info->response);
@@ -1106,6 +1106,7 @@ static SB_BOOL sb_weather_read_urls(struct sb_weather_t *info, sb_routine_t *rou
 		return SB_FALSE;
 	}
 
+	/* Store forecast URL. */
 	strncpy(info->url, url->valuestring, sizeof(info->url)-1);
 	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
 
