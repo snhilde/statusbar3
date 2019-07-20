@@ -1031,12 +1031,9 @@ static SB_BOOL sb_weather_read_forecast(struct sb_weather_t *info, int *temp, sb
 		return SB_FALSE;
 	}
 
-	cJSON_ArrayForEach(period, tmp) {
-		/* Get the first temperature and break. */
-		cJSON *tmp = cJSON_GetObjectItem(period, "temperature");
-		*temp = tmp->valueint;
-		break;
-	}
+	tmp   = cJSON_GetArrayItem(tmp, 0);
+	tmp   = cJSON_GetObjectItem(tmp, "temperature");
+	*temp = tmp->valueint;
 
 	cJSON_Delete(json);
 	return SB_TRUE;
@@ -1193,9 +1190,9 @@ static void *sb_weather_routine(void *thunk)
 
 #ifdef BUILD_WEATHER
 	SB_TIMER_VARS;
-	struct sb_weather_t  info;
-	char                 errbuf[CURL_ERROR_SIZE] = {0};
-	int                  temp;
+	struct sb_weather_t info;
+	char                errbuf[CURL_ERROR_SIZE] = {0};
+	int                 temp;
 
 	if (!sb_weather_init_curl(&info, errbuf, routine)) {
 		routine->print = SB_FALSE;
