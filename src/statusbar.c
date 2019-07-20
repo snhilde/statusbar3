@@ -402,6 +402,8 @@ static void *sb_disk_routine(void *thunk)
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
+#else
+	fprintf(stderr, "%s routine was selected, but it was not built during compilation. Check config.log\n", routine->name);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
