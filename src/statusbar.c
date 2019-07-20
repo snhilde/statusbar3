@@ -1081,6 +1081,9 @@ static SB_BOOL sb_weather_read_urls(struct sb_weather_t *info, sb_routine_t *rou
 	cJSON *props;
 	cJSON *url;
 
+	if (!sb_weather_perform_curl(info, "properties", routine))
+		return SB_FALSE;
+
 	json = cJSON_Parse(info->response);
 	if (json == NULL) {
 		fprintf(stderr, "%s routine: Failed to parse properties response\n", routine->name);
@@ -1199,8 +1202,6 @@ static void *sb_weather_routine(void *thunk)
 	if (!sb_weather_init_curl(&info, errbuf, routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_get_coordinates(&info, routine)) {
-		routine->print = SB_FALSE;
-	} else if (!sb_weather_perform_curl(&info, "properties", routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_weather_read_urls(&info, routine)) {
 		routine->print = SB_FALSE;
