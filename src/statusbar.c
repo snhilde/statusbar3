@@ -1252,6 +1252,8 @@ static void *sb_weather_routine(void *thunk)
 	if (info.headers != NULL)
 		curl_slist_free_all(info.headers);
 	curl_easy_cleanup(info.curl);
+#else
+	fprintf(stderr, "%s routine was selected, but it was not built during compilation. Check config.log\n", routine->name);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
