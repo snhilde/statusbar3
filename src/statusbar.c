@@ -1214,8 +1214,6 @@ static void *sb_weather_routine(void *thunk)
 		if (!sb_weather_read_forecast(&info, routine))
 			break;
 
-		/* TODO: run routine */
-
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "weather: TODO");
 		pthread_mutex_unlock(&(routine->mutex));
