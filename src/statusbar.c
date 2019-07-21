@@ -1085,6 +1085,13 @@ static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int 
 		return SB_FALSE;
 	}
 
+	tmp = cJSON_GetObjectItem(tmp, "periods");
+	if (tmp == NULL) {
+		fprintf(stderr, "%s routine: Failed to find forecast \"periods\" array node\n", routine->name);
+		cJSON_Delete(json);
+		return SB_FALSE;
+	}
+
 	cJSON_Delete(json);
 	sb_weather_clear_response(info);
 	return SB_TRUE;
