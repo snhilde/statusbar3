@@ -40,5 +40,8 @@ static const struct {
 /* Format of the clock (see strftime(3) for conversion specifications). */
 static const char *time_format = "%b %d - %I:%M";
 
+/* Path to personal TODO list within home directory of user running program. */
+static const char *todo_path = ".TODO";
+
 /* Zip Code for weather data. */
 static const char *zip_code = "90210";
