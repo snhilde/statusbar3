@@ -95,6 +95,8 @@ static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const cha
 
 static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char *file, const char *match, sb_routine_t *routine)
 {
+	/* This will open the directory at base and search through every subdirectory until a file with
+	 * contents equal to match are found. The path to that file is then written to buf. */
 	DIR           *dir;
 	struct dirent *dirent;
 	char           path[512];
