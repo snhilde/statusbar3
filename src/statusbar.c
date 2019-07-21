@@ -1071,6 +1071,13 @@ static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int 
 	if (!sb_weather_perform_curl(info, "daily forecast", routine))
 		return SB_FALSE;
 
+	json = cJSON_Parse(info->response);
+	if (json == NULL) {
+		fprintf(stderr, "%s routine: Failed to parse forecast response\n", routine->name);
+		cJSON_Delete(json);
+		return SB_FALSE;
+	}
+
 	cJSON_Delete(json);
 	sb_weather_clear_response(info);
 	return SB_TRUE;
