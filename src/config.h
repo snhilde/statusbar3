@@ -26,7 +26,7 @@ static const struct {
 	{ BATTERY  , 30     , "#FFFFFF", "#BB4F2E", "#A1273E" },
 	{ VOLUME   , 1      , "#FFFFFF", "#BB4F2E", "#A1273E" },
 };
-SB_BOOL color_text = SB_TRUE; /* SB_FALSE to not color text, or if status2d patch is not installed */
+static SB_BOOL color_text = SB_TRUE; /* SB_FALSE to not color text, or if status2d patch is not installed */
 
 /* Which mounted filesystems to display for the disk routine. */
 static const struct {
@@ -38,7 +38,7 @@ static const struct {
 };
 
 /* Format of the clock (see strftime(3) for conversion specifications). */
-const char *time_format = "%b %d - %I:%M";
+static const char *time_format = "%b %d - %I:%M";
 
 /* Zip Code for weather data. */
-const char *zip_code = "90210";
+static const char *zip_code = "90210";
