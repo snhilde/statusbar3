@@ -860,7 +860,7 @@ static void *sb_todo_routine(void *thunk)
 
 			/* advance line pointer until it hits the first non-blank character */
 			if (!line[i].isempty) {
-				line[i].line[strlen(line[i].line)-1] = '\0';
+				line[i].line[strlen(line[i].line)-1] = '\0'; /* don't print newline character */
 				line[i].ptr += sb_todo_count_blanks(line[i].line, &line[i].isempty);
 			}
 		}
