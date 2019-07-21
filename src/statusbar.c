@@ -596,6 +596,8 @@ struct sb_network_t {
 
 static SB_BOOL sb_network_get_paths(struct sb_network_t *rx_file, struct sb_network_t *tx_file, sb_routine_t *routine)
 {
+	/* This will get all the network interfaces and look for one that is running
+ 	 * and not a loopback. */
 	int             sock;
 	struct ifreq    ifr;
 	struct ifaddrs *ifaddrs = NULL;
