@@ -804,8 +804,8 @@ static int sb_todo_count_blanks(const char *line, SB_BOOL *isempty)
 
 static void *sb_todo_routine(void *thunk)
 {
-	/* We're going to read in the first two lines of the user's personal TODO
- 	 * list and print them based on a few rules:
+	/* We're going to read in the first two lines of the user's personal TODO list
+ 	 * and print them based on a few rules:
 	 * 1. If the file is empty, print "Finished".
 	 * 2. If the second line is empty, only print the first line.
 	 * 3. If the second line is indented over from the first, then it is a child
@@ -826,7 +826,7 @@ static void *sb_todo_routine(void *thunk)
 		SB_BOOL     isempty;
 	} line[2] = {0};
 
-	snprintf(path, sizeof(path), "%s/.TODO", getenv("HOME"));
+	snprintf(path, sizeof(path), "%s/%s", getenv("HOME"), todo_path);
 
 	routine->color = routine->colors.normal;
 	while (routine->print) {
