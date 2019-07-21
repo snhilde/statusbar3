@@ -1415,8 +1415,9 @@ static SB_BOOL sb_wifi_init(struct iwreq *iwr, char *essid, size_t max_len, sb_r
 static void *sb_wifi_routine(void *thunk)
 {
 	/* First, we are going to loop through all network interfaces, checking for an SSID.
-	 * When we first find one, we'll break out of the loop and use that interface as
-	 * the wireless network. */
+	 * When we find one, we'll break out of the loop and use that interface as
+	 * the wireless network. We'll run this again if the wireless connection ever goes
+	 * down until we find another suitable connection. Until then, we'll print "Wifi Down". */
 	sb_routine_t *routine = thunk;
 
 #ifdef BUILD_WIFI
@@ -1424,15 +1425,14 @@ static void *sb_wifi_routine(void *thunk)
 	struct iwreq iwr;
 	char         essid[IW_ESSID_MAX_SIZE + 1];
 	int          sock;
+	SB_BOOL      found = SB_FALSE;
 
-	if (!sb_wifi_init(&iwr, essid, sizeof(essid), routine))
-		routine->print = SB_FALSE;
-
-	routine->color = routine->colors.normal;
 	while (routine->print) {
 		SB_START_TIMER;
 
 		memset(essid, 0, sizeof(essid));
+		if (!found && !sb_wifi_init(&iwr, essid, sizeof(essid), routine))
+			break;
 
 		sock = socket(AF_INET, SOCK_DGRAM, 0);
 		if (sock < 0) {
@@ -1441,11 +1441,21 @@ static void *sb_wifi_routine(void *thunk)
 		}
 
 		if (ioctl(sock, SIOCGIWESSID, &iwr) < 0) {
+			found = SB_FALSE;
 			routine->color = routine->colors.warning;
+
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "Not Connected");
 			pthread_mutex_unlock(&(routine->mutex));
 		} else {
+			found = SB_TRUE;
+			if (strlen(essid) == 0) {
+				snprintf(essid, sizeof(essid)-1, "Wifi Down");
+				routine->color = routine->colors.error;
+			} else {
+				routine->color = routine->colors.normal;
+			}
+
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "%s", essid);
 			pthread_mutex_unlock(&(routine->mutex));
