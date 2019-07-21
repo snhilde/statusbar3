@@ -1092,6 +1092,8 @@ static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int 
 		return SB_FALSE;
 	}
 
+	/* We want to skip past the nodes for Today and Tonight and grab the next two after that. */
+
 	cJSON_Delete(json);
 	sb_weather_clear_response(info);
 	return SB_TRUE;
