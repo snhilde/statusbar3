@@ -1128,8 +1128,12 @@ static SB_BOOL sb_weather_get_temperature_url(struct sb_weather_t *info, sb_rout
 		return SB_FALSE;
 	}
 
-	/* Store forecast URL. */
-	strncpy(info->url, url->valuestring, sizeof(info->url)-1);
+	/* Store daily forecast URL. */
+	strncpy(info->url2, url->valuestring, sizeof(info->url2)-1);
+
+	/* Store hourly temperature URL. */
+	strncpy(info->url, info->url2, sizeof(info->url)-1);
+	strncat(info->url, "/hourly", sizeof(info->url)-strlen(info->url)-1);
 
 	cJSON_Delete(json);
 	sb_weather_reset_info(info);
