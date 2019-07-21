@@ -1219,6 +1219,8 @@ static void *sb_weather_routine(void *thunk)
 	struct sb_weather_t info;
 	char                errbuf[CURL_ERROR_SIZE] = {0};
 	int                 temp;
+	int                 low;
+	int                 high;
 
 	if (!sb_weather_init_curl(&info, errbuf, routine)) {
 		routine->print = SB_FALSE;
