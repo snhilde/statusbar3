@@ -1061,6 +1061,17 @@ static SB_BOOL sb_weather_perform_curl(struct sb_weather_t *info, const char *da
 }
 
 static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int *high, sb_routine_t *routine)
+{
+	cJSON *json;
+	cJSON *tmp;
+
+	/* Set daily forecast URL. */
+	curl_easy_setopt(info->curl, CURLOPT_URL, info->url2);
+
+	cJSON_Delete(json);
+	sb_weather_clear_response(info);
+	return SB_TRUE;
+}
 
 static SB_BOOL sb_weather_get_temperature(struct sb_weather_t *info, int *temp, sb_routine_t *routine)
 {
