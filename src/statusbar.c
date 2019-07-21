@@ -65,6 +65,8 @@ static void *sb_null_cb(void *thunk)
 
 static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const char *file, sb_routine_t *routine)
 {
+	/* This will construct a path by concatentating base and file (or just using base if no file is passed in),
+ 	 * open the file at the path, and handle its reading and closing, with error handling along the way. */
 	char  path[512];
 	FILE *fd;
 
