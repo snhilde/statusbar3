@@ -60,6 +60,7 @@ static void *sb_null_cb(void *thunk)
 {
 	/* empty function to satisfy TIME not having a proper thread */
 	(void)thunk;
+
 	return NULL;
 }
 
@@ -138,13 +139,15 @@ static void *sb_battery_routine(void *thunk)
 
 #ifdef BUILD_BATTERY
 	SB_TIMER_VARS;
-	char path[512];
-	char buf[512];
-	long max;
-	long now;
-	long perc;
+	static const char *base = "/sys/class/power_supply";
+	static const char *file = "type";
+	char               path[512];
+	char               buf[512];
+	long               max;
+	long               now;
+	long               perc;
 
-	if (!sb_get_path(path, sizeof(path), "/sys/class/power_supply", "type", "Battery", routine)) {
+	if (!sb_get_path(path, sizeof(path), base, file, "Battery", routine)) {
 		routine->print = SB_FALSE;
 	} else if (!sb_read_file(buf, sizeof(buf), path, "charge_full", routine)) {
 		routine->print = SB_FALSE;
