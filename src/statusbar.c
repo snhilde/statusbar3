@@ -1064,7 +1064,7 @@ static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int 
 {
 	cJSON *json;
 	cJSON *tmp;
-	cJSON *day;
+	cJSON *name;
 
 	/* Set daily forecast URL. */
 	curl_easy_setopt(info->curl, CURLOPT_URL, info->url2);
@@ -1094,7 +1094,9 @@ static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int 
 	}
 
 	/* We want to skip past the nodes for Today and Tonight and grab the next two after that. */
-	cJSON_ArrayForEach(forecast, tmp)
+	cJSON_ArrayForEach(day, tmp) {
+		name = cJSON_GetObjectItem(day, "name");
+	}
 
 	cJSON_Delete(json);
 	sb_weather_clear_response(info);
