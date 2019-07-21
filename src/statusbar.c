@@ -1129,7 +1129,6 @@ static SB_BOOL sb_weather_get_temperature_url(struct sb_weather_t *info, sb_rout
 
 	/* Store forecast URL. */
 	strncpy(info->url, url->valuestring, sizeof(info->url)-1);
-	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
 
 	cJSON_Delete(json);
 	sb_weather_reset_info(info);
