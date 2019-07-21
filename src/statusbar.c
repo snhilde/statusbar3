@@ -46,6 +46,7 @@ static float sb_calc_magnitude(long number, char *unit)
 
 static long sb_normalize_perc(long num)
 {
+	/* This will keep percentages within the range of 0-100. */
 	if (num > 100)
 		return 100;
 
