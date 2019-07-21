@@ -427,6 +427,10 @@ static void *sb_disk_routine(void *thunk)
 #ifdef BUILD_FAN
 static SB_BOOL sb_fan_get_path(char path[], size_t size, sb_routine_t *routine)
 {
+	/* This will open the directory at base and look through every subdirectory
+	 * for another directory named "device". If that is present, it will search
+	 * through that directory until it finds a file named "fan*_output", where * is
+	 * a digit from 0 to 9. */
 	static const char *base = "/sys/class/hwmon";
 	DIR               *dir;
 	struct dirent     *dirent;
