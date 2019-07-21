@@ -1065,26 +1065,29 @@ static SB_BOOL sb_weather_get_temperature(struct sb_weather_t *info, int *temp, 
 	cJSON *json;
 	cJSON *tmp;
 
-	if (!sb_weather_perform_curl(info, "forecast", routine))
+	/* Set hourly temperature URL. */
+	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
+
+	if (!sb_weather_perform_curl(info, "temperature", routine))
 		return SB_FALSE;
 
 	json = cJSON_Parse(info->response);
 	if (json == NULL) {
-		fprintf(stderr, "%s routine: Failed to parse forecast response\n", routine->name);
+		fprintf(stderr, "%s routine: Failed to parse temperature response\n", routine->name);
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
 
 	tmp = cJSON_GetObjectItem(json, "properties");
 	if (tmp == NULL) {
-		fprintf(stderr, "%s routine: Failed to find \"properties\" node\n", routine->name);
+		fprintf(stderr, "%s routine: Failed to find temperature \"properties\" node\n", routine->name);
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
 
 	tmp = cJSON_GetObjectItem(tmp, "periods");
 	if (tmp == NULL) {
-		fprintf(stderr, "%s routine: Failed to find \"periods\" array node\n", routine->name);
+		fprintf(stderr, "%s routine: Failed to find temperature \"periods\" array node\n", routine->name);
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
