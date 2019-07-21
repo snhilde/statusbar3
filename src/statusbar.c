@@ -1098,6 +1098,7 @@ static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int 
 	/* We want to skip past the nodes for Today and Tonight and grab the next two after that. */
 	i   = 0;
 	tmp = cJSON_GetArrayItem(array, 0);
+	tmp = cJSON_GetObjectItem(tmp, "name");
 	if (strcmp(name, "Today") == 0) {
 		i = 2;
 	} else if (strcmp(name, "Tonight") == 0) {
