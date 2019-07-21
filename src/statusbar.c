@@ -1003,6 +1003,7 @@ struct sb_weather_t {
 	CURL              *curl;
 	struct curl_slist *headers;
 	char               url[128];
+	char               url2[128];
 	char              *response;
 	size_t             len;
 };
