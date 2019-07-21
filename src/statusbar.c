@@ -1112,6 +1112,11 @@ static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int 
 	tmp   = cJSON_GetObjectItem(tmp, "temperature");
 	*high = tmp->valueint;
 
+	i++;
+	tmp  = cJSON_GetArrayItem(array, i);
+	tmp  = cJSON_GetObjectItem(tmp, "temperature");
+	*low = tmp->valueint;
+
 	cJSON_Delete(json);
 	sb_weather_clear_response(info);
 	return SB_TRUE;
