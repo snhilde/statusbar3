@@ -796,8 +796,6 @@ static int sb_todo_count_blanks(const char *line, SB_BOOL *isempty)
 			return i;
 		case '\n':
 			*isempty = SB_TRUE;
-		default:
-			return 0;
 	}
 
 	return 0;
