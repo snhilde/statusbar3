@@ -1024,7 +1024,7 @@ static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *th
 	return buffer_len;
 }
 
-static void sb_weather_reset_info(struct sb_weather_t *info)
+static void sb_weather_clear_response(struct sb_weather_t *info)
 {
 	free(info->response);
 
@@ -1102,7 +1102,7 @@ static SB_BOOL sb_weather_get_temperature(struct sb_weather_t *info, int *temp, 
 	*temp = tmp->valueint;
 
 	cJSON_Delete(json);
-	sb_weather_reset_info(info);
+	sb_weather_clear_response(info);
 	return SB_TRUE;
 }
 
@@ -1144,7 +1144,7 @@ static SB_BOOL sb_weather_get_temperature_url(struct sb_weather_t *info, sb_rout
 	strncat(info->url, "/hourly", sizeof(info->url)-strlen(info->url)-1);
 
 	cJSON_Delete(json);
-	sb_weather_reset_info(info);
+	sb_weather_clear_response(info);
 	return SB_TRUE;
 }
 
@@ -1193,7 +1193,7 @@ static SB_BOOL sb_weather_get_coordinates(struct sb_weather_t *info, sb_routine_
 	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
 
 	cJSON_Delete(json);
-	sb_weather_reset_info(info);
+	sb_weather_clear_response(info);
 	return SB_TRUE;
 }
 
