@@ -202,6 +202,8 @@ static void *sb_battery_routine(void *thunk)
 #ifdef BUILD_CPU_TEMP
 static SB_BOOL sb_cpu_temp_get_filename(char path[], char filename[], size_t size, sb_routine_t *routine)
 {
+	/* This will open the directory at path and look at every file until it finds one name
+	 * temp*_input, where * is a number from 0 to 9. It will then save that filename to filename. */
 	DIR           *dir;
 	struct dirent *dirent;
 
