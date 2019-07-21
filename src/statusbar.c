@@ -1068,6 +1068,9 @@ static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int 
 	/* Set daily forecast URL. */
 	curl_easy_setopt(info->curl, CURLOPT_URL, info->url2);
 
+	if (!sb_weather_perform_curl(info, "daily forecast", routine))
+		return SB_FALSE;
+
 	cJSON_Delete(json);
 	sb_weather_clear_response(info);
 	return SB_TRUE;
