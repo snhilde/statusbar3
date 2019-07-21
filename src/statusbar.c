@@ -1002,8 +1002,8 @@ static int sb_weather_global_init(void)
 struct sb_weather_t {
 	CURL              *curl;
 	struct curl_slist *headers;
-	char               url[128];
-	char               url2[128];
+	char               url[128];  /* Temporary URL during init, temperature URL during loop. */
+	char               url2[128]; /* Empty during init, daily forecast URL during loop. */
 	char              *response;
 	size_t             len;
 };
