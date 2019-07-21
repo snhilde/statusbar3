@@ -586,7 +586,7 @@ static void *sb_load_routine(void *thunk)
 
 /* --- NETWORK ROUTINE --- */
 #ifdef BUILD_NETWORK
-struct sb_file_t {
+struct sb_network_t {
 	char path[IFNAMSIZ+64];
 	long old_bytes; /* bytes from the last run */
 	long new_bytes; /* bytes from the current run */
@@ -594,7 +594,7 @@ struct sb_file_t {
 	char unit;
 };
 
-static SB_BOOL sb_network_get_paths(struct sb_file_t *rx_file, struct sb_file_t *tx_file, sb_routine_t *routine)
+static SB_BOOL sb_network_get_paths(struct sb_network_t *rx_file, struct sb_network_t *tx_file, sb_routine_t *routine)
 {
 	int             sock;
 	struct ifreq    ifr;
@@ -649,11 +649,11 @@ static void *sb_network_routine(void *thunk)
 
 #ifdef BUILD_NETWORK
 	SB_TIMER_VARS;
-	struct sb_file_t files[2] = {0};
-	SB_BOOL          error;
-	int              i;
-	char             contents[128];
-	int              color_level;
+	struct sb_network_t files[2] = {0};
+	SB_BOOL             error;
+	int                 i;
+	char                contents[128];
+	int                 color_level;
 
 	if (!sb_network_get_paths(&files[0], &files[1], routine))
 		routine->print = SB_FALSE;
