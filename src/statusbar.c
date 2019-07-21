@@ -717,38 +717,38 @@ static void *sb_ram_routine(void *thunk)
 
 #ifdef BUILD_RAM
 	SB_TIMER_VARS
-	long page_size;
-	long total;
-	char total_unit;
-	long avail;
-	char avail_unit;
-	long perc;
+	long  page_size;
+	long  avail_l;
+	float avail_f;
+	char  avail_unit;
+	long  total_l;
+	float total_f;
+	char  total_unit;
+	long  perc;
 
 	page_size = sysconf(_SC_PAGESIZE);
 
 	/* calculate available and total bytes */
-	avail = sysconf(_SC_AVPHYS_PAGES) * page_size;
-	total = sysconf(_SC_PHYS_PAGES)   * page_size;
-	if (avail < 1 || total < 1) {
+	avail_l = sysconf(_SC_AVPHYS_PAGES) * page_size;
+	total_l = sysconf(_SC_PHYS_PAGES)   * page_size;
+	if (avail_l < 1 || total_l < 1) {
 		SB_PRINT_ERROR("Failed to get memory amounts", NULL);
 		routine->print = SB_FALSE;
 	} else {
-		/* calculate units now so we have something to print on first loop */
-		sb_calc_magnitude(avail, &avail_unit);
-		sb_calc_magnitude(total, &total_unit);
+		total_f = sb_calc_magnitude(total_l, &total_unit);
 	}
 
 	while (routine->print) {
 		SB_START_TIMER;
 
 		/* get available memory */
-		avail = sysconf(_SC_AVPHYS_PAGES) * page_size;
-		if (avail < 1) {
+		avail_l = sysconf(_SC_AVPHYS_PAGES) * page_size;
+		if (avail_l < 1) {
 			SB_PRINT_ERROR("Failed to get available bytes", NULL);
 			break;
 		}
 
-		perc  = sb_normalize_perc((avail*100)/total);
+		perc  = sb_normalize_perc((avail_l*100)/total_l);
 		if (perc < 75) {
 			routine->color = routine->colors.normal;
 		} else if (perc < 90) {
@@ -757,10 +757,11 @@ static void *sb_ram_routine(void *thunk)
 			routine->color = routine->colors.error;
 		}
 
+		avail_f = sb_calc_magnitude(avail_l, &avail_unit);
+
 		pthread_mutex_lock(&(routine->mutex));
 		snprintf(routine->output, sizeof(routine->output), "%.1f%c free/%.1f%c",
-				sb_calc_magnitude(avail, &avail_unit), avail_unit,
-				sb_calc_magnitude(total, &total_unit), total_unit);
+				avail_f, avail_unit, total_f, total_unit);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
