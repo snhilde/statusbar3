@@ -1259,7 +1259,7 @@ static SB_BOOL sb_weather_get_coordinates(struct sb_weather_t *info, sb_routine_
 	/* Check that we don't have an error status code. */
 	tmp = cJSON_GetObjectItem(json, "status");
 	if (tmp->valueint != 1) {
-		SB_PRINT_ERROR("Response returned code %d", tmp->valueint);
+		fprintf(stderr, "%s routine: Response returned code %d", routine->name, tmp->valueint);
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
@@ -1345,7 +1345,7 @@ static void *sb_weather_routine(void *thunk)
 	}
 
 	if (strlen(errbuf) > 0)
-		SB_PRINT_ERROR("cURL error:", routine->name, errbuf);
+		SB_PRINT_ERROR("cURL error:", errbuf);
 
 	if (info.response != NULL)
 		free(info.response);
