@@ -1120,7 +1120,6 @@ static SB_BOOL sb_weather_get_temperature_url(struct sb_weather_t *info, sb_rout
 		return SB_FALSE;
 	}
 
-	/* url = cJSON_GetObjectItem(props, "forecast"); */
 	url = cJSON_GetObjectItem(props, "forecast");
 	if (url == NULL) {
 		fprintf(stderr, "%s routine: Failed to find \"forecast\" node\n", routine->name);
@@ -1234,6 +1233,8 @@ static void *sb_weather_routine(void *thunk)
 		SB_START_TIMER;
 
 		if (!sb_weather_get_temperature(&info, &temp, routine))
+			break;
+		if (!sb_weather_get_forecast(&info, &low, &high, routine))
 			break;
 
 		pthread_mutex_lock(&(routine->mutex));
