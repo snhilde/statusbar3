@@ -1060,6 +1060,8 @@ static SB_BOOL sb_weather_perform_curl(struct sb_weather_t *info, const char *da
 	return SB_TRUE;
 }
 
+static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int *high, sb_routine_t *routine)
+
 static SB_BOOL sb_weather_get_temperature(struct sb_weather_t *info, int *temp, sb_routine_t *routine)
 {
 	cJSON *json;
