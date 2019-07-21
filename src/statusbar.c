@@ -1094,6 +1094,11 @@ static SB_BOOL sb_weather_get_temperature(struct sb_weather_t *info, int *temp, 
 
 	tmp   = cJSON_GetArrayItem(tmp, 0);
 	tmp   = cJSON_GetObjectItem(tmp, "temperature");
+	if (tmp == NULL) {
+		fprintf(stderr, "%s routine: Failed to find \"temperature\" array node\n", routine->name);
+		cJSON_Delete(json);
+		return SB_FALSE;
+	}
 	*temp = tmp->valueint;
 
 	cJSON_Delete(json);
