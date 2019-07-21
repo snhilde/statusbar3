@@ -647,6 +647,9 @@ static SB_BOOL sb_network_get_paths(struct sb_network_t *rx_file, struct sb_netw
 
 static void *sb_network_routine(void *thunk)
 {
+	/* This routine is going to read two files, rx_bytes and tx_bytes, for the current
+ 	 * up-and-running network interface. It will compare the number of bytes between
+	 * loops to get the current network throughput. */
 	sb_routine_t *routine = thunk;
 
 #ifdef BUILD_NETWORK
