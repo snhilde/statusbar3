@@ -1064,6 +1064,8 @@ static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int 
 {
 	cJSON *json;
 	cJSON *tmp;
+	cJSON *array;
+	int    i;
 	cJSON *name;
 
 	/* Set daily forecast URL. */
@@ -1086,19 +1088,29 @@ static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int 
 		return SB_FALSE;
 	}
 
-	tmp = cJSON_GetObjectItem(tmp, "periods");
-	if (tmp == NULL) {
+	array = cJSON_GetObjectItem(tmp, "periods");
+	if (array == NULL) {
 		fprintf(stderr, "%s routine: Failed to find forecast \"periods\" array node\n", routine->name);
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
 
 	/* We want to skip past the nodes for Today and Tonight and grab the next two after that. */
-	cJSON_ArrayForEach(day, tmp) {
-		name = cJSON_GetObjectItem(day, "name");
-		if (strcmp(name, "Today") == 0 || strcmp(name, "Tonight") == 0)
-			continue;
+	i   = 0;
+	tmp = cJSON_GetArrayItem(array, 0);
+	if (strcmp(name, "Today") == 0) {
+		i = 2;
+	} else if (strcmp(name, "Tonight") == 0) {
+		i = 1;
+	} else {
+		fprintf(stderr, "%s routine: Error in forecast array\n", routine->name);
+		cJSON_Delete(json);
+		return SB_FALSE;
 	}
+
+	tmp   = cJSON_GetArrayItem(array, i);
+	tmp   = cJSON_GetObjectItem(tmp, "temperature");
+	*high = tmp->valueint;
 
 	cJSON_Delete(json);
 	sb_weather_clear_response(info);
@@ -1137,8 +1149,8 @@ static SB_BOOL sb_weather_get_temperature(struct sb_weather_t *info, int *temp, 
 		return SB_FALSE;
 	}
 
-	tmp   = cJSON_GetArrayItem(tmp, 0);
-	tmp   = cJSON_GetObjectItem(tmp, "temperature");
+	tmp = cJSON_GetArrayItem(tmp, 0);
+	tmp = cJSON_GetObjectItem(tmp, "temperature");
 	if (tmp == NULL) {
 		fprintf(stderr, "%s routine: Failed to find \"temperature\" array node\n", routine->name);
 		cJSON_Delete(json);
