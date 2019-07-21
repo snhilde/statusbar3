@@ -588,9 +588,9 @@ static void *sb_load_routine(void *thunk)
 #ifdef BUILD_NETWORK
 struct sb_file_t {
 	char path[IFNAMSIZ+64];
-	long old_bytes;
-	long new_bytes;
-	long reduced;
+	long old_bytes; /* bytes from the last run */
+	long new_bytes; /* bytes from the current run */
+	long reduced;   /* bytes reduced to the thousands */
 	char unit;
 };
 
