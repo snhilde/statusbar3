@@ -866,8 +866,12 @@ static void *sb_todo_routine(void *thunk)
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output), "%s%s%s",
-				line[0].ptr, separator, line[1].ptr);
+		if (line[0].isempty && line[1].isempty) {
+			snprintf(routine->output, sizeof(routine->output), "Finished");
+		} else {
+			snprintf(routine->output, sizeof(routine->output), "%s%s%s",
+					line[0].ptr, separator, line[1].ptr);
+		}
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
