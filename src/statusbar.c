@@ -846,7 +846,7 @@ static void *sb_todo_routine(void *thunk)
 			break;
 		}
 
-		if (line[0].isempty) {
+		if (line[0].isempty || line[1].isempty) {
 			separator = "";
 		} else if (isblank(*line[1].line)) {
 			separator = " -> ";
