@@ -188,7 +188,7 @@ static void *sb_battery_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	fprintf(stderr, "%s routine was selected, but it was not built during compilation. Check config.log\n", routine->name);
+	SB_PRINT_ERROR("%s routine was selected but not built during compilation. Check config.log\n");
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
@@ -980,6 +980,7 @@ static void *sb_volume_routine(void *thunk)
 			} else {
 				routine->color = routine->colors.error;
 			}
+
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "Vol %ld%%", perc);
 			pthread_mutex_unlock(&(routine->mutex));
