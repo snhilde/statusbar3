@@ -29,7 +29,7 @@
 /* --- HELPER FUNCTIONS --- */
 static float sb_calc_magnitude(long number, char *unit)
 {
-	/* This will calculate how many commas the number would have. */
+	/* This will calculate how many commas the number would have add set the appropriate unit. */
 	int  i;
 	const char symbols[] = "BKMGTP";
 
