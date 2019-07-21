@@ -31,7 +31,7 @@ static float sb_calc_magnitude(long number, char *unit)
 {
 	/* This will calculate how many commas the number would have add set the appropriate unit. */
 	int  i;
-	const char symbols[] = "BKMGTP";
+	static const char symbols[] = "BKMGTP";
 
 	if (number < 1000) {
 		*unit = 'B';
