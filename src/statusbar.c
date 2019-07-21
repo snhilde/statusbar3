@@ -1121,9 +1121,9 @@ static SB_BOOL sb_weather_get_temperature_url(struct sb_weather_t *info, sb_rout
 	}
 
 	/* url = cJSON_GetObjectItem(props, "forecast"); */
-	url = cJSON_GetObjectItem(props, "forecastHourly");
+	url = cJSON_GetObjectItem(props, "forecast");
 	if (url == NULL) {
-		fprintf(stderr, "%s routine: Failed to find \"forecastHourly\" node\n", routine->name);
+		fprintf(stderr, "%s routine: Failed to find \"forecast\" node\n", routine->name);
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
