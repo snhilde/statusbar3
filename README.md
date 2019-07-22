@@ -90,7 +90,7 @@ This will start the program, log the errors to statusbar.log, and not block the 
 ## Getting Started ##
 You can choose which routines you want displayed by editing src/config.h. The routines will be displayed in order
 from left to right on the status bar, meaning that the topmost routine will appear first on the left. If you are
-using the [dual Status patch](#recommendations), then the special routine value of DELIMITER will print a semicolon
+using the [dualstatus patch](#recommendations), then the special routine value of DELIMITER will print a semicolon
 at your chosen breakpoint, allowing for dual status bars.
 
 Let's take the battery routine as an example:
