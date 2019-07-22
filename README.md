@@ -156,3 +156,9 @@ Hilde N.
 ## License ##
 This project is licensed under the MIT License. Do whatever you want with it.
 See the [LICENSE](LICENSE) file for details
+
+
+## Acknowledgments ##
+* [Dave Gamble](https://github.com/DaveGamble) for creating [cJSON](https://github.com/DaveGamble/cJSON)
+* The [curl team](https://www.haxx.se/curl.html)
+* Everyone who contributed to the open-source projects and provided me with lots of wisdom, thank you.
