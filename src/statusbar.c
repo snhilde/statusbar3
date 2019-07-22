@@ -44,6 +44,12 @@ static float sb_calc_magnitude(long number, char *unit)
 	return (number / powl(10, 3*(i-1))) / 1000.0;
 }
 
+static SB_BOOL sb_isrgb(const char *color)
+{
+
+	return SB_TRUE;
+}
+
 static long sb_normalize_perc(long num)
 {
 	/* This will keep percentages within the range of 0-100. */
