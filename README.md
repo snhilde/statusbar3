@@ -113,3 +113,10 @@ The second value is the name you want displayed for it.
 
 ### Time routine ###
 This is how you want the time/date to be displayed. For conversion specifications, see strftime(3).
+```
+time_format = "%b %d - %I:%M"
+```
+
+### TODO routine ###
+If you have a TODO list you want displayed on the status bar, you can specify the path here.
+*Note:* This is the path relative to your home directory.
