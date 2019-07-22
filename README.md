@@ -45,3 +45,15 @@ Status Bar requires 3 libraries for compilation:
 * X11
 
 These should already be installed, and you shouldn't need to do anything about them.
+
+There are additional requirements for individual routines. If your machine does not have a library installed that
+a certain routine needs, then that routine will be skipped during compilation. This is all handled by
+[Autotools](https://www.gnu.org/software/automake/manual/html_node/Autotools-Introduction.html),
+particularly [Autoconf and configure.ac](https://www.gnu.org/software/autoconf/autoconf.html).
+
+These are the routine-specific libraries:
+* Volume: libasound2
+* Weather: [libcurl](https://curl.haxx.se/libcurl/)
+
+Beyond that, if a routine is not being built like you expected, check the output for `./configure` (saved in config.log)
+and the header checks in configure.ac to see what is missing.
