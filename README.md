@@ -151,3 +151,8 @@ faster, and better performing.
 
 ## Author ##
 Hilde N.
+
+
+## License ##
+This project is licensed under the MIT License. Do whatever you want with it.
+See the [LICENSE](LICENSE) file for details
