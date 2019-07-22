@@ -66,3 +66,6 @@ semicolon separator that divides the top and bottom bars by removing `DELIMITER`
 
 All output is colored with [Clément Sipieter's](https://github.com/sipi) [status2d patch](https://dwm.suckless.org/patches/status2d/).
 If you do not use this patch, you should set `color_text` to `SB_FALSE` in config.h.
+
+
+## Installation ##
