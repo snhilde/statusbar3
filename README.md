@@ -147,3 +147,7 @@ If `color_text` is set to SB_FALSE, then these color codes will be ignored.
 ## Contributing ##
 Send a pull request or a message. Additional functionality is welcome, as are suggestions to make the program leaner,
 faster, and better performing.
+
+
+## Author ##
+Hilde N.
