@@ -4,7 +4,7 @@
 
 A multi-threaded status bar for [dwm](https://dwm.suckless.org/).
 
-Currently, it displays this _system_ information:
+Currently, it displays this __system__ information:
 * Network usage (download and upload)
 * Disk usage
 * Memory usage
@@ -16,7 +16,7 @@ Currently, it displays this _system_ information:
 * Wifi status
 * Time
 
-... and this _user_ information:
+... and this __user__ information:
 * TODO list updates
 * Weather (current and forecasted)
 
@@ -119,7 +119,7 @@ time_format = "%b %d - %I:%M"
 
 ### TODO routine ###
 If you have a TODO list you want displayed on the status bar, you can specify the path here.
-_Note:_ This is the path relative to your home directory.
+__Note:__ This is the path relative to your home directory.
 ```
 todo_path = ".TODO"
 ```
