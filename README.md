@@ -36,3 +36,6 @@ Currently, it displays this *system* information:
 * [Author](#author)
 * [License](#license)
 * [Acknowledgments](#acknowledgments)
+
+
+## Prerequisites ##
