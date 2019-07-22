@@ -123,3 +123,6 @@ If you have a TODO list you want displayed on the status bar, you can specify th
 ```
 todo_path = ".TODO"
 ```
+
+### Weather routine ###
+This is your zip code for displaying the current temperature and tomorrow's low/high.
