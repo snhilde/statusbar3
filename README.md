@@ -74,3 +74,7 @@ If you do not use this patch, you should set `color_text` to `SB_FALSE` in confi
 make
 make install
 ```
+
+
+## Usage ##
+If the binary is installed somewhere in your PATH, you need only run `statusbar`.
