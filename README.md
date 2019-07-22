@@ -128,3 +128,13 @@ todo_path = ".TODO"
 This is your zip code for displaying the current temperature and tomorrow's low/high.
 ```
 zip_code = "90210"
+```
+
+## Colors ##
+Additionally, if you're using the status2d patch, you can tailor the colors of each, from config.h.
+For example:
+```
+{ CPU_USAGE, 1, "#FFFFFF", "#BB4F2E", "#A1273E" },
+```
+This will print the CPU usage each second using the color white (#FFFFFF) for normal conditions,
+orange (#BB4F2E) for warning conditions, and red (#A1273E) for error conditions.
