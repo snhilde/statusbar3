@@ -106,3 +106,10 @@ A few routines take some customized values, all of which can be found in src/con
 ### Disk routine ###
 The first value is the path to the mounted filesystem for which you want to display disk usage.
 The second value is the name you want displayed for it.
+```
+	{ "/"    , "root" }
+	{ "/home", "home" }
+```
+
+### Time routine ###
+This is how you want the time/date to be displayed. For conversion specifications, see strftime(3).
