@@ -39,3 +39,9 @@ Currently, it displays this *system* information:
 
 
 ## Prerequisites ##
+Status Bar requires 3 libraries for compilation:
+* pthread
+* m
+* X11
+
+These should already be installed, and you shouldn't need to do anything about them.
