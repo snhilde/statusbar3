@@ -100,3 +100,5 @@ Let's take the battery routine as an example:
 This will run the battery routine every 30 seconds, using the selected [colors](#colors) depending on the conditions.
 
 If you do not want to run a routine or have it printed to the status bar, simply remove its line from the array.
+
+A few routines take some customized values, all of which can be found in src/config.h. These are the values you change:
