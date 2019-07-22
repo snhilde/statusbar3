@@ -130,7 +130,7 @@ This is your zip code for displaying the current temperature and tomorrow's low/
 zip_code = "90210"
 ```
 
-## Colors ##
+### Colors ###
 Additionally, if you're using the status2d patch, you can tailor the colors of each, from config.h.
 For example:
 ```
