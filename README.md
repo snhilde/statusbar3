@@ -19,3 +19,20 @@ Currently, it displays this *system* information:
 ... and this *user* information:
 * TODO list updates
 * Weather (current and forecasted)
+
+
+# Table of Contents #
+* [Prerequisites](#prerequisites)
+* [Recommendations](#recommendations)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Getting Started](#getting-started)
+	* [Disk routine](#disk-routine)
+	* [Time routine](#time-routine)
+	* [TODO routine](#todo-routine)
+	* [Weather routine](#weather-routine)
+	* [Colors](#colors)
+* [Contributing](#contributing)
+* [Author](#author)
+* [License](#license)
+* [Acknowledgments](#acknowledgments)
