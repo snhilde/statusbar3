@@ -102,3 +102,7 @@ This will run the battery routine every 30 seconds, using the selected [colors](
 If you do not want to run a routine or have it printed to the status bar, simply remove its line from the array.
 
 A few routines take some customized values, all of which can be found in src/config.h. These are the values you change:
+
+### Disk routine ###
+The first value is the path to the mounted filesystem for which you want to display disk usage.
+The second value is the name you want displayed for it.
