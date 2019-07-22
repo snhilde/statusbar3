@@ -46,6 +46,21 @@ static float sb_calc_magnitude(long number, char *unit)
 
 static SB_BOOL sb_isrgb(const char *color)
 {
+	/* Colors must be in this form: #RRGGBB, where RGB are hexadecimal digits. */
+	size_t len;
+	int    i;
+
+	len = strlen(color);
+	if (len != 7)
+		return SB_FALSE;
+
+	if (color[0] != '#')
+		return SB_FALSE;
+
+	for (i=1; i<7; i++) {
+		if (!isxdigit(color[i]))
+			return SB_FALSE;
+	}
 
 	return SB_TRUE;
 }
