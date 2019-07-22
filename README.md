@@ -85,3 +85,18 @@ before the call for dwm:
 /path/to/statusbar 2> /home/user/statusbar.log &
 ```
 This will start the program, log the errors to statusbar.log, and not block the queue during startup.
+
+
+## Getting Started ##
+You can choose which routines you want displayed by editing src/config.h. The routines will be displayed in order
+from left to right on the status bar, meaning that the topmost routine will appear first on the left. If you are
+using the [dual Status patch](#recommendations), then the special routine value of DELIMITER will print a semicolon
+at your chosen breakpoint, allowing for dual status bars.
+
+Let's take the battery routine as an example:
+```
+{ BATTERY , 30, "#FFFFFF", "#BB4F2E", "#A1273E" },
+```
+This will run the battery routine every 30 seconds, using the selected [colors](#colors) depending on the conditions.
+
+If you do not want to run a routine or have it printed to the status bar, simply remove its line from the array.
