@@ -63,3 +63,6 @@ and the header checks in configure.ac to see what is missing.
 Status Bar works best with Andrew Milkovich's [dualstatus patch](https://dwm.suckless.org/patches/dualstatus/), which
 allows for displaying more information. If you choose not to use this patch in your setup, you should remove the
 semicolon separator that divides the top and bottom bars by removing `DELIMITER` from your chosen routines in config.h.
+
+All output is colored with [Clément Sipieter's](https://github.com/sipi) [status2d patch](https://dwm.suckless.org/patches/status2d/).
+If you do not use this patch, you should set `color_text` to `SB_FALSE` in config.h.
