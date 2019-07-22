@@ -57,3 +57,6 @@ These are the routine-specific libraries:
 
 Beyond that, if a routine is not being built like you expected, check the output for `./configure` (saved in config.log)
 and the header checks in configure.ac to see what is missing.
+
+
+## Recommendations ##
