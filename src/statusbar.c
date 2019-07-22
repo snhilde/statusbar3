@@ -1692,9 +1692,9 @@ int main(int argc, char *argv[])
 			/* Check that all 3 colors are 7 characters long and hexadecimal. */
 			color_text == SB_TRUE &&
 			(
-				strlen(chosen_routines[i].color_normal)  != 7 || !sb_isrgb(chosen_routines[i].color_normal)  ||
-				strlen(chosen_routines[i].color_warning) != 7 || !sb_isrgb(chosen_routines[i].color_warning) ||
-				strlen(chosen_routines[i].color_error)   != 7 || !sb_isrgb(chosen_routines[i].color_error)
+				!sb_isrgb(chosen_routines[i].color_normal)  ||
+				!sb_isrgb(chosen_routines[i].color_warning) ||
+				!sb_isrgb(chosen_routines[i].color_error)
 			)
 		) {
 			fprintf(stderr, "%s: color must be RGB hex (\"#RRGGBB\")", routine_names[index]);
