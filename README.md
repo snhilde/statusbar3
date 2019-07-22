@@ -126,3 +126,5 @@ todo_path = ".TODO"
 
 ### Weather routine ###
 This is your zip code for displaying the current temperature and tomorrow's low/high.
+```
+zip_code = "90210"
