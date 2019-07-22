@@ -1668,9 +1668,12 @@ int main(int argc, char *argv[])
 		}
 
 		if (
-			strlen(chosen_routines[i].color_normal)  != 7 ||
-			strlen(chosen_routines[i].color_warning) != 7 ||
-			strlen(chosen_routines[i].color_error)   != 7
+			color_text == SB_TRUE &&
+			(
+				strlen(chosen_routines[i].color_normal)  != 7 ||
+				strlen(chosen_routines[i].color_warning) != 7 ||
+				strlen(chosen_routines[i].color_error)   != 7
+			)
 		) {
 			fprintf(stderr, "%s: color must be RGB hex (\"#RRGGBB\")", routine_names[index]);
 
