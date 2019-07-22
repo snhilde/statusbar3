@@ -78,3 +78,10 @@ make install
 
 ## Usage ##
 If the binary is installed somewhere in your PATH, you need only run `statusbar`.
+
+To start the program when X11 starts up, add this line to your .xsession (or .xinitrc, whatever you use)
+before the call for dwm:
+```
+/path/to/statusbar 2> /home/user/statusbar.log &
+```
+This will start the program, log the errors to statusbar.log, and not block the queue during startup.
