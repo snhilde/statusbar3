@@ -1140,7 +1140,9 @@ static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int 
 	i   = 0;
 	tmp = cJSON_GetArrayItem(array, 0);
 	tmp = cJSON_GetObjectItem(tmp, "name");
-	if (strcmp(tmp->valuestring, "Today") == 0 || strcmp(tmp->valuestring, "This Afternoon") == 0) {
+	if (strcmp(tmp->valuestring, "Overnight") == 0) {
+		i = 3;
+	} else if (strcmp(tmp->valuestring, "Today") == 0 || strcmp(tmp->valuestring, "This Afternoon") == 0) {
 		i = 2;
 	} else if (strcmp(tmp->valuestring, "Tonight") == 0) {
 		i = 1;
