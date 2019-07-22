@@ -15,3 +15,7 @@ Currently, it displays this *system* information:
 * System volume
 * Wifi status
 * Time
+
+... and this *user* information:
+* TODO list updates
+* Weather (current and forecasted)
