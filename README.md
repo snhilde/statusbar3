@@ -140,3 +140,5 @@ This will print the CPU usage each second using the color white (#FFFFFF) for no
 orange (#BB4F2E) for warning conditions, and red (#A1273E) for error conditions.
 
 All values must be a pound (#) sign followed by six hex digits, in the style of RRGGBB.
+
+If `color_text` is set to SB_FALSE, then these color codes will be ignored.
