@@ -112,7 +112,7 @@ The second value is the name you want it displayed as.
 ```
 
 ### Time routine ###
-This is how you want the time/date to be displayed. For conversion specifications, see strftime(3).
+This is how you want the time/date to be displayed. For conversion specifications, see `strftime(3)`.
 ```
 time_format = "%b %d - %I:%M"
 ```
