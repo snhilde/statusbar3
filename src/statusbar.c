@@ -309,7 +309,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
@@ -375,7 +375,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
@@ -444,7 +444,7 @@ static void *sb_disk_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
@@ -558,7 +558,7 @@ static void *sb_fan_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
@@ -605,7 +605,7 @@ static void *sb_load_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
@@ -731,7 +731,7 @@ static void *sb_network_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
@@ -799,7 +799,7 @@ static void *sb_ram_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
@@ -910,7 +910,7 @@ static void *sb_todo_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
@@ -1029,7 +1029,7 @@ static void *sb_volume_routine(void *thunk)
 	if (snd_elem != NULL)
 		snd_mixer_elem_free(snd_elem);
 #else
-	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
@@ -1386,7 +1386,7 @@ static void *sb_weather_routine(void *thunk)
 		curl_slist_free_all(info.headers);
 	curl_easy_cleanup(info.curl);
 #else
-	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
@@ -1499,7 +1499,7 @@ static void *sb_wifi_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
