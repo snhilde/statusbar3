@@ -1129,21 +1129,21 @@ static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int 
 
 	json = cJSON_Parse(info->response);
 	if (json == NULL) {
-		sb_print_error(routine, "Failed to parse forecast response", NULL);
+		sb_print_error(routine, "Failed to parse forecast response");
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
 
 	tmp = cJSON_GetObjectItem(json, "properties");
 	if (tmp == NULL) {
-		sb_print_error(routine, "Failed to find forecast \"properties\" node", NULL);
+		sb_print_error(routine, "Failed to find forecast \"properties\" node");
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
 
 	array = cJSON_GetObjectItem(tmp, "periods");
 	if (array == NULL) {
-		sb_print_error(routine, "Failed to find forecast \"periods\" array node", NULL);
+		sb_print_error(routine, "Failed to find forecast \"periods\" array node");
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
@@ -1159,7 +1159,7 @@ static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int 
 	} else if (strcmp(tmp->valuestring, "Tonight") == 0) {
 		i = 1;
 	} else {
-		sb_print_error(routine, "Error in forecast array", NULL);
+		sb_print_error(routine, "Error in forecast array");
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
@@ -1191,21 +1191,21 @@ static SB_BOOL sb_weather_get_temperature(struct sb_weather_t *info, int *temp, 
 
 	json = cJSON_Parse(info->response);
 	if (json == NULL) {
-		sb_print_error(routine, "Failed to parse temperature response", NULL);
+		sb_print_error(routine, "Failed to parse temperature response");
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
 
 	tmp = cJSON_GetObjectItem(json, "properties");
 	if (tmp == NULL) {
-		sb_print_error(routine, "Failed to find temperature \"properties\" node", NULL);
+		sb_print_error(routine, "Failed to find temperature \"properties\" node");
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
 
 	tmp = cJSON_GetObjectItem(tmp, "periods");
 	if (tmp == NULL) {
-		sb_print_error(routine, "Failed to find temperature \"periods\" array node", NULL);
+		sb_print_error(routine, "Failed to find temperature \"periods\" array node");
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
@@ -1213,7 +1213,7 @@ static SB_BOOL sb_weather_get_temperature(struct sb_weather_t *info, int *temp, 
 	tmp = cJSON_GetArrayItem(tmp, 0);
 	tmp = cJSON_GetObjectItem(tmp, "temperature");
 	if (tmp == NULL) {
-		sb_print_error(routine, "Failed to find \"temperature\" array node", NULL);
+		sb_print_error(routine, "Failed to find \"temperature\" array node");
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
@@ -1235,21 +1235,21 @@ static SB_BOOL sb_weather_get_temperature_url(struct sb_weather_t *info, sb_rout
 
 	json = cJSON_Parse(info->response);
 	if (json == NULL) {
-		sb_print_error(routine, "Failed to parse properties response", NULL);
+		sb_print_error(routine, "Failed to parse properties response");
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
 
 	props = cJSON_GetObjectItem(json, "properties");
 	if (props == NULL) {
-		sb_print_error(routine, "Failed to find \"properties\" node", NULL);
+		sb_print_error(routine, "Failed to find \"properties\" node");
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
 
 	url = cJSON_GetObjectItem(props, "forecast");
 	if (url == NULL) {
-		sb_print_error(routine, "Failed to find \"forecast\" node", NULL);
+		sb_print_error(routine, "Failed to find \"forecast\" node");
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
@@ -1284,7 +1284,7 @@ static SB_BOOL sb_weather_get_coordinates(struct sb_weather_t *info, sb_routine_
 
 	json = cJSON_Parse(info->response);
 	if (json == NULL) {
-		sb_print_error(routine, "Failed to parse zip code response", NULL);
+		sb_print_error(routine, "Failed to parse zip code response");
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
@@ -1321,7 +1321,7 @@ static SB_BOOL sb_weather_init_curl(struct sb_weather_t *info, char errbuf[], sb
 
 	info->curl = curl_easy_init();
 	if (info->curl == NULL) {
-		sb_print_error(routine, "Failed to initialize curl handle", NULL);
+		sb_print_error(routine, "Failed to initialize curl handle");
 		return SB_FALSE;
 	}
 
@@ -1378,7 +1378,7 @@ static void *sb_weather_routine(void *thunk)
 	}
 
 	if (strlen(errbuf) > 0)
-		sb_print_error(routine, "cURL error:", errbuf);
+		sb_print_error(routine, "cURL error: %s", errbuf);
 
 	if (info.response != NULL)
 		free(info.response);
@@ -1386,11 +1386,11 @@ static void *sb_weather_routine(void *thunk)
 		curl_slist_free_all(info.headers);
 	curl_easy_cleanup(info.curl);
 #else
-	sb_print_error(routine, "%s routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log", NULL);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex", NULL);
+		sb_print_error(routine, "Failed to destroy mutex");
 	routine->print = SB_FALSE;
 	return NULL;
 }
