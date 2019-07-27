@@ -934,17 +934,17 @@ static SB_BOOL sb_volume_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **sn
 
 	/* open and load mixer */
 	if (snd_mixer_open(mixer, 0) < 0) {
-		sb_print_error(routine, "Failed to open mixer", NULL);
+		sb_print_error(routine, "Failed to open mixer");
 	} else if (snd_mixer_attach(*mixer, card) < 0) {
-		sb_print_error(routine, "Failed to attach mixer", NULL);
+		sb_print_error(routine, "Failed to attach mixer");
 	} else if (snd_mixer_selem_register(*mixer, NULL, NULL) < 0) {
-		sb_print_error(routine, "Failed to register mixer", NULL);
+		sb_print_error(routine, "Failed to register mixer");
 	} else if (snd_mixer_load(*mixer) < 0) {
-		sb_print_error(routine, "Failed to load mixer", NULL);
+		sb_print_error(routine, "Failed to load mixer");
 
 	/* get id */
 	} else if (snd_mixer_selem_id_malloc(&snd_id) != 0) {
-		sb_print_error(routine, "Failed to allocate snd_id", NULL);
+		sb_print_error(routine, "Failed to allocate snd_id");
 
 	/* get element */
 	} else {
@@ -953,9 +953,9 @@ static SB_BOOL sb_volume_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **sn
 		*snd_elem = snd_mixer_find_selem(*mixer, snd_id);
 		snd_mixer_selem_id_free(snd_id);
 		if (*snd_elem == NULL) {
-			sb_print_error(routine, "Failed to find element", NULL);
+			sb_print_error(routine, "Failed to find element");
 		} else if (snd_mixer_selem_has_playback_volume(*snd_elem) == 0) {
-			sb_print_error(routine, "Element does not have playback volume", NULL);
+			sb_print_error(routine, "Element does not have playback volume");
 		} else {
 			return SB_TRUE;
 		}
@@ -982,7 +982,7 @@ static void *sb_volume_routine(void *thunk)
 	if (!sb_volume_get_snd_elem(&mixer, &snd_elem, routine)) {
 		routine->print = SB_FALSE;
 	} else if (snd_mixer_selem_get_playback_dB_range(snd_elem, &min, &max) != 0) {
-		sb_print_error(routine, "Failed to get decibels range", NULL);
+		sb_print_error(routine, "Failed to get decibels range");
 		routine->print = SB_FALSE;
 	}
 
@@ -990,17 +990,17 @@ static void *sb_volume_routine(void *thunk)
 		SB_START_TIMER;
 
 		if (snd_mixer_handle_events(mixer) < 0) {
-			sb_print_error(routine, "Failed to clear mixer", NULL);
+			sb_print_error(routine, "Failed to clear mixer");
 			break;
 		} else if (snd_mixer_selem_get_playback_switch(snd_elem, SND_MIXER_SCHN_MONO, &mute) != 0) {
-			sb_print_error(routine, "Failed to get mute state", NULL);
+			sb_print_error(routine, "Failed to get mute state");
 			break;
 		} else if (mute == 0) {
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "mute");
 			pthread_mutex_unlock(&(routine->mutex));
 		} else if (snd_mixer_selem_get_playback_dB(snd_elem, SND_MIXER_SCHN_MONO, &decibels) != 0) {
-			sb_print_error(routine, "Failed to get decibels", NULL);
+			sb_print_error(routine, "Failed to get decibels");
 			break;
 		} else {
 			perc = sb_normalize_perc((decibels-min)*100/(max-min));
@@ -1029,11 +1029,11 @@ static void *sb_volume_routine(void *thunk)
 	if (snd_elem != NULL)
 		snd_mixer_elem_free(snd_elem);
 #else
-	sb_print_error(routine, "%s routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log", NULL);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex", NULL);
+		sb_print_error(routine, "Failed to destroy mutex");
 	routine->print = SB_FALSE;
 	return NULL;
 }
