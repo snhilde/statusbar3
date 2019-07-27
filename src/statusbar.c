@@ -470,7 +470,7 @@ static SB_BOOL sb_fan_get_path(char path[], size_t size, sb_routine_t *routine)
 
 	dir = opendir(base);
 	if (dir == NULL) {
-		sb_print_error(routine, "Failed to open", base);
+		sb_print_error(routine, "Failed to open %s", base);
 		return SB_FALSE;
 	}
 
@@ -500,7 +500,7 @@ static SB_BOOL sb_fan_get_path(char path[], size_t size, sb_routine_t *routine)
 		}
 	}
 
-	sb_print_error(routine, "Failed to find a fan", NULL);
+	sb_print_error(routine, "Failed to find a fan");
 	closedir(dir);
 	return SB_FALSE;
 }
@@ -538,7 +538,7 @@ static void *sb_fan_routine(void *thunk)
 
 		now = atol(contents);
 		if (now < 0) {
-			sb_print_error(routine, "Failed to read current fan speed", NULL);
+			sb_print_error(routine, "Failed to read current fan speed");
 			break;
 		}
 		perc = sb_normalize_perc((now*100)/max);
@@ -558,11 +558,11 @@ static void *sb_fan_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	sb_print_error(routine, "%s routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log", NULL);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex", NULL);
+		sb_print_error(routine, "Failed to destroy mutex");
 	routine->print = SB_FALSE;
 	return NULL;
 }
