@@ -83,6 +83,11 @@ static void *sb_null_cb(void *thunk)
 	return NULL;
 }
 
+static void sb_print_error(sb_routine_t *routine, ...)
+{
+
+}
+
 static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const char *file, sb_routine_t *routine)
 {
 	/* This will construct a path by concatentating base and file (or just using base if no file is passed in),
