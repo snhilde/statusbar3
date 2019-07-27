@@ -585,7 +585,7 @@ static void *sb_load_routine(void *thunk)
 		if (!sb_read_file(contents, sizeof(contents), path, NULL, routine))
 			break;
 		if (sscanf(contents, "%lf %lf %lf", &av[0], &av[1], &av[2]) != 3) {
-			sb_print_error(routine, "Failed to read", path);
+			sb_print_error(routine, "Failed to read %s", path);
 			break;
 		}
 
@@ -605,11 +605,11 @@ static void *sb_load_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	sb_print_error(routine, "%s routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log", NULL);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex", NULL);
+		sb_print_error(routine, "Failed to destroy mutex");
 	routine->print = SB_FALSE;
 	return NULL;
 }
