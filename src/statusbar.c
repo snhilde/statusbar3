@@ -767,7 +767,7 @@ static void *sb_ram_routine(void *thunk)
 	avail_l = sysconf(_SC_AVPHYS_PAGES) * page_size;
 	total_l = sysconf(_SC_PHYS_PAGES)   * page_size;
 	if (avail_l < 1 || total_l < 1) {
-		SB_PRINT_ERROR("Failed to get memory amounts", NULL);
+		sb_print_error(routine, "Failed to get memory amounts", NULL);
 		routine->print = SB_FALSE;
 	} else {
 		total_f = sb_calc_magnitude(total_l, &total_unit);
@@ -779,7 +779,7 @@ static void *sb_ram_routine(void *thunk)
 		/* get available memory */
 		avail_l = sysconf(_SC_AVPHYS_PAGES) * page_size;
 		if (avail_l < 1) {
-			SB_PRINT_ERROR("Failed to get available bytes", NULL);
+			sb_print_error(routine, "Failed to get available bytes", NULL);
 			break;
 		}
 
@@ -803,11 +803,11 @@ static void *sb_ram_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	SB_PRINT_ERROR("%s routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "%s routine was selected but not built during compilation. Check config.log", NULL);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
+		sb_print_error(routine, "Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
