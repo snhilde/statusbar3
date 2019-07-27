@@ -870,14 +870,14 @@ static void *sb_todo_routine(void *thunk)
 
 		fd = fopen(path, "r");
 		if (fd == NULL) {
-			SB_PRINT_ERROR("Failed to open", path);
+			sb_print_error(routine, "Failed to open", path);
 			break;
 		} else if (fgets(line[0].line, sizeof(line[0].line), fd) == NULL) {
 			line[0].isempty = SB_TRUE;
 		} else if (fgets(line[1].line, sizeof(line[1].line), fd) == NULL) {
 			line[1].isempty = SB_TRUE;
 		} else if (fclose(fd) != 0) {
-			SB_PRINT_ERROR("Failed to close", path);
+			sb_print_error(routine, "Failed to close", path);
 			fclose(fd);
 			break;
 		}
@@ -914,11 +914,11 @@ static void *sb_todo_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	SB_PRINT_ERROR("%s routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "%s routine was selected but not built during compilation. Check config.log", NULL);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
+		sb_print_error(routine, "Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
