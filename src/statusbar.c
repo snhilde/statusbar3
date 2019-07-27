@@ -90,7 +90,7 @@ static void sb_print_error(sb_routine_t *routine, const char *s, ...)
 	if (routine == NULL)
 		return;
 
-	va_start(args, routine);
+	va_start(args, s);
 
 
 	va_end(args);
