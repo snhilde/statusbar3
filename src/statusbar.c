@@ -142,7 +142,7 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 
 	dir = opendir(base);
 	if (dir == NULL) {
-		SB_PRINT_ERROR("Failed to open", base);
+		sb_print_error(routine, "Failed to open", base);
 		return SB_FALSE;
 	}
 
@@ -161,7 +161,7 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 		}
 	}
 
-	SB_PRINT_ERROR("Failed to find file", NULL);
+	sb_print_error(routine, "Failed to find file", NULL);
 	closedir(dir);
 	return SB_FALSE;
 }
