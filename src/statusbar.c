@@ -17,7 +17,7 @@
 		elapsed_usec = (finish_tp.tv_sec - start_tp.tv_sec) + ((finish_tp.tv_nsec - start_tp.tv_nsec) / 1000); \
 		if (elapsed_usec < routine->interval) { \
 			if (usleep(routine->interval - elapsed_usec) != 0) { \
-				SB_PRINT_ERROR("Error sleeping", NULL); \
+				sb_print_error(routine, "Error sleeping"); \
 			} \
 		}
 
