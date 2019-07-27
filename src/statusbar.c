@@ -351,7 +351,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		if (!sb_read_file(contents, sizeof(contents), path, NULL, routine))
 			break;
 		if (sscanf(contents, "cpu %lu %lu %lu %lu", &new.user, &new.nice, &new.system, &new.idle) != 4 ) {
-			SB_PRINT_ERROR("Failed to read", path);
+			sb_print_error(routine, "Failed to read", path);
 			break;
 		}
 
@@ -379,11 +379,11 @@ static void *sb_cpu_usage_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	SB_PRINT_ERROR("%s routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "%s routine was selected but not built during compilation. Check config.log", NULL);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
+		sb_print_error(routine, "Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
