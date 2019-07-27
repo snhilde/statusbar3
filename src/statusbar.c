@@ -87,6 +87,11 @@ static void sb_print_error(sb_routine_t *routine, const char *format, ...)
 	if (routine == NULL)
 		return;
 
+	routine->color = routine->colors.error;
+	pthread_mutex_lock(&(routine->mutex));
+	snprintf(routine->output, sizeof(routine->output), "%s: Error", routine->name);
+	pthread_mutex_unlock(&(routine->mutex));
+
 	va_start(args, format);
 
 	vsnprintf(input, sizeof(input)-1, format, args);
