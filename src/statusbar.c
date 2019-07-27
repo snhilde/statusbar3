@@ -240,7 +240,7 @@ static SB_BOOL sb_cpu_temp_get_filename(char path[], char filename[], size_t siz
 
 	dir = opendir(path);
 	if (dir == NULL) {
-		sb_print_error(routine, "Failed to open", path);
+		sb_print_error(routine, "Failed to open %s", path);
 		return SB_FALSE;
 	}
 
@@ -257,7 +257,7 @@ static SB_BOOL sb_cpu_temp_get_filename(char path[], char filename[], size_t siz
 		}
 	}
 
-	sb_print_error(routine, "Failed to find temperature monitor", NULL);
+	sb_print_error(routine, "Failed to find temperature monitor");
 	closedir(dir);
 	return SB_FALSE;
 }
@@ -288,7 +288,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 
 		now = atol(contents);
 		if (now < 0) {
-			sb_print_error(routine, "Failed to read temperature", NULL);
+			sb_print_error(routine, "Failed to read temperature");
 			break;
 		}
 
@@ -309,11 +309,11 @@ static void *sb_cpu_temp_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	sb_print_error(routine, "%s routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log", NULL);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex", NULL);
+		sb_print_error(routine, "Failed to destroy mutex");
 	routine->print = SB_FALSE;
 	return NULL;
 }
