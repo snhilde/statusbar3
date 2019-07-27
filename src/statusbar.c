@@ -3,10 +3,6 @@
 
 #define SBLENGTH 10240
 
-#define SB_PRINT_ERROR(msg, arg) \
-		{ const char *_arg = arg; \
-		  fprintf(stderr, "%s routine: " msg " %s\n", routine->name, _arg); }
-
 #define SB_START_TIMER \
 		clock_gettime(CLOCK_MONOTONIC_RAW, &start_tp);
 
@@ -1051,7 +1047,7 @@ static int sb_weather_global_init(void)
 #else
 	/* Triggered if user selects WEATHER as routine to run in config.h but
  	 * doesn't have library to build routine. */
-	SB_PRINT_ERROR("Not building weather routine", NULL);
+	fprintf(stderr, "Not building weather routine");
 	return 0;
 #endif
 }
