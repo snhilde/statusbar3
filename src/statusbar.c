@@ -416,7 +416,7 @@ static void *sb_disk_routine(void *thunk)
 		num_filesystems = sizeof(filesystems) / sizeof(*filesystems);
 		for (i=0; i<num_filesystems; i++) {
 			if (statvfs(filesystems[i].path, &stats) != 0) {
-				sb_print_error(routine, "Failed to get stats for %s", filesystems[i].path)
+				sb_print_error(routine, "Failed to get stats for %s", filesystems[i].path);
 				break;
 			}
 			avail = (long)sb_calc_magnitude(stats.f_bfree *stats.f_bsize, &avail_unit);
