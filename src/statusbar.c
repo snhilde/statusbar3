@@ -92,8 +92,10 @@ static void sb_print_error(sb_routine_t *routine, const char *format, ...)
 		return;
 
 	va_start(args, format);
+
 	vsnprintf(input, sizeof(input)-1, format, args);
 	fprintf(stderr, "%s: %s\n", routine->name, input);
+
 	va_end(args);
 }
 
