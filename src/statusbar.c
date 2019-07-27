@@ -189,7 +189,7 @@ static void *sb_battery_routine(void *thunk)
 	} else {
 		max = atol(buf);
 		if (max <= 0) {
-			SB_PRINT_ERROR("Failed to read max level", NULL);
+			sb_print_error(routine, "Failed to read max level", NULL);
 			routine->print = SB_FALSE;
 		}
 	}
@@ -202,7 +202,7 @@ static void *sb_battery_routine(void *thunk)
 
 		now = atol(buf);
 		if (now < 0) {
-			SB_PRINT_ERROR("Failed to read current level", NULL);
+			sb_print_error(routine, "Failed to read current level", NULL);
 			break;
 		}
 
@@ -223,11 +223,11 @@ static void *sb_battery_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	SB_PRINT_ERROR("%s routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "%s routine was selected but not built during compilation. Check config.log", NULL);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
+		sb_print_error(routine, "Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
