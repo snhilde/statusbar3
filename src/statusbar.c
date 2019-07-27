@@ -1416,13 +1416,13 @@ static SB_BOOL sb_wifi_init(struct iwreq *iwr, char *essid, size_t max_len, sb_r
 	/* open socket and return file descriptor for it */
 	sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sock < 0) {
-		SB_PRINT_ERROR("Failed to open socket file descriptor", NULL);
+		sb_print_error(routine, "Failed to open socket file descriptor", NULL);
 		return SB_FALSE;
 	}
 
 	/* get all network interfaces */
 	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
-		SB_PRINT_ERROR("Failed to find interface addresses", NULL);
+		sb_print_error(routine, "Failed to find interface addresses", NULL);
 		close(sock);
 		return SB_FALSE;
 	}
@@ -1442,7 +1442,7 @@ static SB_BOOL sb_wifi_init(struct iwreq *iwr, char *essid, size_t max_len, sb_r
 	}
 
 	/* if we reached here, then we didn't find anything */
-	SB_PRINT_ERROR("No wireless interfaces found", NULL);
+	sb_print_error(routine, "No wireless interfaces found", NULL);
 	freeifaddrs(ifaddrs);
 	close(sock);
 	return SB_FALSE;
@@ -1473,7 +1473,7 @@ static void *sb_wifi_routine(void *thunk)
 
 		sock = socket(AF_INET, SOCK_DGRAM, 0);
 		if (sock < 0) {
-			SB_PRINT_ERROR("Failed to open socket file descriptor", NULL);
+			sb_print_error(routine, "Failed to open socket file descriptor", NULL);
 			break;
 		}
 
@@ -1503,11 +1503,11 @@ static void *sb_wifi_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	SB_PRINT_ERROR("%s routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "%s routine was selected but not built during compilation. Check config.log", NULL);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
+		sb_print_error(routine, "Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
