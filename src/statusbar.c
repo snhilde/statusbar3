@@ -111,18 +111,18 @@ static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const cha
 	snprintf(path, sizeof(path), "%s%s", base, file?file:"");
 	fd = fopen(path, "r");
 	if (fd == NULL) {
-		SB_PRINT_ERROR("Failed to open", path);
+		sb_print_error(routine, "Failed to open", path);
 		return SB_FALSE;
 	}
 
 	if (fgets(buf, size, fd) == NULL) {
-		SB_PRINT_ERROR("Failed to read", path);
+		sb_print_error(routine, "Failed to read", path);
 		fclose(fd);
 		return SB_FALSE;
 	}
 
 	if (fclose(fd) != 0) {
-		SB_PRINT_ERROR("Failed to close", path);
+		sb_print_error(routine, "Failed to close", path);
 		return SB_FALSE;
 	}
 
