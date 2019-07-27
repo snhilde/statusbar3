@@ -86,6 +86,7 @@ static void *sb_null_cb(void *thunk)
 static void sb_print_error(sb_routine_t *routine, const char *s, ...)
 {
 	va_list args;
+	char    input[256];
 
 	if (routine == NULL)
 		return;
