@@ -92,6 +92,7 @@ static void sb_print_error(sb_routine_t *routine, const char *s, ...)
 		return;
 
 	va_start(args, s);
+	vsnprintf(input, sizeof(input)-1, s, args);
 
 
 	va_end(args);
