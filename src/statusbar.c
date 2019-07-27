@@ -90,6 +90,10 @@ static void sb_print_error(sb_routine_t *routine, ...)
 	if (routine == NULL)
 		return;
 
+	va_start(args, routine);
+
+
+	va_end(args);
 }
 
 static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const char *file, sb_routine_t *routine)
