@@ -87,7 +87,6 @@ static void sb_print_error(sb_routine_t *routine, const char *s, ...)
 {
 	va_list args;
 	char    input[256]  = {0};
-	char    output[256] = {0};
 
 	if (routine == NULL)
 		return;
