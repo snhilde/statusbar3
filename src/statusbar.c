@@ -420,7 +420,7 @@ static void *sb_disk_routine(void *thunk)
 		num_filesystems = sizeof(filesystems) / sizeof(*filesystems);
 		for (i=0; i<num_filesystems; i++) {
 			if (statvfs(filesystems[i].path, &stats) != 0) {
-				SB_PRINT_ERROR("Failed to get stats for", filesystems[i].path)
+				sb_print_error(routine, "Failed to get stats for", filesystems[i].path)
 				break;
 			}
 			avail = (long)sb_calc_magnitude(stats.f_bfree *stats.f_bsize, &avail_unit);
@@ -448,11 +448,11 @@ static void *sb_disk_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	SB_PRINT_ERROR("%s routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "%s routine was selected but not built during compilation. Check config.log", NULL);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
+		sb_print_error(routine, "Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
