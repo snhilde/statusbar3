@@ -641,13 +641,13 @@ static SB_BOOL sb_network_get_paths(struct sb_network_t *rx_file, struct sb_netw
 	/* open socket and return file descriptor for it */
 	sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sock < 0) {
-		SB_PRINT_ERROR("Failed to open socket file descriptor", NULL);
+		sb_print_error(routine, "Failed to open socket file descriptor", NULL);
 		return SB_FALSE;
 	}
 
 	/* get all network interfaces */
 	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
-		SB_PRINT_ERROR("Failed to find interface addresses", NULL);
+		sb_print_error(routine, "Failed to find interface addresses", NULL);
 		close(sock);
 		return SB_FALSE;
 	}
@@ -672,7 +672,7 @@ static SB_BOOL sb_network_get_paths(struct sb_network_t *rx_file, struct sb_netw
 	freeifaddrs(ifaddrs);
 
 	if (ifap == NULL) {
-		SB_PRINT_ERROR("No wireless interfaces found", NULL);
+		sb_print_error(routine, "No wireless interfaces found", NULL);
 		return SB_FALSE;
 	}
 
@@ -709,7 +709,7 @@ static void *sb_network_routine(void *thunk)
 			if (!sb_read_file(contents, sizeof(contents), files[i].path, NULL, routine)) {
 				error = SB_TRUE;
 			} else if (sscanf(contents, "%ld", &files[i].new_bytes) != 1) {
-				SB_PRINT_ERROR("Failed to read", files[i].path);
+				sb_print_error(routine, "Failed to read", files[i].path);
 				error = SB_TRUE;
 			} else {
 				files[i].reduced = (long)sb_calc_magnitude(files[i].new_bytes - files[i].old_bytes, &files[i].unit);
@@ -735,11 +735,11 @@ static void *sb_network_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
-	SB_PRINT_ERROR("%s routine was selected but not built during compilation. Check config.log", NULL);
+	sb_print_error(routine, "%s routine was selected but not built during compilation. Check config.log", NULL);
 #endif
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		SB_PRINT_ERROR("Failed to destroy mutex", NULL);
+		sb_print_error(routine, "Failed to destroy mutex", NULL);
 	routine->print = SB_FALSE;
 	return NULL;
 }
