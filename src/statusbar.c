@@ -83,16 +83,16 @@ static void *sb_null_cb(void *thunk)
 	return NULL;
 }
 
-static void sb_print_error(sb_routine_t *routine, const char *s, ...)
+static void sb_print_error(sb_routine_t *routine, const char *format, ...)
 {
 	va_list args;
-	char    input[256]  = {0};
+	char    input[256] = {0};
 
 	if (routine == NULL)
 		return;
 
-	va_start(args, s);
-	vsnprintf(input, sizeof(input)-1, s, args);
+	va_start(args, format);
+	vsnprintf(input, sizeof(input)-1, format, args);
 	fprintf(stderr, "%s: %s\n", routine->name, input);
 	va_end(args);
 }
