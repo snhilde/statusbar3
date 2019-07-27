@@ -87,14 +87,14 @@ static void sb_print_error(sb_routine_t *routine, const char *s, ...)
 {
 	va_list args;
 	char    input[256]  = {0};
-	char    output[256] = {0}
+	char    output[256] = {0};
 
 	if (routine == NULL)
 		return;
 
 	va_start(args, s);
 	vsnprintf(input, sizeof(input)-1, s, args);
-
+	snprintf(output, sizeof(output)-1, "%s: %s\n", routine->name, input);
 
 	va_end(args);
 }
