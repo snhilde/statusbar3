@@ -1588,7 +1588,8 @@ static void sb_print(void)
 
 		for (routine = routine_list; routine != NULL; routine = routine->next) {
 			if (routine->run == SB_FALSE) {
-				/* Print error message. */
+				/* Print error message. We don't need to lock the mutex because
+ 				 * the routine is not running (and is destroyed). */
 				sb_copy_output(full_output, routine);
 				continue;
 			} else if (routine->routine == DELIMITER) {
