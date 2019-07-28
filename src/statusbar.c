@@ -1701,7 +1701,7 @@ int main(int argc, char *argv[])
 			}
 		} else if (index == DELIMITER) {
 			snprintf(routine_object->output, sizeof(routine_object->output), ";");
-			routine_object->print = SB_TRUE;
+			routine_object->run = SB_TRUE;
 			continue;
 		}
 
@@ -1724,7 +1724,7 @@ int main(int argc, char *argv[])
 			routine_object->colors.error   = chosen_routines[i].color_error;
 			routine_object->color          = routine_object->colors.normal;
 			routine_object->name           = routine_names[index];
-			routine_object->print          = SB_TRUE;
+			routine_object->run            = SB_TRUE;
 
 			/* create thread */
 			pthread_mutex_init(&(routine_object->mutex), NULL);
