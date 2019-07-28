@@ -78,8 +78,8 @@ typedef struct sb_routine {
 	struct sb_routine *next;        /* Pointer to next routine in list. This is how we are
 	                                   going to keep track of the order or routines for
 	                                   printing to the status bar. */
-	SB_BOOL            print;       /* SB_TRUE (default) means print to statusbar.
-									   SB_FALSE means thread has exited and this routine should not be printed. */
+	SB_BOOL            run;         /* SB_TRUE (default) means run routine.
+									   SB_FALSE means thread has exited and routine won't be run. */
 } sb_routine_t;
 
 static const char *routine_names[] = {
