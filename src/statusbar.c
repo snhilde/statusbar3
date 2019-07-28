@@ -1358,15 +1358,15 @@ static void *sb_weather_routine(void *thunk)
 	int                 high;
 
 	if (!sb_weather_init_curl(&info, errbuf, routine)) {
-		routine->print = SB_FALSE;
+		routine->run = SB_FALSE;
 	} else if (!sb_weather_get_coordinates(&info, routine)) {
-		routine->print = SB_FALSE;
+		routine->run = SB_FALSE;
 	} else if (!sb_weather_get_temperature_url(&info, routine)) {
-		routine->print = SB_FALSE;
+		routine->run = SB_FALSE;
 	}
 
 	routine->color = routine->colors.normal;
-	while (routine->print) {
+	while (routine->run) {
 		SB_START_TIMER;
 
 		if (!sb_weather_get_temperature(&info, &temp, routine))
@@ -1396,7 +1396,7 @@ static void *sb_weather_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	routine->print = SB_FALSE;
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
