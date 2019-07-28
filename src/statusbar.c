@@ -248,7 +248,7 @@ static void *sb_battery_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	sb_remove_routine(routine);
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
@@ -338,7 +338,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	sb_remove_routine(routine);
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
@@ -404,7 +404,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	sb_remove_routine(routine);
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
@@ -473,7 +473,7 @@ static void *sb_disk_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	sb_remove_routine(routine);
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
@@ -587,7 +587,7 @@ static void *sb_fan_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	sb_remove_routine(routine);
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
@@ -634,7 +634,7 @@ static void *sb_load_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	sb_remove_routine(routine);
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
@@ -760,7 +760,7 @@ static void *sb_network_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	sb_remove_routine(routine);
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
@@ -828,7 +828,7 @@ static void *sb_ram_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	sb_remove_routine(routine);
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
@@ -939,7 +939,7 @@ static void *sb_todo_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	sb_remove_routine(routine);
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
@@ -1058,7 +1058,7 @@ static void *sb_volume_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	sb_remove_routine(routine);
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
@@ -1415,7 +1415,7 @@ static void *sb_weather_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	sb_remove_routine(routine);
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
@@ -1528,7 +1528,7 @@ static void *sb_wifi_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	sb_remove_routine(routine);
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
@@ -1570,7 +1570,9 @@ static void sb_print(void)
 
 		offset  = 0;
 		for (routine = routine_list; routine != NULL; routine = routine->next) {
-			if (routine->routine == DELIMITER) {
+			if (routine->run == SB_FALSE) {
+				continue;
+			} else if (routine->routine == DELIMITER) {
 				memcpy(full_output+offset, ";", 1);
 				offset += 1;
 				continue;
