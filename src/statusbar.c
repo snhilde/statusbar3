@@ -246,8 +246,6 @@ static void *sb_battery_routine(void *thunk)
 	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
-	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex");
 	routine->run = SB_FALSE;
 	return NULL;
 }
@@ -336,8 +334,6 @@ static void *sb_cpu_temp_routine(void *thunk)
 	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
-	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex");
 	routine->run = SB_FALSE;
 	return NULL;
 }
@@ -402,8 +398,6 @@ static void *sb_cpu_usage_routine(void *thunk)
 	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
-	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex");
 	routine->run = SB_FALSE;
 	return NULL;
 }
@@ -471,8 +465,6 @@ static void *sb_disk_routine(void *thunk)
 	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
-	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex");
 	routine->run = SB_FALSE;
 	return NULL;
 }
@@ -585,8 +577,6 @@ static void *sb_fan_routine(void *thunk)
 	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
-	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex");
 	routine->run = SB_FALSE;
 	return NULL;
 }
@@ -632,8 +622,6 @@ static void *sb_load_routine(void *thunk)
 	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
-	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex");
 	routine->run = SB_FALSE;
 	return NULL;
 }
@@ -758,8 +746,6 @@ static void *sb_network_routine(void *thunk)
 	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
-	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex");
 	routine->run = SB_FALSE;
 	return NULL;
 }
@@ -826,8 +812,6 @@ static void *sb_ram_routine(void *thunk)
 	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
-	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex");
 	routine->run = SB_FALSE;
 	return NULL;
 }
@@ -937,8 +921,6 @@ static void *sb_todo_routine(void *thunk)
 	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
-	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex");
 	routine->run = SB_FALSE;
 	return NULL;
 }
@@ -1056,8 +1038,6 @@ static void *sb_volume_routine(void *thunk)
 	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
-	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex");
 	routine->run = SB_FALSE;
 	return NULL;
 }
@@ -1413,8 +1393,6 @@ static void *sb_weather_routine(void *thunk)
 	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
-	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex");
 	routine->run = SB_FALSE;
 	return NULL;
 }
@@ -1526,8 +1504,6 @@ static void *sb_wifi_routine(void *thunk)
 	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
-	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
-		sb_print_error(routine, "Failed to destroy mutex");
 	routine->run = SB_FALSE;
 	return NULL;
 }
@@ -1587,12 +1563,7 @@ static void sb_print(void)
 		clock_gettime(CLOCK_REALTIME, &start_tp); /* START TIMER */
 
 		for (routine = routine_list; routine != NULL; routine = routine->next) {
-			if (routine->run == SB_FALSE) {
-				/* Print error message. We don't need to lock the mutex because
- 				 * the routine is not running (and is destroyed). */
-				sb_copy_output(full_output, routine);
-				continue;
-			} else if (routine->routine == DELIMITER) {
+			if (routine->routine == DELIMITER) {
 				strcpy(full_output, ";");
 				continue;
 			} else if (routine->routine == TIME) {
