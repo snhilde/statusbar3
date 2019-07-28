@@ -184,18 +184,18 @@ static void *sb_battery_routine(void *thunk)
 	long               perc;
 
 	if (!sb_get_path(path, sizeof(path), base, file, "Battery", routine)) {
-		routine->print = SB_FALSE;
+		routine->run = SB_FALSE;
 	} else if (!sb_read_file(buf, sizeof(buf), path, "charge_full", routine)) {
-		routine->print = SB_FALSE;
+		routine->run = SB_FALSE;
 	} else {
 		max = atol(buf);
 		if (max <= 0) {
 			sb_print_error(routine, "Failed to read max level");
-			routine->print = SB_FALSE;
+			routine->run = SB_FALSE;
 		}
 	}
 
-	while (routine->print) {
+	while (routine->run) {
 		SB_START_TIMER;
 
 		if (!sb_read_file(buf, sizeof(buf), path, "charge_now", routine))
@@ -229,7 +229,7 @@ static void *sb_battery_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	routine->print = SB_FALSE;
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
