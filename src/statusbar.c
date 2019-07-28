@@ -866,7 +866,7 @@ static void *sb_todo_routine(void *thunk)
 	snprintf(path, sizeof(path), "%s/%s", getenv("HOME"), todo_path);
 
 	routine->color = routine->colors.normal;
-	while (routine->print) {
+	while (routine->run) {
 		SB_START_TIMER;
 
 		fd = fopen(path, "r");
@@ -920,7 +920,7 @@ static void *sb_todo_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	routine->print = SB_FALSE;
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
