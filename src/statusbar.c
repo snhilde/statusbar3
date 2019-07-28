@@ -1644,7 +1644,9 @@ int main(int argc, char *argv[])
 
 		/* initialize the routine */
 		routine_object->routine = index;
-		if (index == WEATHER) {
+		if (index == DELIMITER) {
+			continue;
+		} else if (index == WEATHER) {
 			/* From the libcurl docs, about curl_global_init():
  			 * "You must not call it when any other thread in the program (i.e. a
 			 * thread sharing the same memory) is running. This doesn't just mean
@@ -1666,10 +1668,6 @@ int main(int argc, char *argv[])
 				fprintf(stderr, "Weather routine: Failed to initialize global libcurl\n");
 				continue;
 			}
-		} else if (index == DELIMITER) {
-			snprintf(routine_object->output, sizeof(routine_object->output), ";");
-			routine_object->run = SB_TRUE;
-			continue;
 		}
 
 		if (
