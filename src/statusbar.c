@@ -985,13 +985,13 @@ static void *sb_volume_routine(void *thunk)
 	long              perc;
 
 	if (!sb_volume_get_snd_elem(&mixer, &snd_elem, routine)) {
-		routine->print = SB_FALSE;
+		routine->run = SB_FALSE;
 	} else if (snd_mixer_selem_get_playback_dB_range(snd_elem, &min, &max) != 0) {
 		sb_print_error(routine, "Failed to get decibels range");
-		routine->print = SB_FALSE;
+		routine->run = SB_FALSE;
 	}
 
-	while (routine->print) {
+	while (routine->run) {
 		SB_START_TIMER;
 
 		if (snd_mixer_handle_events(mixer) < 0) {
@@ -1039,7 +1039,7 @@ static void *sb_volume_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	routine->print = SB_FALSE;
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
