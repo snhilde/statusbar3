@@ -1465,7 +1465,7 @@ static void *sb_wifi_routine(void *thunk)
 	int          sock;
 	SB_BOOL      found = SB_FALSE;
 
-	while (routine->print) {
+	while (routine->run) {
 		SB_START_TIMER;
 
 		memset(essid, 0, sizeof(essid));
@@ -1509,7 +1509,7 @@ static void *sb_wifi_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	routine->print = SB_FALSE;
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
