@@ -697,9 +697,9 @@ static void *sb_network_routine(void *thunk)
 	int                 color_level;
 
 	if (!sb_network_get_paths(&files[0], &files[1], routine))
-		routine->print = SB_FALSE;
+		routine->run = SB_FALSE;
 
-	while (routine->print) {
+	while (routine->run) {
 		SB_START_TIMER;
 
 		color_level    = 1;
@@ -741,7 +741,7 @@ static void *sb_network_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	routine->print = SB_FALSE;
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
