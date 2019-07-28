@@ -167,7 +167,7 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 	return SB_FALSE;
 }
 
-static SB_BOOL sb_remove_routine(sb_routine_t *delete)
+static void sb_remove_routine(sb_routine_t *delete)
 {
 	sb_routine_t **pos = &routine_list;
 
@@ -184,8 +184,6 @@ static SB_BOOL sb_remove_routine(sb_routine_t *delete)
 
 	/* Found it. Now, let's remove it from the list. */
 	*pos = delete->next;
-
-	return SB_TRUE;
 }
 
 
