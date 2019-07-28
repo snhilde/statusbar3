@@ -280,12 +280,12 @@ static void *sb_cpu_temp_routine(void *thunk)
 	long now;
 
 	if (!sb_get_path(path, sizeof(path), "/sys/class/hwmon", "name", "coretemp", routine)) {
-		routine->print = SB_FALSE;
+		routine->run = SB_FALSE;
 	} else if (!sb_cpu_temp_get_filename(path, filename, sizeof(filename), routine)) {
-		routine->print = SB_FALSE;
+		routine->run = SB_FALSE;
 	}
 
-	while (routine->print) {
+	while (routine->run) {
 		SB_START_TIMER;
 
 		if (!sb_read_file(contents, sizeof(contents), path, filename, routine))
@@ -319,7 +319,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	routine->print = SB_FALSE;
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
