@@ -1493,22 +1493,22 @@ static void *sb_wifi_routine(void *thunk)
 /* --- PRINT LOOP --- */
 static void sb_copy_output(char *full_output, sb_routine_t *routine)
 {
-	strcpy(full_output, "[");
+	strcat(full_output, "[");
 
 	/* Print opening status2d color code. */
 	if (color_text) {
-		strcpy(full_output, "^c");
-		strcpy(full_output, routine->color);
-		strcpy(full_output, "^");
+		strcat(full_output, "^c");
+		strcat(full_output, routine->color);
+		strcat(full_output, "^");
 	}
 
-	strcpy(full_output, routine->output);
+	strcat(full_output, routine->output);
 
 	/* Print status2d terminator code. */
 	if (color_text)
-		strcpy(full_output, "^d^");
+		strcat(full_output, "^d^");
 
-	strcpy(full_output, "] ");
+	strcat(full_output, "] ");
 }
 
 static void sb_print_get_time(char buf[], size_t size, struct timespec *start_tp, SB_BOOL blink)
@@ -1543,9 +1543,10 @@ static void sb_print(void)
 	while (1) {
 		clock_gettime(CLOCK_REALTIME, &start_tp); /* START TIMER */
 
+		memset(full_output, 0, SBLENGTH);
 		for (routine = routine_list; routine != NULL; routine = routine->next) {
 			if (routine->routine == DELIMITER) {
-				strcpy(full_output, ";");
+				strcat(full_output, ";");
 				continue;
 			} else if (routine->routine == TIME) {
 				if (blink)
