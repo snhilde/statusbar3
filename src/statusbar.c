@@ -1534,6 +1534,26 @@ static void *sb_wifi_routine(void *thunk)
 
 
 /* --- PRINT LOOP --- */
+static void sb_copy_output(char *full_output, sb_routine_t *routine)
+{
+	strcpy(full_output, "[");
+
+	/* Print opening status2d color code. */
+	if (color_text) {
+		strcpy(full_output, "^c");
+		strcpy(full_output, routine->color);
+		strcpy(full_output, "^");
+	}
+
+	strcpy(full_output, routine->output);
+
+	/* Print status2d terminator code. */
+	if (color_text)
+		strcpy(full_output, "^d^");
+
+	strcpy(full_output, "] ");
+}
+
 static void sb_print_get_time(char buf[], size_t size, struct timespec *start_tp, SB_BOOL blink)
 {
 	struct tm tm;
@@ -1555,7 +1575,6 @@ static void sb_print(void)
 	SB_TIMER_VARS
 	Display      *dpy;
 	Window        root;
-	size_t        offset;
 	sb_routine_t *routine;
 	char          full_output[SBLENGTH];
 	SB_BOOL       blink    = SB_TRUE;
@@ -1568,13 +1587,13 @@ static void sb_print(void)
 	while (1) {
 		clock_gettime(CLOCK_REALTIME, &start_tp); /* START TIMER */
 
-		offset  = 0;
 		for (routine = routine_list; routine != NULL; routine = routine->next) {
 			if (routine->run == SB_FALSE) {
+				/* Print error message. */
+				sb_copy_output(full_output, routine);
 				continue;
 			} else if (routine->routine == DELIMITER) {
-				memcpy(full_output+offset, ";", 1);
-				offset += 1;
+				strcpy(full_output, ";");
 				continue;
 			} else if (routine->routine == TIME) {
 				if (blink)
@@ -1585,44 +1604,20 @@ static void sb_print(void)
 			}
 
 			pthread_mutex_lock(&(routine->mutex));
+
 			len = strlen(routine->output);
 			if (len == 0) {
 				pthread_mutex_unlock(&(routine->mutex));
 				continue;
-			} else if (offset+len > SBLENGTH - 1 + (color_text?10:0)) {
+			} else if (strlen(full_output)+len+1 > SBLENGTH+(color_text?10:0)) {
 				fprintf(stderr, "Print: Exceeded max output length\n");
 				pthread_mutex_unlock(&(routine->mutex));
 				break;
 			}
 
-			memcpy(full_output+offset, "[", 1);
-			offset += 1;
-
-			/* Print opening status2d color code. */
-			if (color_text) {
-				memcpy(full_output+offset, "^c", 2);
-				offset += 2;
-				memcpy(full_output+offset, routine->color, 7);
-				offset += 7;
-				memcpy(full_output+offset, "^", 1);
-				offset += 1;
-			}
-
-			memcpy(full_output+offset, routine->output, len);
-			offset += len;
-
-			/* Print status2d terminator code. */
-			if (color_text) {
-				memcpy(full_output+offset, "^d^", 3);
-				offset += 3;
-			}
-
-			memcpy(full_output+offset, "] ", 2);
-			offset += 2;
-
+			sb_copy_output(full_output, routine);
 			pthread_mutex_unlock(&(routine->mutex));
 		}
-		full_output[offset] = '\0';
 
 		XStoreName(dpy, root, full_output);
 		XSync(dpy, False);
