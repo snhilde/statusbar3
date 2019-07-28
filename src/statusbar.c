@@ -346,7 +346,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 
 	memset(&old, 0, sizeof(old));
 	memset(&new, 0, sizeof(new));
-	while (routine->print) {
+	while (routine->run) {
 		SB_START_TIMER;
 
 		if (!sb_read_file(contents, sizeof(contents), path, NULL, routine))
@@ -385,7 +385,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	routine->print = SB_FALSE;
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
