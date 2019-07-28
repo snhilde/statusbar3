@@ -518,7 +518,7 @@ static void *sb_fan_routine(void *thunk)
 	if (!sb_fan_get_path(path, sizeof(path), routine)) {
 		routine->run = SB_FALSE;
 	} else if (!sb_read_file(contents, sizeof(contents), path, "_max", routine)) {
-		fprintf(stderr, "%s routine: Failed to read %s_max\n", routine->name, path);
+		sb_print_error(routine, "%s routine: Failed to read %s_max", path);
 		routine->run = SB_FALSE;
 	} else {
 		strncat(path, "_output", sizeof(path)-strlen(path)-1);
@@ -1079,20 +1079,20 @@ static SB_BOOL sb_weather_perform_curl(struct sb_weather_t *info, const char *da
 
 	ret = curl_easy_perform(info->curl);
 	if (ret != CURLE_OK) {
-		fprintf(stderr, "%s routine: Failed to get %s: %s\n", routine->name, data, curl_easy_strerror(ret));
+		sb_print_error(routine, "Failed to get %s: %s", data, curl_easy_strerror(ret));
 		return SB_FALSE;
 	}
 
 	curl_easy_getinfo(info->curl, CURLINFO_RESPONSE_CODE, &code);
 	if (code != 200) {
-		fprintf(stderr, "%s routine: curl returned %ld for %s\n", routine->name, code, data);
+		sb_print_error(routine, "curl returned %ld for %s", code, data);
 		return SB_FALSE;
 	}
 
 	/* Check for content type equal to JSON or GeoJSON. */
     curl_easy_getinfo(info->curl, CURLINFO_CONTENT_TYPE, &type);
 	if (strcasecmp(type, "application/json") != 0 && strcasecmp(type, "application/geo+json") != 0) {
-		fprintf(stderr, "%s routine: Mismatch content type (%s) for %s\n", routine->name, type, data);
+		sb_print_error(routine, "Mismatch content type (%s) for %s", type, data);
 		return SB_FALSE;
 	}
 
@@ -1277,7 +1277,7 @@ static SB_BOOL sb_weather_get_coordinates(struct sb_weather_t *info, sb_routine_
 	/* Check that we don't have an error status code. */
 	tmp = cJSON_GetObjectItem(json, "status");
 	if (tmp->valueint != 1) {
-		fprintf(stderr, "%s routine: Response returned code %d", routine->name, tmp->valueint);
+		sb_print_error(routine, "Response returned code %d", tmp->valueint);
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
