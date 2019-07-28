@@ -524,18 +524,18 @@ static void *sb_fan_routine(void *thunk)
 	long perc;
 
 	if (!sb_fan_get_path(path, sizeof(path), routine)) {
-		routine->print = SB_FALSE;
+		routine->run = SB_FALSE;
 	} else if (!sb_read_file(contents, sizeof(contents), path, "_max", routine)) {
 		fprintf(stderr, "%s routine: Failed to read %s_max\n", routine->name, path);
-		routine->print = SB_FALSE;
+		routine->run = SB_FALSE;
 	} else {
 		strncat(path, "_output", sizeof(path)-strlen(path)-1);
 		max = atol(contents);
 		if (max < 0)
-			routine->print = SB_FALSE;
+			routine->run = SB_FALSE;
 	}
 
-	while (routine->print) {
+	while (routine->run) {
 		SB_START_TIMER;
 
 		if (!sb_read_file(contents, sizeof(contents), path, NULL, routine))
@@ -568,7 +568,7 @@ static void *sb_fan_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	routine->print = SB_FALSE;
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
