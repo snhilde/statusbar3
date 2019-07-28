@@ -769,12 +769,12 @@ static void *sb_ram_routine(void *thunk)
 	total_l = sysconf(_SC_PHYS_PAGES)   * page_size;
 	if (avail_l < 1 || total_l < 1) {
 		sb_print_error(routine, "Failed to get memory amounts");
-		routine->print = SB_FALSE;
+		routine->run = SB_FALSE;
 	} else {
 		total_f = sb_calc_magnitude(total_l, &total_unit);
 	}
 
-	while (routine->print) {
+	while (routine->run) {
 		SB_START_TIMER;
 
 		/* get available memory */
@@ -809,7 +809,7 @@ static void *sb_ram_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	routine->print = SB_FALSE;
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
