@@ -408,7 +408,7 @@ static void *sb_disk_routine(void *thunk)
 	char           output[512];
 	int            color_level;
 
-	while (routine->print) {
+	while (routine->run) {
 		SB_START_TIMER;
 
 		/* In this routine, we're going to lock the mutex for the entire operation so we
@@ -454,7 +454,7 @@ static void *sb_disk_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	routine->print = SB_FALSE;
+	routine->run = SB_FALSE;
 	return NULL;
 }
 
