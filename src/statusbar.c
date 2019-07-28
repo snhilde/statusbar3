@@ -167,6 +167,26 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 	return SB_FALSE;
 }
 
+static SB_BOOL sb_remove_routine(sb_routine_t *delete)
+{
+	sb_routine_t **pos = &routine_list;
+
+	while (*pos != NULL && (*pos)->routine != delete->routine) {
+		pos = &(*pos)->next;
+	}
+
+	/* We didn't find the routine to be deleted. */
+	if (*pos == NULL) {
+		sb_print_error(delete, "Failed to find routine for deletion");
+		return SB_FALSE;
+	}
+
+	/* Found it. Now, let's remove it from the list. */
+	*pos = delete->next;
+
+	return SB_TRUE;
+}
+
 
 /* --- BATTERY ROUTINE --- */
 static void *sb_battery_routine(void *thunk)
