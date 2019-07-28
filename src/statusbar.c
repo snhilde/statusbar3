@@ -1577,9 +1577,8 @@ static void sb_print(void)
 	Window        root;
 	sb_routine_t *routine;
 	char          full_output[SBLENGTH];
-	SB_BOOL       blink    = SB_TRUE;
+	SB_BOOL       blink = SB_TRUE;
 	size_t        len;
-	long          interval = 1000000;
 
 	dpy  = XOpenDisplay(NULL);
 	root = RootWindow(dpy, DefaultScreen(dpy));
@@ -1626,8 +1625,8 @@ static void sb_print(void)
 		elapsed_usec = (finish_tp.tv_sec - start_tp.tv_sec) +
 				((finish_tp.tv_nsec - start_tp.tv_nsec) / 1000);
 
-		if (elapsed_usec < interval) {
-			if (usleep(interval - elapsed_usec) != 0) {
+		if (elapsed_usec < 1000000) {
+			if (usleep(1000000 - elapsed_usec) != 0) {
 				fprintf(stderr, "Print routine: Error sleeping\n");
 			}
 		}
