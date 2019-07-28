@@ -178,7 +178,8 @@ static SB_BOOL sb_remove_routine(sb_routine_t *delete)
 	/* We didn't find the routine to be deleted. */
 	if (*pos == NULL) {
 		sb_print_error(delete, "Failed to find routine for deletion");
-		return SB_FALSE;
+		fprintf(stderr, "Exiting for safety...\n");
+		exit(2);
 	}
 
 	/* Found it. Now, let's remove it from the list. */
