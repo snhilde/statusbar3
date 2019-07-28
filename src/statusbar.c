@@ -473,7 +473,7 @@ static void *sb_disk_routine(void *thunk)
 
 	if (pthread_mutex_destroy(&(routine->mutex)) != 0)
 		sb_print_error(routine, "Failed to destroy mutex");
-	routine->run = SB_FALSE;
+	sb_remove_routine(routine);
 	return NULL;
 }
 
