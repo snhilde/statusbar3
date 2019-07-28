@@ -1551,7 +1551,7 @@ static void sb_print(void)
 
 		offset  = 0;
 		for (routine = routine_list; routine != NULL; routine = routine->next) {
-			if (routine->print == SB_FALSE) {
+			if (routine->run == SB_FALSE) {
 				continue;
 			} else if (routine->routine == DELIMITER) {
 				memcpy(full_output+offset, ";", 1);
