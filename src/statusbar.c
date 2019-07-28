@@ -1572,8 +1572,6 @@ static void sb_print(void)
 				else
 					blink = SB_TRUE;
 				sb_print_get_time(routine->output, sizeof(routine->output), &start_tp, blink);
-				sb_copy_output(full_output, routine);
-				continue;
 			}
 
 			pthread_mutex_lock(&(routine->mutex));
@@ -1589,6 +1587,7 @@ static void sb_print(void)
 			}
 
 			sb_copy_output(full_output, routine);
+
 			pthread_mutex_unlock(&(routine->mutex));
 		}
 
