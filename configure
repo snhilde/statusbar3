@@ -716,6 +716,7 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 enable_silent_rules
+enable_debug
 enable_dependency_tracking
 with_libcurl
 with_x
@@ -1361,6 +1362,7 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-silent-rules   less verbose build output (undo: "make V=1")
   --disable-silent-rules  verbose build output (undo: "make V=0")
+  --enable-debug          Turn on debug output
   --enable-dependency-tracking
                           do not reject slow dependency extractors
   --disable-dependency-tracking
@@ -2829,6 +2831,13 @@ fi
 # also check for headers in x86_64-linux-gnu
 # CFLAGS="$CFLAGS -I/usr/include/x86_64-linux-gnu/"
 # CPPFLAGS="$CPPFLAGS -I/usr/include/x86_64-linux-gnu/"
+
+# Check for debug flag
+# Check whether --enable-debug was given.
+if test "${enable_debug+set}" = set; then :
+  enableval=$enable_debug; enable_debug="yes"
+fi
+
 
 # Check for programs.
 ac_ext=c
@@ -5404,6 +5413,10 @@ $as_echo "#define BUILD_RAM 1" >>confdefs.h
 $as_echo "#define BUILD_TIME 1" >>confdefs.h
 
 
+if test "$enable_debug"    = "yes"; then :
+  $as_echo "#define DEBUG 1" >>confdefs.h
+
+fi
 if test "$disk_headers"    = "yes"; then :
   $as_echo "#define BUILD_DISK 1" >>confdefs.h
 
