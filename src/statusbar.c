@@ -660,12 +660,15 @@ static SB_BOOL sb_network_get_paths(struct sb_network_t *rx_file, struct sb_netw
 	struct ifaddrs *ifaddrs = NULL;
 	struct ifaddrs *ifap;
 
+	sb_debug(routine->name, "init: finding interface path");
+
 	/* open socket and return file descriptor for it */
 	sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sock < 0) {
 		sb_print_error(routine, "Failed to open socket file descriptor");
 		return SB_FALSE;
 	}
+	sb_debug(routine->name, "init: opened socket");
 
 	/* get all network interfaces */
 	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
@@ -674,6 +677,7 @@ static SB_BOOL sb_network_get_paths(struct sb_network_t *rx_file, struct sb_netw
 		return SB_FALSE;
 	}
 	ifap = ifaddrs;
+	sb_debug(routine->name, "init: got list of interfaces");
 
 	/* go through each interface until we find an active one */
 	while (ifap != NULL) {
@@ -717,8 +721,12 @@ static void *sb_network_routine(void *thunk)
 	char                contents[128];
 	int                 color_level;
 
-	if (!sb_network_get_paths(&files[0], &files[1], routine))
+	if (!sb_network_get_paths(&files[0], &files[1], routine)) {
 		routine->run = SB_FALSE;
+	} else {
+		sb_debug(routine->name, "init: found %s for receiving", files[0].path);
+		sb_debug(routine->name, "init: found %s for sending", files[1].path);
+	}
 
 	while (routine->run) {
 		SB_START_TIMER;
