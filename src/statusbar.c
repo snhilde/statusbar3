@@ -1638,9 +1638,7 @@ int main(int argc, char *argv[])
 	enum sb_routine_e  next;
 	sb_routine_t      *routine_object;
 
-#ifdef DEBUG
-	printf("Running statusbar with debug output enabled\n");
-#endif
+	sb_debug("Running statusbar with debug output enabled");
 
 	num_routines = sizeof(chosen_routines) / sizeof(*chosen_routines);
 	if (num_routines < 1) {
