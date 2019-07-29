@@ -1681,19 +1681,19 @@ int main(int argc, char *argv[])
 				fprintf(stderr, "Weather routine: Zip Code must be 5 digits\n");
 				continue;
 			}
-			sb_debug("Zip Code is good\n");
+			sb_debug("Zip Code is good", SB_TRUE);
 
 			if (chosen_routines[i].seconds < 30) {
 				fprintf(stderr, "Weather routine: Interval time must be at least 30 seconds\n");
 				continue;
 			}
-			sb_debug("interval is good\n");
+			sb_debug("interval is good", SB_TRUE);
 
 			if (sb_weather_global_init() != 0) {
 				fprintf(stderr, "Weather routine: Failed to initialize global libcurl\n");
 				continue;
 			}
-			sb_debug("cURL global init is good\n");
+			sb_debug("cURL global init is good", SB_TRUE);
 		}
 
 		if (
