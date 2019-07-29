@@ -46,7 +46,12 @@ static void sb_debug(SB_BOOL tab, const char *message, ...)
 	va_list args;
 
 	va_start(args, message);
-	printf("%c%s\n", tab?'\t':0, message, args);
+
+	if (tab)
+		printf("\t");
+	vprintf(message, args);
+	printf("\n");
+
 	va_end(args);
 #else
 	(void)tab;
