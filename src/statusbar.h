@@ -106,3 +106,6 @@ sb_routine_t routine_array[DELIMITER + 1];
 
 /* This will be the ordered list of routines used for printing to the master string. */
 sb_routine_t *routine_list;
+
+/* Mutex for keeping debug prints from clashing. */
+pthread_mutex_t debug_mutex;
