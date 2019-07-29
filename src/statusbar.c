@@ -890,6 +890,7 @@ static void *sb_todo_routine(void *thunk)
 	} line[2] = {0};
 
 	snprintf(path, sizeof(path), "%s/%s", getenv("HOME"), todo_path);
+	sb_debug(routine->name, "init: using %s", path);
 
 	routine->color = routine->colors.normal;
 	while (routine->run) {
