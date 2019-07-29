@@ -40,17 +40,17 @@ static float sb_calc_magnitude(long number, char *unit)
 	return (number / powl(10, 3*(i-1))) / 1000.0;
 }
 
-static void sb_debug(SB_BOOL tab, const char *message, ...)
+static void sb_debug(const char *message, ...)
 {
 #ifdef DEBUG
 	va_list args;
 
 	va_start(args, message);
 
-	if (tab)
-		printf("\t");
+	pthread_mutex_lock(&debug_mutex);
 	vprintf(message, args);
 	printf("\n");
+	pthread_mutex_unlock(&debug_mutex);
 
 	va_end(args);
 #else
@@ -126,7 +126,7 @@ static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const cha
 	char  path[512];
 	FILE *fd;
 
-	sb_debug(SB_FALSE, "Reading %s%s", base, file?file:"");
+	sb_debug("Reading %s%s", base, file?file:"");
 	memset(buf, 0, size);
 
 	snprintf(path, sizeof(path), "%s%s", base, file?file:"");
@@ -159,7 +159,7 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 	char           path[512];
 	char           contents[512];
 
-	sb_debug(SB_TRUE, "Looking in %s for %s=%s", base, file, match);
+	sb_debug("\tLooking in %s for %s=%s", base, file, match);
 	memset(buf, 0, size);
 
 	dir = opendir(base);
@@ -1548,7 +1548,7 @@ static void sb_print_get_time(char buf[], size_t size, struct timespec *start_tp
 
 static void sb_print(void)
 {
-	sb_debug(SB_FALSE, "Starting main loop...");
+	sb_debug("Starting main loop...");
 	/* Here, we are not using the SB_START_TIMER and SB_STOP_TIMER macros,
  	 * because we need to use CLOCK_REALTIME to get the actual system time. */
 	SB_TIMER_VARS
@@ -1643,7 +1643,10 @@ int main(int argc, char *argv[])
 	enum sb_routine_e  next;
 	sb_routine_t      *routine_object;
 
-	sb_debug(SB_FALSE, "Running statusbar with debug output enabled");
+	/* Create debug mutex so we can printing debug statements. */
+	pthread_mutex_init(&debug_mutex, NULL);
+
+	sb_debug("Running statusbar with debug output enabled");
 
 	num_routines = sizeof(chosen_routines) / sizeof(*chosen_routines);
 	if (num_routines < 1) {
@@ -1670,7 +1673,7 @@ int main(int argc, char *argv[])
 		/* initialize the routine */
 		routine_object->routine = index;
 		if (index == DELIMITER) {
-			sb_debug(SB_FALSE, "Don't initialize delimiter");
+			sb_debug("Don't initialize delimiter");
 			continue;
 		} else if (index == WEATHER) {
 			/* From the libcurl docs, about curl_global_init():
@@ -1680,25 +1683,25 @@ int main(int argc, char *argv[])
 			 * functions of other libraries that are similarly thread unsafe, it could
 			 * conflict with any other thread that uses these other libraries."
 			 */
-			sb_debug(SB_FALSE, "Initialize weather arguments");
+			sb_debug("Initialize weather arguments");
 
 			if (strlen(zip_code) != 5 || strspn(zip_code, "0123456789") != 5) {
 				fprintf(stderr, "Weather routine: Zip Code must be 5 digits\n");
 				continue;
 			}
-			sb_debug(SB_TRUE, "Zip Code is good");
+			sb_debug("\tZip Code is good");
 
 			if (chosen_routines[i].seconds < 30) {
 				fprintf(stderr, "Weather routine: Interval time must be at least 30 seconds\n");
 				continue;
 			}
-			sb_debug(SB_TRUE, "interval is good");
+			sb_debug("\tinterval is good");
 
 			if (sb_weather_global_init() != 0) {
 				fprintf(stderr, "Weather routine: Failed to initialize global libcurl\n");
 				continue;
 			}
-			sb_debug(SB_TRUE, "cURL global init is good");
+			sb_debug("\tcURL global init is good");
 		}
 
 		if (
@@ -1722,16 +1725,16 @@ int main(int argc, char *argv[])
 			routine_object->name           = routine_names[index];
 			routine_object->run            = SB_TRUE;
 
-			sb_debug(SB_FALSE, "Initializing %s:", routine_object->name);
-			sb_debug(SB_TRUE, "Interval: %ld sec", routine_object->interval / 1000000);
-			sb_debug(SB_TRUE, "Normal color: %s", routine_object->colors.normal);
-			sb_debug(SB_TRUE, "Warning color: %s", routine_object->colors.warning);
-			sb_debug(SB_TRUE, "Error color: %s", routine_object->colors.error);
+			sb_debug("Initializing %s:", routine_object->name);
+			sb_debug("\tInterval: %ld sec", routine_object->interval / 1000000);
+			sb_debug("\tNormal color: %s", routine_object->colors.normal);
+			sb_debug("\tWarning color: %s", routine_object->colors.warning);
+			sb_debug("\tError color: %s", routine_object->colors.error);
 
 			/* create thread */
 			pthread_mutex_init(&(routine_object->mutex), NULL);
 			pthread_create(&(routine_object->thread), NULL, routine_object->thread_func, (void *)routine_object);
-			sb_debug(SB_TRUE, "Thread created");
+			sb_debug("\tThread created");
 		}
 	}
 
