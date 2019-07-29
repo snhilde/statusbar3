@@ -1570,10 +1570,11 @@ static void sb_print(void)
 		memset(full_output, 0, SBLENGTH);
 		for (routine = routine_list; routine != NULL; routine = routine->next) {
 			if (routine->routine == DELIMITER) {
+				sb_debug("Main loop", "adding delimiter");
 				strcat(full_output, ";");
-				sb_debug("Main loop", "Adding delimiter");
 				continue;
 			} else if (routine->routine == TIME) {
+				sb_debug("Main loop", "printing time");
 				if (blink)
 					blink = SB_FALSE;
 				else
@@ -1585,6 +1586,7 @@ static void sb_print(void)
 
 			len = strlen(routine->output);
 			if (len == 0) {
+				sb_debug(routine->name, "empty, skipping");
 				pthread_mutex_unlock(&(routine->mutex));
 				continue;
 			} else if (strlen(full_output)+len+1 > SBLENGTH+(color_text?10:0)) {
