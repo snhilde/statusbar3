@@ -1527,6 +1527,9 @@ static void sb_print_get_time(char buf[], size_t size, struct timespec *start_tp
 
 static void sb_print(void)
 {
+#ifdef DEBUG
+	printf("Starting main loop...\n");
+#endif
 	/* Here, we are not using the SB_START_TIMER and SB_STOP_TIMER macros,
  	 * because we need to use CLOCK_REALTIME to get the actual system time. */
 	SB_TIMER_VARS
