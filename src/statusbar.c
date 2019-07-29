@@ -1402,6 +1402,13 @@ static SB_BOOL sb_weather_init_curl(struct sb_weather_t *info, char errbuf[], sb
 	curl_easy_setopt(info->curl, CURLOPT_WRITEDATA, info);
 	sb_debug(routine->name, "init: set write callback data");
 
+#ifdef DEBUG
+	curl_easy_setopt(info->curl, CURLOPT_VERBOSE, 1L);
+	/* libcurl directs verbose output to stderr, so we'll
+ 	 * redirect it to stdout here. */
+	curl_easy_setopt(info->curl, CURLOPT_STDERR, stdout);
+	sb_debug(routine->name, "init: set verbose mode");
+#endif
 
 	return SB_TRUE;
 }
