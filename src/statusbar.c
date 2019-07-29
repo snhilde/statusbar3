@@ -1650,6 +1650,9 @@ int main(int argc, char *argv[])
 		/* initialize the routine */
 		routine_object->routine = index;
 		if (index == DELIMITER) {
+#ifdef DEBUG
+			printf("Don't initialize Delimiter\n");
+#endif
 			continue;
 		} else if (index == WEATHER) {
 			/* From the libcurl docs, about curl_global_init():
