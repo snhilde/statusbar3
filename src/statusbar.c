@@ -40,6 +40,22 @@ static float sb_calc_magnitude(long number, char *unit)
 	return (number / powl(10, 3*(i-1))) / 1000.0;
 }
 
+static void sb_debug(const char *message, ...)
+{
+#ifdef DEBUG
+	va_list args;
+	SB_BOOL tab;
+
+	va_start(args, message);
+	tab = va_arg(args, SB_BOOL);
+	va_end(args);
+
+	printf("%c%s\n", tab?'t':0, message);
+#else
+	(void)message;
+#endif
+}
+
 static SB_BOOL sb_isrgb(const char *color)
 {
 	/* Colors must be in this form: #RRGGBB, where RGB are hexadecimal digits. */
