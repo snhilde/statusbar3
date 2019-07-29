@@ -1686,7 +1686,7 @@ int main(int argc, char *argv[])
 				continue;
 			}
 #ifdef DEBUG
-			printf("cURL global init is good\n");
+			printf("\tcURL global init is good\n");
 #endif
 		}
 
