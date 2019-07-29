@@ -1160,6 +1160,7 @@ static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int 
 	/* Set daily forecast URL. */
 	curl_easy_setopt(info->curl, CURLOPT_URL, info->url2);
 
+	sb_debug(routine->name, "get forecast");
 	if (!sb_weather_perform_curl(info, "daily forecast", routine))
 		return SB_FALSE;
 
@@ -1222,6 +1223,7 @@ static SB_BOOL sb_weather_get_temperature(struct sb_weather_t *info, int *temp, 
 	/* Set hourly temperature URL. */
 	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
 
+	sb_debug(routine->name, "get current temperature");
 	if (!sb_weather_perform_curl(info, "temperature", routine))
 		return SB_FALSE;
 
@@ -1266,6 +1268,7 @@ static SB_BOOL sb_weather_get_temperature_url(struct sb_weather_t *info, sb_rout
 	cJSON *props;
 	cJSON *url;
 
+	sb_debug(routine->name, "init: getting temperature URL info");
 	if (!sb_weather_perform_curl(info, "forecast url", routine))
 		return SB_FALSE;
 
@@ -1275,6 +1278,7 @@ static SB_BOOL sb_weather_get_temperature_url(struct sb_weather_t *info, sb_rout
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
+	sb_debug(routine->name, "init: read JSON");
 
 	props = cJSON_GetObjectItem(json, "properties");
 	if (props == NULL) {
@@ -1282,6 +1286,7 @@ static SB_BOOL sb_weather_get_temperature_url(struct sb_weather_t *info, sb_rout
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
+	sb_debug(routine->name, "init: found \"properties\" node");
 
 	url = cJSON_GetObjectItem(props, "forecast");
 	if (url == NULL) {
@@ -1289,13 +1294,16 @@ static SB_BOOL sb_weather_get_temperature_url(struct sb_weather_t *info, sb_rout
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
+	sb_debug(routine->name, "init: found \"forecast\" node");
 
 	/* Store daily forecast URL. */
 	strncpy(info->url2, url->valuestring, sizeof(info->url2)-1);
+	sb_debug(routine->name, "init: stored daily forecast URL");
 
 	/* Store hourly temperature URL. */
 	strncpy(info->url, info->url2, sizeof(info->url)-1);
 	strncat(info->url, "/hourly", sizeof(info->url)-strlen(info->url)-1);
+	sb_debug(routine->name, "stored hourly temperature URL");
 
 	cJSON_Delete(json);
 	sb_weather_clear_response(info);
@@ -1315,6 +1323,7 @@ static SB_BOOL sb_weather_get_coordinates(struct sb_weather_t *info, sb_routine_
 	float  lat;
 	float  lon;
 
+	sb_debug(routine->name, "init: getting coordinates info");
 	if (!sb_weather_perform_curl(info, "coordinates", routine))
 		return SB_FALSE;
 
@@ -1324,6 +1333,7 @@ static SB_BOOL sb_weather_get_coordinates(struct sb_weather_t *info, sb_routine_
 		cJSON_Delete(json);
 		return SB_FALSE;
 	}
+	sb_debug(routine->name, "init: opened JSON");
 
 	/* Check that we don't have an error status code. */
 	tmp = cJSON_GetObjectItem(json, "status");
@@ -1335,16 +1345,26 @@ static SB_BOOL sb_weather_get_coordinates(struct sb_weather_t *info, sb_routine_
 
 	tmp = cJSON_GetObjectItem(json, "output");
 	tmp = cJSON_GetArrayItem(tmp, 0);
+	if (tmp == NULL) {
+		sb_print_error(routine, "Failed to find \"output\" node");
+		cJSON_Delete(json);
+		return SB_FALSE;
+	} else {
+		sb_debug(routine->name, "init: found \"output\" node");
+	}
 
 	num  = cJSON_GetObjectItem(tmp, "latitude");
 	lat = atof(num->valuestring);
+	sb_debug(routine->name, "init: using latitude %f", lat);
 
 	num  = cJSON_GetObjectItem(tmp, "longitude");
 	lon = atof(num->valuestring);
+	sb_debug(routine->name, "init: using longitude %f", lon);
 
 	/* Write coordinates into next url, which is for getting the zone and identifiers of the area. */
 	snprintf(info->url, sizeof(info->url)-1, "https://api.weather.gov/points/%.4f,%.4f", lat, lon);
 	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
+	sb_debug(routine->name, "init: prepared next URL");
 
 	cJSON_Delete(json);
 	sb_weather_clear_response(info);
@@ -1353,6 +1373,7 @@ static SB_BOOL sb_weather_get_coordinates(struct sb_weather_t *info, sb_routine_
 
 static SB_BOOL sb_weather_init_curl(struct sb_weather_t *info, char errbuf[], sb_routine_t *routine)
 {
+	sb_debug(routine->name, "init: intializing libcurl object");
 	memset(info, 0, sizeof(*info));
 
 	info->curl = curl_easy_init();
@@ -1363,14 +1384,24 @@ static SB_BOOL sb_weather_init_curl(struct sb_weather_t *info, char errbuf[], sb
 
 	info->headers = curl_slist_append(NULL, "accept: application/json");
 	curl_easy_setopt(info->curl, CURLOPT_HTTPHEADER, info->headers);
+	sb_debug(routine->name, "init: set header");
 
 	snprintf(info->url, sizeof(info->url)-1, "https://api.promaptools.com/service/us/zip-lat-lng/get/?zip=%s&key=17o8dysaCDrgv1c", zip_code);
 	curl_easy_setopt(info->curl, CURLOPT_URL, info->url);
+	sb_debug(routine->name, "init: set first URL");
 
 	curl_easy_setopt(info->curl, CURLOPT_ERRORBUFFER, errbuf);
+	sb_debug(routine->name, "init: set error buffer");
+
 	curl_easy_setopt(info->curl, CURLOPT_USERAGENT, "curl/7.9.7+");
+	sb_debug(routine->name, "init: set user agent");
+
 	curl_easy_setopt(info->curl, CURLOPT_WRITEFUNCTION, sb_weather_curl_cb);
+	sb_debug(routine->name, "init: set write callback function");
+
 	curl_easy_setopt(info->curl, CURLOPT_WRITEDATA, info);
+	sb_debug(routine->name, "init: set write callback data");
+
 
 	return SB_TRUE;
 }
@@ -1394,6 +1425,8 @@ static void *sb_weather_routine(void *thunk)
 		routine->run = SB_FALSE;
 	} else if (!sb_weather_get_temperature_url(&info, routine)) {
 		routine->run = SB_FALSE;
+	} else {
+		sb_debug(routine->name, "init: successful");
 	}
 
 	routine->color = routine->colors.normal;
@@ -1734,6 +1767,7 @@ int main(int argc, char *argv[])
 			}
 			sb_debug("Weather", "interval is good");
 
+			sb_debug("Weather", "starting libcurl global init");
 			if (sb_weather_global_init() != 0) {
 				fprintf(stderr, "Weather routine: Failed to initialize global libcurl\n");
 				continue;
