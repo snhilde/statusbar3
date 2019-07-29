@@ -1677,6 +1677,9 @@ int main(int argc, char *argv[])
 				fprintf(stderr, "Weather routine: Interval time must be at least 30 seconds\n");
 				continue;
 			}
+#ifdef DEBUG
+			printf("\tinterval is good\n");
+#endif
 
 			if (sb_weather_global_init() != 0) {
 				fprintf(stderr, "Weather routine: Failed to initialize global libcurl\n");
