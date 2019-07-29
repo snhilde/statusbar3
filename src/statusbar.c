@@ -40,18 +40,16 @@ static float sb_calc_magnitude(long number, char *unit)
 	return (number / powl(10, 3*(i-1))) / 1000.0;
 }
 
-static void sb_debug(const char *message, ...)
+static void sb_debug(SB_BOOL tab, const char *message, ...)
 {
 #ifdef DEBUG
 	va_list args;
-	SB_BOOL tab;
 
 	va_start(args, message);
-	tab = va_arg(args, SB_BOOL);
+	printf("%c%s\n", tab?'\t':0, message, args);
 	va_end(args);
-
-	printf("%c%s\n", tab?'t':0, message);
 #else
+	(void)tab;
 	(void)message;
 #endif
 }
