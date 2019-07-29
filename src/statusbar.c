@@ -1526,6 +1526,7 @@ static void sb_copy_output(char *full_output, sb_routine_t *routine)
 	}
 
 	strcat(full_output, routine->output);
+	sb_debug(routine->name, "%zu bytes: %s", strlen(routine->output), routine->output);
 
 	/* Print status2d terminator code. */
 	if (color_text)
