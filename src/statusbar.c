@@ -1669,6 +1669,9 @@ int main(int argc, char *argv[])
 				fprintf(stderr, "Weather routine: Zip Code must be 5 digits\n");
 				continue;
 			}
+#ifdef DEBUG
+			printf("\tZip Code is good\n");
+#endif
 
 			if (chosen_routines[i].seconds < 30) {
 				fprintf(stderr, "Weather routine: Interval time must be at least 30 seconds\n");
