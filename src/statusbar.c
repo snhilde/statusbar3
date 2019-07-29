@@ -1685,13 +1685,13 @@ int main(int argc, char *argv[])
 			 * functions of other libraries that are similarly thread unsafe, it could
 			 * conflict with any other thread that uses these other libraries."
 			 */
-			sb_debug("Init", "initialize weather arguments");
+			sb_debug("Init", "Checking weather arguments");
 
 			if (strlen(zip_code) != 5 || strspn(zip_code, "0123456789") != 5) {
 				fprintf(stderr, "Weather routine: Zip Code must be 5 digits\n");
 				continue;
 			}
-			sb_debug("Weather", "Zip Code is good");
+			sb_debug("Weather", "zip code is good");
 
 			if (chosen_routines[i].seconds < 30) {
 				fprintf(stderr, "Weather routine: Interval time must be at least 30 seconds\n");
@@ -1703,7 +1703,7 @@ int main(int argc, char *argv[])
 				fprintf(stderr, "Weather routine: Failed to initialize global libcurl\n");
 				continue;
 			}
-			sb_debug("Weather", "cURL global init is good");
+			sb_debug("Weather", "libcurl global init is good");
 		}
 
 		if (
