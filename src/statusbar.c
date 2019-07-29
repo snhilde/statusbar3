@@ -1601,6 +1601,7 @@ static void sb_print(void)
 			pthread_mutex_unlock(&(routine->mutex));
 		}
 
+		sb_debug("Main loop", "Send output to statusbar");
 		XStoreName(dpy, root, full_output);
 		XSync(dpy, False);
 
@@ -1615,6 +1616,7 @@ static void sb_print(void)
 		}
 	}
 #ifdef BUILD_WEATHER
+	sb_debug("Main loop", "clean up global libcurl object");
 	curl_global_cleanup(); /* Same lack of thread-safety as curl_global_init(). */
 #endif
 
