@@ -442,6 +442,7 @@ static void *sb_disk_routine(void *thunk)
 		color_level     = 1;
 		routine->color  = routine->colors.normal; /* start at normal */
 		num_filesystems = sizeof(filesystems) / sizeof(*filesystems);
+		sb_debug(routine->name, "reading %zu filesystems", num_filesystems);
 		for (i=0; i<num_filesystems; i++) {
 			if (statvfs(filesystems[i].path, &stats) != 0) {
 				sb_print_error(routine, "Failed to get stats for %s", filesystems[i].path);
