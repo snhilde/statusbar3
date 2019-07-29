@@ -1541,7 +1541,7 @@ static void sb_print_get_time(char buf[], size_t size, struct timespec *start_tp
 
 static void sb_print(void)
 {
-	sb_debug("Starting main loop...");
+	sb_debug(SB_FALSE, "Starting main loop...");
 	/* Here, we are not using the SB_START_TIMER and SB_STOP_TIMER macros,
  	 * because we need to use CLOCK_REALTIME to get the actual system time. */
 	SB_TIMER_VARS
@@ -1636,7 +1636,7 @@ int main(int argc, char *argv[])
 	enum sb_routine_e  next;
 	sb_routine_t      *routine_object;
 
-	sb_debug("Running statusbar with debug output enabled");
+	sb_debug(SB_FALSE, "Running statusbar with debug output enabled");
 
 	num_routines = sizeof(chosen_routines) / sizeof(*chosen_routines);
 	if (num_routines < 1) {
@@ -1663,7 +1663,7 @@ int main(int argc, char *argv[])
 		/* initialize the routine */
 		routine_object->routine = index;
 		if (index == DELIMITER) {
-			sb_debug("Don't initialize delimiter");
+			sb_debug(SB_FALSE, "Don't initialize delimiter");
 			continue;
 		} else if (index == WEATHER) {
 			/* From the libcurl docs, about curl_global_init():
@@ -1673,25 +1673,25 @@ int main(int argc, char *argv[])
 			 * functions of other libraries that are similarly thread unsafe, it could
 			 * conflict with any other thread that uses these other libraries."
 			 */
-			sb_debug("Initialize weather arguments");
+			sb_debug(SB_FALSE, "Initialize weather arguments");
 
 			if (strlen(zip_code) != 5 || strspn(zip_code, "0123456789") != 5) {
 				fprintf(stderr, "Weather routine: Zip Code must be 5 digits\n");
 				continue;
 			}
-			sb_debug("Zip Code is good", SB_TRUE);
+			sb_debug(SB_TRUE, "Zip Code is good");
 
 			if (chosen_routines[i].seconds < 30) {
 				fprintf(stderr, "Weather routine: Interval time must be at least 30 seconds\n");
 				continue;
 			}
-			sb_debug("interval is good", SB_TRUE);
+			sb_debug(SB_TRUE, "interval is good");
 
 			if (sb_weather_global_init() != 0) {
 				fprintf(stderr, "Weather routine: Failed to initialize global libcurl\n");
 				continue;
 			}
-			sb_debug("cURL global init is good", SB_TRUE);
+			sb_debug(SB_TRUE, "cURL global init is good");
 		}
 
 		if (
@@ -1715,16 +1715,16 @@ int main(int argc, char *argv[])
 			routine_object->name           = routine_names[index];
 			routine_object->run            = SB_TRUE;
 
-			sb_debug("Initializing %s:", routine_object->name);
-			sb_debug("Interval: %ld sec", routine_object->interval / 1000000, SB_TRUE);
-			sb_debug("Normal color: %s", routine_object->colors.normal, SB_TRUE);
-			sb_debug("Warning color: %s", routine_object->colors.warning, SB_TRUE);
-			sb_debug("Error color: %s", routine_object->colors.error, SB_TRUE);
+			sb_debug(SB_FALSE, "Initializing %s:", routine_object->name);
+			sb_debug(SB_TRUE, "Interval: %ld sec", routine_object->interval / 1000000);
+			sb_debug(SB_TRUE, "Normal color: %s", routine_object->colors.normal);
+			sb_debug(SB_TRUE, "Warning color: %s", routine_object->colors.warning);
+			sb_debug(SB_TRUE, "Error color: %s", routine_object->colors.error);
 
 			/* create thread */
 			pthread_mutex_init(&(routine_object->mutex), NULL);
 			pthread_create(&(routine_object->thread), NULL, routine_object->thread_func, (void *)routine_object);
-			sb_debug("Thread created", SB_TRUE);
+			sb_debug(SB_TRUE, "Thread created");
 		}
 	}
 
