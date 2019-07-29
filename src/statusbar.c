@@ -126,6 +126,8 @@ static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const cha
 	char  path[512];
 	FILE *fd;
 
+	sb_debug(SB_FALSE, "Reading %s%s", base, file?file:"");
+
 	memset(buf, 0, size);
 
 	snprintf(path, sizeof(path), "%s%s", base, file?file:"");
