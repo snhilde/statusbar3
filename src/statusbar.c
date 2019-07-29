@@ -1693,9 +1693,7 @@ int main(int argc, char *argv[])
 				fprintf(stderr, "Weather routine: Failed to initialize global libcurl\n");
 				continue;
 			}
-#ifdef DEBUG
-			printf("\tcURL global init is good\n");
-#endif
+			sb_debug("cURL global init is good\n");
 		}
 
 		if (
