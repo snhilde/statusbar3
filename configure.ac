@@ -6,6 +6,11 @@ AM_INIT_AUTOMAKE
 # CFLAGS="$CFLAGS -I/usr/include/x86_64-linux-gnu/"
 # CPPFLAGS="$CPPFLAGS -I/usr/include/x86_64-linux-gnu/"
 
+# Check for debug flag
+AC_ARG_ENABLE([debug],
+			  [AC_HELP_STRING([--enable-debug], [Turn on debug output])],
+			  [enable_debug="yes"])
+
 # Check for programs.
 AC_PROG_CC
 
@@ -99,6 +104,7 @@ AC_DEFINE([BUILD_LOAD])
 AC_DEFINE([BUILD_RAM])
 AC_DEFINE([BUILD_TIME])
 
+AS_IF([test "$enable_debug"    = "yes"], [AC_DEFINE([DEBUG])])
 AS_IF([test "$disk_headers"    = "yes"], [AC_DEFINE([BUILD_DISK])])
 AS_IF([test "$todo_headers"    = "yes"], [AC_DEFINE([BUILD_TODO])])
 AS_IF([test "$net_headers"     = "yes"], [AC_DEFINE([BUILD_NETWORK])])
