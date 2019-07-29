@@ -1676,13 +1676,12 @@ int main(int argc, char *argv[])
 			 * conflict with any other thread that uses these other libraries."
 			 */
 			sb_debug("Initialize weather arguments");
+
 			if (strlen(zip_code) != 5 || strspn(zip_code, "0123456789") != 5) {
 				fprintf(stderr, "Weather routine: Zip Code must be 5 digits\n");
 				continue;
 			}
-#ifdef DEBUG
-			printf("\tZip Code is good\n");
-#endif
+			sb_debug("Zip Code is good\n");
 
 			if (chosen_routines[i].seconds < 30) {
 				fprintf(stderr, "Weather routine: Interval time must be at least 30 seconds\n");
