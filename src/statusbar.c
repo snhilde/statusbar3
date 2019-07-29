@@ -799,6 +799,7 @@ static void *sb_ram_routine(void *thunk)
 		routine->run = SB_FALSE;
 	} else {
 		total_f = sb_calc_magnitude(total_l, &total_unit);
+		sb_debug(routine->name, "init: calculated total bytes free");
 	}
 
 	while (routine->run) {
