@@ -1627,6 +1627,7 @@ static void sb_print(void)
 	root = RootWindow(dpy, DefaultScreen(dpy));
 
 	while (1) {
+		sb_debug("\nMain loop", "starting print loop");
 		clock_gettime(CLOCK_REALTIME, &start_tp); /* START TIMER */
 
 		memset(full_output, 0, SBLENGTH);
