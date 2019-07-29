@@ -261,10 +261,12 @@ static void *sb_battery_routine(void *thunk)
 #ifdef BUILD_CPU_TEMP
 static SB_BOOL sb_cpu_temp_get_filename(char path[], char filename[], size_t size, sb_routine_t *routine)
 {
-	/* This will open the directory at path and look at every file until it finds one name
+	/* This will open the directory at path and look at every file until it finds one named
 	 * temp*_input, where * is a number from 0 to 9. It will then save that filename to filename. */
 	DIR           *dir;
 	struct dirent *dirent;
+
+	sb_debug(routine->name, "init: looking for file at %s", path);
 
 	dir = opendir(path);
 	if (dir == NULL) {
@@ -306,6 +308,8 @@ static void *sb_cpu_temp_routine(void *thunk)
 		routine->run = SB_FALSE;
 	} else if (!sb_cpu_temp_get_filename(path, filename, sizeof(filename), routine)) {
 		routine->run = SB_FALSE;
+	} else {
+		sb_debug(routine->name, "init: found %s%s", path, filename);
 	}
 
 	while (routine->run) {
