@@ -1675,9 +1675,7 @@ int main(int argc, char *argv[])
 			 * functions of other libraries that are similarly thread unsafe, it could
 			 * conflict with any other thread that uses these other libraries."
 			 */
-#ifdef DEBUG
-			printf("Initialize Weather arguments\n");
-#endif
+			sb_debug("Initialize weather arguments");
 			if (strlen(zip_code) != 5 || strspn(zip_code, "0123456789") != 5) {
 				fprintf(stderr, "Weather routine: Zip Code must be 5 digits\n");
 				continue;
