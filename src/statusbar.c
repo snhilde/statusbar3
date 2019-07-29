@@ -1702,6 +1702,14 @@ int main(int argc, char *argv[])
 			routine_object->name           = routine_names[index];
 			routine_object->run            = SB_TRUE;
 
+#ifdef DEBUG
+			printf("Initializing %s:\n", routine_object->name);
+			printf("\tInterval: %ld sec\n", routine_object->interval / 1000000);
+			printf("\tNormal color: %s\n", routine_object->colors.normal);
+			printf("\tWarning color: %s\n", routine_object->colors.warning);
+			printf("\tError color: %s\n", routine_object->colors.error);
+#endif
+
 			/* create thread */
 			pthread_mutex_init(&(routine_object->mutex), NULL);
 			pthread_create(&(routine_object->thread), NULL, routine_object->thread_func, (void *)routine_object);
