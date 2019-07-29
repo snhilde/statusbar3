@@ -1713,6 +1713,9 @@ int main(int argc, char *argv[])
 			/* create thread */
 			pthread_mutex_init(&(routine_object->mutex), NULL);
 			pthread_create(&(routine_object->thread), NULL, routine_object->thread_func, (void *)routine_object);
+#ifdef DEBUG
+			printf("\tThread created\n");
+#endif
 		}
 	}
 
