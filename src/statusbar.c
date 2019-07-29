@@ -40,16 +40,18 @@ static float sb_calc_magnitude(long number, char *unit)
 	return (number / powl(10, 3*(i-1))) / 1000.0;
 }
 
-static void sb_debug(const char *message, ...)
+static void sb_debug(const char *name, const char *message, ...)
 {
 #ifdef DEBUG
 	va_list args;
+	char    input[256];
 
 	va_start(args, message);
 
+	vsnprintf(input, sizeof(input), message, args);
+
 	pthread_mutex_lock(&debug_mutex);
-	vprintf(message, args);
-	printf("\n");
+	printf("%s: %s\n", name, input);
 	pthread_mutex_unlock(&debug_mutex);
 
 	va_end(args);
