@@ -75,6 +75,11 @@ make
 make install
 ```
 
+If you want to turn on debug output, use this argument:
+```
+./configure --enable-debug
+```
+
 
 ## Usage ##
 If the binary is installed somewhere in your PATH, you need only run `statusbar`.
