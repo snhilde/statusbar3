@@ -1717,13 +1717,11 @@ int main(int argc, char *argv[])
 			routine_object->name           = routine_names[index];
 			routine_object->run            = SB_TRUE;
 
-#ifdef DEBUG
-			printf("Initializing %s:\n", routine_object->name);
-			printf("\tInterval: %ld sec\n", routine_object->interval / 1000000);
-			printf("\tNormal color: %s\n", routine_object->colors.normal);
-			printf("\tWarning color: %s\n", routine_object->colors.warning);
-			printf("\tError color: %s\n", routine_object->colors.error);
-#endif
+			sb_debug("Initializing %s:", routine_object->name);
+			sb_debug("Interval: %ld sec", routine_object->interval / 1000000, SB_TRUE);
+			sb_debug("Normal color: %s", routine_object->colors.normal, SB_TRUE);
+			sb_debug("Warning color: %s", routine_object->colors.warning, SB_TRUE);
+			sb_debug("Error color: %s", routine_object->colors.error, SB_TRUE);
 
 			/* create thread */
 			pthread_mutex_init(&(routine_object->mutex), NULL);
