@@ -1571,6 +1571,7 @@ static void sb_print(void)
 		for (routine = routine_list; routine != NULL; routine = routine->next) {
 			if (routine->routine == DELIMITER) {
 				strcat(full_output, ";");
+				sb_debug("Main loop", "Adding delimiter");
 				continue;
 			} else if (routine->routine == TIME) {
 				if (blink)
