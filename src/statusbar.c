@@ -127,7 +127,6 @@ static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const cha
 	FILE *fd;
 
 	sb_debug(SB_FALSE, "Reading %s%s", base, file?file:"");
-
 	memset(buf, 0, size);
 
 	snprintf(path, sizeof(path), "%s%s", base, file?file:"");
@@ -160,6 +159,7 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 	char           path[512];
 	char           contents[512];
 
+	sb_debug(SB_TRUE, "Looking in %s for %s=%s", base, file, match);
 	memset(buf, 0, size);
 
 	dir = opendir(base);
