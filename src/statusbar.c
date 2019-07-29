@@ -217,6 +217,8 @@ static void *sb_battery_routine(void *thunk)
 			routine->run = SB_FALSE;
 		}
 	}
+	if (routine->run)
+		sb_debug(routine->name, "init: found %s", path);
 
 	while (routine->run) {
 		SB_START_TIMER;
