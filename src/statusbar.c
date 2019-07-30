@@ -363,7 +363,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 #ifdef BUILD_CPU_USAGE
 static SB_BOOL sb_cpu_usage_get_ratio(int *ratio)
 {
-	/* Calculate the thread-to-cpu ratio. */
+	/* Calculate the thread-to-processor ratio. */
 	int procs;  /* number of processors */
 	int online; /* number online */
 
