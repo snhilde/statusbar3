@@ -380,7 +380,6 @@ static SB_BOOL sb_cpu_usage_get_ratio(int *ratio)
 
 static void *sb_cpu_usage_routine(void *thunk)
 {
-	/* TODO: why is sysconf(_SC_NPROCESSORS_ONLN) or num cores not necessary here? */
 	sb_routine_t      *routine = thunk;
 
 #ifdef BUILD_CPU_USAGE
