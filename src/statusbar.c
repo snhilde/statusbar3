@@ -620,6 +620,10 @@ static void *sb_load_routine(void *thunk)
 	while (routine->run) {
 		SB_START_TIMER;
 
+		if (getloadavg(loads, 3) != 3) {
+			sb_print_error(routine, "Failed to read loads");
+			break;
+		}
 		if (!sb_read_file(contents, sizeof(contents), path, NULL, routine))
 			break;
 		if (sscanf(contents, "%lf %lf %lf", &av[0], &av[1], &av[2]) != 3) {
