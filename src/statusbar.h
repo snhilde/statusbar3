@@ -7,6 +7,10 @@
 #include <dirent.h>
 #include <math.h>
 
+#ifdef BUILD_CPU_USAGE
+  #include <sys/sysinfo.h>
+#endif
+
 #ifdef BUILD_DISK
   #include <sys/statvfs.h>
 #endif
