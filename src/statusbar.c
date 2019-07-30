@@ -363,7 +363,8 @@ static void *sb_cpu_temp_routine(void *thunk)
 #ifdef BUILD_CPU_USAGE
 static SB_BOOL sb_cpu_usage_get_ratio(int *ratio)
 {
-	int procs; /* number of processors available */
+	int procs;  /* number of processors */
+	int online; /* number online */
 
 	return SB_TRUE;
 }
