@@ -623,16 +623,16 @@ static void *sb_load_routine(void *thunk)
 			break;
 		}
 
-		if (av[0] > 2 || av[1] > 2 || av[2] > 2) {
+		if (loads[0] > 2 || loads[1] > 2 || loads[2] > 2) {
 			routine->color = routine->colors.error;
-		} else if (av[0] > 1 || av[1] > 1 || av[2] > 1) {
+		} else if (loads[0] > 1 || loads[1] > 1 || loads[2] > 1) {
 			routine->color = routine->colors.warning;
 		} else {
 			routine->color = routine->colors.normal;
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output), "%.2f, %.2f, %.2f", av[0], av[1], av[2]);
+		snprintf(routine->output, sizeof(routine->output), "%.2f, %.2f, %.2f", loads[0], loads[1], loads[2]);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
