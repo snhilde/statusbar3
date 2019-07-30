@@ -403,6 +403,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		sb_print_error(routine, "Failed to determine ratio");
 		routine->run = SB_FALSE;
 	}
+	sb_debug(routine->name, "init: thread-to-processor ratio: %d", ratio);
 
 	memset(&old, 0, sizeof(old));
 	memset(&new, 0, sizeof(new));
