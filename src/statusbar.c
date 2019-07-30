@@ -361,6 +361,10 @@ static void *sb_cpu_temp_routine(void *thunk)
 
 /* --- CPU USAGE ROUTINE --- */
 #ifdef BUILD_CPU_USAGE
+static SB_BOOL sb_cpu_usage_get_ratio(int *ratio)
+{
+
+}
 #endif
 
 static void *sb_cpu_usage_routine(void *thunk)
