@@ -420,7 +420,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		used  = (new.user-old.user) + (new.nice-old.nice) + (new.system-old.system);
 		total = (new.user-old.user) + (new.nice-old.nice) + (new.system-old.system) + (new.idle-old.idle);
 		perc  = ((used * 100) / total) / ratio;
-		perc  = sb_normalize_perc((used*100)/total);
+		perc  = sb_normalize_perc(perc);
 		if (perc < 75) {
 			routine->color = routine->colors.normal;
 		} else if (perc < 90) {
