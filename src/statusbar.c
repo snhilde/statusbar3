@@ -66,7 +66,7 @@ static void sb_debug(const char *name, const char *message, ...)
 
 	va_end(args);
 #else
-	(void)tab;
+	(void)name;
 	(void)message;
 #endif
 }
