@@ -64,6 +64,9 @@ AC_CHECK_HEADERS([math.h],
 				 [],
 				 [AC_MSG_ERROR([Missing <math.h>])])
 
+AC_CHECK_HEADERS([sys/sysinfo.h],
+				 [cpu_usage_headers="yes"],
+				 [AC_MSG_NOTICE([Missing <sys/sysinfo.h>, not running cpu usage routine])])
 AC_CHECK_HEADERS([sys/statvfs.h],
 				 [disk_headers="yes"],
 				 [AC_MSG_NOTICE([Missing <sys/statvfs.h>, not running disk routine])])
