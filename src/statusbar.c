@@ -398,6 +398,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		unsigned long idle;
 	} old, new;
 
+	sb_debug(routine->name, "init: get thread-to-processor ratio");
 	if (!sb_cpu_usage_get_ratio(&ratio)) {
 		sb_print_error(routine, "Failed to determine ratio");
 		routine->run = SB_FALSE;
