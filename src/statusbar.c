@@ -366,6 +366,8 @@ static SB_BOOL sb_cpu_usage_get_ratio(int *ratio)
 	int procs;  /* number of processors */
 	int online; /* number online */
 
+	procs = get_nprocs_conf();
+
 	return SB_TRUE;
 }
 #endif
