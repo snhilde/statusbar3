@@ -367,6 +367,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 
 #ifdef BUILD_CPU_USAGE
 	SB_TIMER_VARS;
+	int                ratio;
 	static const char *path = "/proc/stat";
 	char               contents[128];
 	unsigned long      used;
