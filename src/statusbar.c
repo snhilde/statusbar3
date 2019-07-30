@@ -18,9 +18,9 @@
 		}
 
 #define SB_TIMER_VARS \
-	struct timespec  start_tp  = {0}; \
-	struct timespec  finish_tp = {0}; \
-	long             elapsed_usec;
+	struct timespec start_tp  = {0}; \
+	struct timespec finish_tp = {0}; \
+	long            elapsed_usec;
 
 /* --- HELPER FUNCTIONS --- */
 static float sb_calc_magnitude(long number, char *unit)
@@ -43,15 +43,25 @@ static float sb_calc_magnitude(long number, char *unit)
 static void sb_debug(const char *name, const char *message, ...)
 {
 #ifdef DEBUG
+	static struct timespec tp;
+	static struct tm       tm;
+	static const char     *time_format = "%H:%M:%S";
+
 	va_list args;
 	char    input[256];
+	char    timestamp[32];
 
 	va_start(args, message);
 
 	vsnprintf(input, sizeof(input), message, args);
 
 	pthread_mutex_lock(&debug_mutex);
-	printf("%s: %s\n", name, input);
+	memset(&tm, 0, sizeof(tm));
+	clock_gettime(CLOCK_REALTIME, &tp);
+	localtime_r(&(tp.tv_sec), &tm);
+	strftime(timestamp, sizeof(timestamp), time_format, &tm);
+
+	printf("%s.%ld: %s: %s\n", timestamp, tp.tv_nsec, name, input);
 	pthread_mutex_unlock(&debug_mutex);
 
 	va_end(args);
