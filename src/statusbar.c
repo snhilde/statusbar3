@@ -632,7 +632,7 @@ static void *sb_load_routine(void *thunk)
 		}
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output), "%.2f, %.2f, %.2f", loads[0], loads[1], loads[2]);
+		snprintf(routine->output, sizeof(routine->output), "%.2lf, %.2lf, %.2lf", loads[0], loads[1], loads[2]);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		SB_STOP_TIMER;
