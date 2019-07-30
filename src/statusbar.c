@@ -369,6 +369,9 @@ static SB_BOOL sb_cpu_usage_get_ratio(int *ratio)
 	procs  = get_nprocs_conf();
 	online = get_nprocs();
 
+	if (procs < 1 || online < 1)
+		return SB_FALSE;
+
 	return SB_TRUE;
 }
 #endif
