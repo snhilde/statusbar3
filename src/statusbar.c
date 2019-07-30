@@ -360,6 +360,9 @@ static void *sb_cpu_temp_routine(void *thunk)
 
 
 /* --- CPU USAGE ROUTINE --- */
+#ifdef BUILD_CPU_USAGE
+#endif
+
 static void *sb_cpu_usage_routine(void *thunk)
 {
 	/* TODO: why is sysconf(_SC_NPROCESSORS_ONLN) or num cores not necessary here? */
