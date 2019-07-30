@@ -379,6 +379,8 @@ static void *sb_cpu_usage_routine(void *thunk)
 		unsigned long idle;
 	} old, new;
 
+	if (!sb_get_cpu_ratio(&ratio))
+
 	memset(&old, 0, sizeof(old));
 	memset(&new, 0, sizeof(new));
 	while (routine->run) {
