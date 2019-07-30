@@ -387,7 +387,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		unsigned long idle;
 	} old, new;
 
-	if (!sb_get_cpu_ratio(&ratio)) {
+	if (!sb_cpu_usage_get_ratio(&ratio)) {
 		sb_print_error(routine, "Failed to determine ratio");
 		routine->run = SB_FALSE;
 	}
