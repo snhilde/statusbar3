@@ -5223,6 +5223,21 @@ fi
 done
 
 
+for ac_header in sys/sysinfo.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "sys/sysinfo.h" "ac_cv_header_sys_sysinfo_h" "$ac_includes_default"
+if test "x$ac_cv_header_sys_sysinfo_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_SYS_SYSINFO_H 1
+_ACEOF
+ cpu_usage_headers="yes"
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Missing <sys/sysinfo.h>, not running cpu usage routine" >&5
+$as_echo "$as_me: Missing <sys/sysinfo.h>, not running cpu usage routine" >&6;}
+fi
+
+done
+
 for ac_header in sys/statvfs.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "sys/statvfs.h" "ac_cv_header_sys_statvfs_h" "$ac_includes_default"
@@ -5402,8 +5417,6 @@ $as_echo "#define BUILD_BATTERY 1" >>confdefs.h
 
 $as_echo "#define BUILD_CPU_TEMP 1" >>confdefs.h
 
-$as_echo "#define BUILD_CPU_USAGE 1" >>confdefs.h
-
 $as_echo "#define BUILD_FAN 1" >>confdefs.h
 
 $as_echo "#define BUILD_LOAD 1" >>confdefs.h
@@ -5413,31 +5426,35 @@ $as_echo "#define BUILD_RAM 1" >>confdefs.h
 $as_echo "#define BUILD_TIME 1" >>confdefs.h
 
 
-if test "$enable_debug"    = "yes"; then :
+if test "$enable_debug"      = "yes"; then :
   $as_echo "#define DEBUG 1" >>confdefs.h
 
 fi
-if test "$disk_headers"    = "yes"; then :
+if test "$cpu_usage_headers" = "yes"; then :
+  $as_echo "#define BUILD_CPU_USAGE 1" >>confdefs.h
+
+fi
+if test "$disk_headers"      = "yes"; then :
   $as_echo "#define BUILD_DISK 1" >>confdefs.h
 
 fi
-if test "$todo_headers"    = "yes"; then :
+if test "$todo_headers"      = "yes"; then :
   $as_echo "#define BUILD_TODO 1" >>confdefs.h
 
 fi
-if test "$net_headers"     = "yes"; then :
+if test "$net_headers"       = "yes"; then :
   $as_echo "#define BUILD_NETWORK 1" >>confdefs.h
 
 fi
-if test "$net_headers"     = "yes" -a "$wifi_headers"  = "yes"; then :
+if test "$net_headers"       = "yes" -a "$wifi_headers"  = "yes"; then :
   $as_echo "#define BUILD_WIFI 1" >>confdefs.h
 
 fi
-if test "$volume_headers"  = "yes" -a "$volume_lib"   != "no"; then :
+if test "$volume_headers"    = "yes" -a "$volume_lib"   != "no"; then :
   $as_echo "#define BUILD_VOLUME 1" >>confdefs.h
 
 fi
-if test "$weather_headers" = "yes" -a "$weather_lib"  != "no"; then :
+if test "$weather_headers"   = "yes" -a "$weather_lib"  != "no"; then :
   $as_echo "#define BUILD_WEATHER 1" >>confdefs.h
 
 fi
