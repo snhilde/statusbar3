@@ -613,9 +613,7 @@ static void *sb_load_routine(void *thunk)
 
 #ifdef BUILD_LOAD
 	SB_TIMER_VARS;
-	static const char *path = "/proc/loadavg";
-	char               contents[128];
-	double             loads[3];
+	double loads[3];
 
 	while (routine->run) {
 		SB_START_TIMER;
