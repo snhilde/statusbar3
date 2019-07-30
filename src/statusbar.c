@@ -364,6 +364,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 static SB_BOOL sb_cpu_usage_get_ratio(int *ratio)
 {
 
+	return SB_TRUE;
 }
 #endif
 
