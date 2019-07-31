@@ -73,9 +73,6 @@ AC_CHECK_HEADERS([sys/sysinfo.h],
 AC_CHECK_HEADERS([sys/statvfs.h],
 				 [disk_headers="yes"],
 				 [AC_MSG_NOTICE([Missing <sys/statvfs.h>, not running disk routine])])
-AC_CHECK_HEADERS([ctype.h],
-				 [todo_headers="yes"],
-				 [AC_MSG_NOTICE([Missing <ctype.h>, not running TODO routine])])
 AC_CHECK_HEADERS([sys/ioctl.h ifaddrs.h net/if.h],
 				 [net_headers="yes"],
 				 [net_headers="no";
