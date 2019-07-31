@@ -1754,6 +1754,7 @@ static void sb_print(void)
 		XStoreName(dpy, root, full_output);
 		XSync(dpy, False);
 
+		sb_leak_check("Main loop");
 		clock_gettime(CLOCK_REALTIME, &finish_tp); /* STOP TIMER */
 		elapsed_usec = (finish_tp.tv_sec - start_tp.tv_sec) +
 				((finish_tp.tv_nsec - start_tp.tv_nsec) / 1000);
