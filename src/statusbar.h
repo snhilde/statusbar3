@@ -6,6 +6,8 @@
 #include <string.h>
 #include <dirent.h>
 #include <math.h>
+#include <ctype.h>
+#include <stdarg.h>
 
 #ifdef DEBUG_LEAKS
   #include <sanitizer/lsan_interface.h>
@@ -17,10 +19,6 @@
 
 #ifdef BUILD_DISK
   #include <sys/statvfs.h>
-#endif
-
-#ifdef BUILD_TODO
-  #include <ctype.h>
 #endif
 
 #ifdef BUILD_NETWORK
