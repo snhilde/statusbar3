@@ -1803,8 +1803,12 @@ int main(int argc, char *argv[])
 	enum sb_routine_e  next;
 	sb_routine_t      *routine_object;
 
+#ifdef DEBUG
 	/* Create debug mutex so we can printing debug statements. */
 	pthread_mutex_init(&debug_mutex, NULL);
+#else
+	(void)debug_mutex;
+#endif
 
 	sb_debug("Init", "running statusbar with debug output enabled");
 
