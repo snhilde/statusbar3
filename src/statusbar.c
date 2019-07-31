@@ -620,6 +620,7 @@ static void *sb_fan_routine(void *thunk)
 		if (max < 0)
 			routine->run = SB_FALSE;
 	}
+	sb_leak_check(routine->name);
 
 	while (routine->run) {
 		SB_START_TIMER;
@@ -645,6 +646,7 @@ static void *sb_fan_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output), "%ld RPM", now);
 		pthread_mutex_unlock(&(routine->mutex));
 
+		sb_leak_check(routine->name);
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
@@ -653,6 +655,7 @@ static void *sb_fan_routine(void *thunk)
 #endif
 
 	routine->run = SB_FALSE;
+	sb_leak_check(routine->name);
 	return NULL;
 }
 
