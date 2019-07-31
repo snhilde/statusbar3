@@ -10,6 +10,9 @@ AM_INIT_AUTOMAKE
 AC_ARG_ENABLE([debug],
 			  [AC_HELP_STRING([--enable-debug], [Turn on debug output])],
 			  [enable_debug="yes"])
+AC_CHECK_HEADERS([sanitizer/lsan_interface.h],
+				 [lsan_headers="yes"],
+				 [])
 
 # Check for programs.
 AC_PROG_CC
@@ -107,6 +110,7 @@ AC_DEFINE([BUILD_RAM])
 AC_DEFINE([BUILD_TIME])
 
 AS_IF([test "$enable_debug"      = "yes"], [AC_DEFINE([DEBUG])])
+AS_IF([test "$enable_debug"      = "yes" -a "$lsan_headers" = "yes"], [AC_DEFINE([DEBUG_LEAKS])])
 AS_IF([test "$cpu_usage_headers" = "yes"], [AC_DEFINE([BUILD_CPU_USAGE])])
 AS_IF([test "$disk_headers"      = "yes"], [AC_DEFINE([BUILD_DISK])])
 AS_IF([test "$todo_headers"      = "yes"], [AC_DEFINE([BUILD_TODO])])
