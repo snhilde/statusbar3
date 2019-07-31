@@ -90,6 +90,10 @@ static SB_BOOL sb_isrgb(const char *color)
 	return SB_TRUE;
 }
 
+static void sb_leak_check(const char *name)
+{
+}
+
 static long sb_normalize_perc(long num)
 {
 	/* This will keep percentages within the range of 0-100. */
