@@ -33,6 +33,7 @@ Currently, it displays this __system__ information:
 	* [Weather routine](#weather-routine)
 	* [Colors](#colors)
 * [Contributing](#contributing)
+* [Development](#development)
 * [Author](#author)
 * [License](#license)
 * [Acknowledgments](#acknowledgments)
@@ -73,11 +74,6 @@ If you do not use this patch, you should set `color_text` to `SB_FALSE` in confi
 ./configure
 make
 make install
-```
-
-If you want to turn on debug output, use this argument:
-```
-./configure --enable-debug
 ```
 
 
@@ -152,6 +148,25 @@ If `color_text` is set to SB_FALSE, then these color codes will be ignored.
 ## Contributing ##
 Send a pull request or a message. Additional functionality is welcome, as are suggestions to make the program leaner,
 faster, and better performing.
+
+
+## Development ##
+To turn on debug output, use `--enable-debug` with the configure script like so:
+```
+	./configure --enable-debug
+```
+This will enable a fairly large volume of output to stdout, including each routine's output and libcurl's verbose
+output.
+
+This will also enable LeakSanitizer, if your compiler supports it. There is one issue with this: because Statusbar runs
+in a loop (with each routine in its own, separate loop), it never quits. This is a problem because LSAN runs its leak
+detection after the global destructors after finished, an event that never takes place with Statusbar. To work around
+this, we will manually check for leaks at various points throughout the program -- mostly after routine inits and after
+a routine's loop has finished a cycle -- using these LSAN functions:
+```
+	__lsan_do_leak_check();
+	__lsan_disable();
+```
 
 
 ## Author ##
