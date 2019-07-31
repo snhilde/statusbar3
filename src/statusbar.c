@@ -93,6 +93,8 @@ static SB_BOOL sb_isrgb(const char *color)
 static void sb_leak_check(const char *name)
 {
 #ifdef DEBUG
+#else
+	(void)name;
 #endif
 }
 
