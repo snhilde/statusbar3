@@ -95,6 +95,7 @@ static void sb_leak_check(const char *name)
 #ifdef DEBUG
 	__lsan_do_leak_check();
 	__lsan_disable();
+	sb_debug(name, "no leaks found");
 #else
 	(void)name;
 #endif
