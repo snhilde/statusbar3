@@ -71,9 +71,9 @@ If you do not use this patch, you should set `color_text` to `SB_FALSE` in confi
 
 ## Installation ##
 ```
-	./configure
-	make
-	make install
+./configure
+make
+make install
 ```
 
 
