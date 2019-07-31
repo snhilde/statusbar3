@@ -1771,6 +1771,7 @@ static void sb_print(void)
 #endif
 
 	fprintf(stderr, "Closing print loop, exiting program...\n");
+	sb_leak_check("Main loop");
 	exit(EXIT_FAILURE);
 }
 
