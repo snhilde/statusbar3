@@ -423,6 +423,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		routine->run = SB_FALSE;
 	}
 	sb_debug(routine->name, "init: thread-to-processor ratio: %d", ratio);
+	sb_leak_check(routine->name);
 
 	memset(&old, 0, sizeof(old));
 	memset(&new, 0, sizeof(new));
@@ -457,6 +458,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 		old.system = new.system;
 		old.idle   = new.idle;
 
+		sb_leak_check(routine->name);
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
@@ -465,6 +467,7 @@ static void *sb_cpu_usage_routine(void *thunk)
 #endif
 
 	routine->run = SB_FALSE;
+	sb_leak_check(routine->name);
 	return NULL;
 }
 
