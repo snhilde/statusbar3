@@ -1898,6 +1898,7 @@ int main(int argc, char *argv[])
 			sb_debug(routine_object->name, "Thread created");
 		}
 	}
+	sb_leak_check("Main");
 
 	/* print loop */
 	sb_print();
