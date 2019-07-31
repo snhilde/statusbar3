@@ -7,6 +7,10 @@
 #include <dirent.h>
 #include <math.h>
 
+#ifdef DEBUG_LEAKS
+  #include <sanitizer/lsan_interface.h>
+#endif
+
 #ifdef BUILD_CPU_USAGE
   #include <sys/sysinfo.h>
 #endif
