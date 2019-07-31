@@ -69,6 +69,9 @@ AC_CHECK_HEADERS([math.h],
 AC_CHECK_HEADERS([ctype.h],
 				 [],
 				 [AC_MSG_ERROR([Missing <ctype.h>])])
+AC_CHECK_HEADERS([stdarg.h],
+				 [],
+				 [AC_MSG_ERROR([Missing <stdarg.h>])])
 
 AC_CHECK_HEADERS([sys/sysinfo.h],
 				 [cpu_usage_headers="yes"],
