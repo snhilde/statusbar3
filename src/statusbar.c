@@ -92,6 +92,8 @@ static SB_BOOL sb_isrgb(const char *color)
 
 static void sb_leak_check(const char *name)
 {
+#ifdef DEBUG
+#endif
 }
 
 static long sb_normalize_perc(long num)
