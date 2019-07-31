@@ -1151,6 +1151,16 @@ static void *sb_volume_routine(void *thunk)
 
 
 /* --- WEATHER ROUTINE --- */
+#ifdef BUILD_WEATHER
+struct sb_weather_t {
+	CURL              *curl;
+	struct curl_slist *headers;
+	char               url[128];  /* Temporary URL during init, temperature URL during loop. */
+	char               url2[128]; /* Empty during init, daily forecast URL during loop. */
+	char              *response;
+	size_t             len;
+};
+
 static int sb_weather_global_init(void)
 {
 #ifdef BUILD_WEATHER
@@ -1162,16 +1172,6 @@ static int sb_weather_global_init(void)
 	return 0;
 #endif
 }
-
-#ifdef BUILD_WEATHER
-struct sb_weather_t {
-	CURL              *curl;
-	struct curl_slist *headers;
-	char               url[128];  /* Temporary URL during init, temperature URL during loop. */
-	char               url2[128]; /* Empty during init, daily forecast URL during loop. */
-	char              *response;
-	size_t             len;
-};
 
 static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *thunk)
 {
@@ -1841,6 +1841,7 @@ int main(int argc, char *argv[])
 			sb_debug("Init", "don't initialize delimiter");
 			continue;
 		} else if (index == WEATHER) {
+#ifdef BUILD_WEATHER
 			/* From the libcurl docs, about curl_global_init():
  			 * "You must not call it when any other thread in the program (i.e. a
 			 * thread sharing the same memory) is running. This doesn't just mean
@@ -1868,6 +1869,7 @@ int main(int argc, char *argv[])
 				continue;
 			}
 			sb_debug("Weather", "libcurl global init is good");
+#endif
 		}
 
 		if (
