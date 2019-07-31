@@ -164,8 +164,8 @@ detection after the global destructors after finished, an event that never takes
 this, we will manually check for leaks at various points throughout the program -- mostly after routine inits and after
 a routine's loop has finished a cycle -- using these LSAN functions:
 ```
-	__lsan_do_leak_check();
-	__lsan_disable();
+__lsan_do_leak_check();
+__lsan_disable();
 ```
 
 
