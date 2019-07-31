@@ -5960,6 +5960,34 @@ fi
 
 done
 
+for ac_header in ctype.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "ctype.h" "ac_cv_header_ctype_h" "$ac_includes_default"
+if test "x$ac_cv_header_ctype_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_CTYPE_H 1
+_ACEOF
+
+else
+  as_fn_error $? "Missing <ctype.h>" "$LINENO" 5
+fi
+
+done
+
+for ac_header in stdarg.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "stdarg.h" "ac_cv_header_stdarg_h" "$ac_includes_default"
+if test "x$ac_cv_header_stdarg_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_STDARG_H 1
+_ACEOF
+
+else
+  as_fn_error $? "Missing <stdarg.h>" "$LINENO" 5
+fi
+
+done
+
 
 for ac_header in sys/sysinfo.h
 do :
@@ -5987,21 +6015,6 @@ _ACEOF
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: Missing <sys/statvfs.h>, not running disk routine" >&5
 $as_echo "$as_me: Missing <sys/statvfs.h>, not running disk routine" >&6;}
-fi
-
-done
-
-for ac_header in ctype.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "ctype.h" "ac_cv_header_ctype_h" "$ac_includes_default"
-if test "x$ac_cv_header_ctype_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_CTYPE_H 1
-_ACEOF
- todo_headers="yes"
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Missing <ctype.h>, not running TODO routine" >&5
-$as_echo "$as_me: Missing <ctype.h>, not running TODO routine" >&6;}
 fi
 
 done
@@ -6163,6 +6176,8 @@ $as_echo "#define BUILD_RAM 1" >>confdefs.h
 
 $as_echo "#define BUILD_TIME 1" >>confdefs.h
 
+$as_echo "#define BUILD_TODO 1" >>confdefs.h
+
 
 if test "$enable_debug"      = "yes"; then :
   $as_echo "#define DEBUG 1" >>confdefs.h
@@ -6178,10 +6193,6 @@ if test "$cpu_usage_headers" = "yes"; then :
 fi
 if test "$disk_headers"      = "yes"; then :
   $as_echo "#define BUILD_DISK 1" >>confdefs.h
-
-fi
-if test "$todo_headers"      = "yes"; then :
-  $as_echo "#define BUILD_TODO 1" >>confdefs.h
 
 fi
 if test "$net_headers"       = "yes"; then :
