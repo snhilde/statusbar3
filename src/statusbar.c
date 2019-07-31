@@ -1012,6 +1012,7 @@ static void *sb_todo_routine(void *thunk)
 		SB_SLEEP;
 	}
 #else
+	(void)todo_path;
 	sb_print_error(routine, "routine was selected but not built during compilation. Check config.log");
 #endif
 
