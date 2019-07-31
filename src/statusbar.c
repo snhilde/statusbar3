@@ -1161,18 +1161,6 @@ struct sb_weather_t {
 	size_t             len;
 };
 
-static int sb_weather_global_init(void)
-{
-#ifdef BUILD_WEATHER
-	return curl_global_init(CURL_GLOBAL_SSL);
-#else
-	/* Triggered if user selects WEATHER as routine to run in config.h but
- 	 * doesn't have library to build routine. */
-	fprintf(stderr, "Not building weather routine");
-	return 0;
-#endif
-}
-
 static size_t sb_weather_curl_cb(char *buffer, size_t size, size_t num, void *thunk)
 {
 	struct sb_weather_t *info = thunk;
@@ -1864,7 +1852,7 @@ int main(int argc, char *argv[])
 			sb_debug("Weather", "interval is good");
 
 			sb_debug("Weather", "starting libcurl global init");
-			if (sb_weather_global_init() != 0) {
+			if (curl_global_init(CURL_GLOBAL_SSL) != 0) {
 				fprintf(stderr, "Weather routine: Failed to initialize global libcurl\n");
 				continue;
 			}
