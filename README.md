@@ -153,7 +153,7 @@ faster, and better performing.
 ## Development ##
 To turn on debug output, use `--enable-debug` with the configure script like so:
 ```
-	./configure --enable-debug
+./configure --enable-debug
 ```
 This will enable a fairly large volume of output to stdout, including each routine's output and libcurl's verbose
 output.
