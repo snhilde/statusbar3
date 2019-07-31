@@ -1804,7 +1804,7 @@ int main(int argc, char *argv[])
 	sb_routine_t      *routine_object;
 
 #ifdef DEBUG
-	/* Create debug mutex so we can printing debug statements. */
+	/* Create debug mutex so we can print debug statements. */
 	pthread_mutex_init(&debug_mutex, NULL);
 #else
 	(void)debug_mutex;
