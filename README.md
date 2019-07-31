@@ -108,8 +108,8 @@ A few routines take some customized values, all of which can be found in src/con
 The first value is the path to the mounted filesystem for which you want to display disk usage.
 The second value is the name you want it displayed as.
 ```
-	{ "/"    , "root" }
-	{ "/home", "home" }
+{ "/"    , "root" }
+{ "/home", "home" }
 ```
 
 ### Time routine ###
