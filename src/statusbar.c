@@ -1194,7 +1194,7 @@ static void sb_weather_clear_response(struct sb_weather_t *info)
 
 	info->response = NULL;
 	info->len      = 0;
-	sb_leak_check(routine->name);
+	sb_leak_check("Weather");
 }
 
 static SB_BOOL sb_weather_perform_curl(struct sb_weather_t *info, const char *data, sb_routine_t *routine)
