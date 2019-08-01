@@ -148,7 +148,7 @@ The colors change based on the values in the table below:
 |                   | Normal color | Warning color | Error color |
 | ----------------- | ------------ | ------------- | ----------- |
 | Battery routine   | 26 - 100 %   | 11 - 25 %     | 0 - 10 %    |
-| CPU temp routine  |              |               |             |
+| CPU temp routine  | < 75 °C      | 75 - 100 °C   | > 100 °C    |
 | CPU usage routine |              |               |             |
 | Disk routine      |              |               |             |
 | Fan routine       |              |               |             |
