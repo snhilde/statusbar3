@@ -145,21 +145,22 @@ All values must be a pound (#) sign followed by six hex digits, in the style of 
 If `color_text` is set to SB_FALSE, then these color codes will be ignored.
 
 The colors change based on the values in the table below:
-|
-|Battery routine   |
-|CPU temp routine  |
-|CPU usage routine |
-|Disk routine      |
-|Fan routine       |
-|Load routine      |
-|Network routine   |
-|RAM routine       |
-|Time routine      |
-|TODO routine      |
-|Volume routine    |
-|Weather routine   |
-|Wifi routine      |
-|Delimiter         |
+|                   |
+| ----------------- |
+| Battery routine   |
+| CPU temp routine  |
+| CPU usage routine |
+| Disk routine      |
+| Fan routine       |
+| Load routine      |
+| Network routine   |
+| RAM routine       |
+| Time routine      |
+| TODO routine      |
+| Volume routine    |
+| Weather routine   |
+| Wifi routine      |
+| Delimiter         |
 
 
 ## Contributing ##
