@@ -154,7 +154,7 @@ The colors change based on the values in the table below:
 | Fan routine       | 0 - 74 % max     | 75 - 89 % max    | 90 - 100 % max    |
 | Load routine      | all loads < 1    | any load >= 1    | any load >= 2     |
 | Network routine   | both speeds <= K | either speed = M | either speed > M  |
-| RAM routine       |                  |                  |                   |
+| RAM routine       | 0 - 74 % free    | 75 - 89 % free   | 90 - 100% free    |
 | Time routine      |                  |                  |                   |
 | TODO routine      |                  |                  |                   |
 | Volume routine    |                  |                  |                   |
