@@ -152,7 +152,7 @@ The colors change based on the values in the table below:
 | CPU usage routine | 0 - 74 %        | 75 - 89 %      | 90 - 100 %      |
 | Disk routine(1)   | 0 - 74 % full   | 75 - 89 % full | 90 - 100 % full |
 | Fan routine       | 0 - 74 % max    | 75 - 89 % max  | 90 - 100 % max  |
-| Load routine      |                 |                |                 |
+| Load routine      | all loads < 1   | any load >= 1  | any load >= 2   |
 | Network routine   |                 |                |                 |
 | RAM routine       |                 |                |                 |
 | Time routine      |                 |                |                 |
