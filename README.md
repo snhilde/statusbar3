@@ -149,7 +149,7 @@ The colors change based on the values in the table below:
 | ----------------- | ------------ | ------------- | ----------- |
 | Battery routine   | 26 - 100 %   | 11 - 25 %     | 0 - 10 %    |
 | CPU temp routine  | < 75 °C      | 75 - 100 °C   | > 100 °C    |
-| CPU usage routine |              |               |             |
+| CPU usage routine | 0 - 74 %     | 75 - 89 %     | 90 - 100 %  |
 | Disk routine      |              |               |             |
 | Fan routine       |              |               |             |
 | Load routine      |              |               |             |
