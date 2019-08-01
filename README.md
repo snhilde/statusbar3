@@ -146,7 +146,7 @@ If `color_text` is set to SB_FALSE, then these color codes will be ignored.
 
 The colors change based on the values in the table below:
 |                   | Normal color | Warning color | Error color |
-| ----------------- |
+| ----------------- | ------------ | ------------- | ----------- |
 | Battery routine   |
 | CPU temp routine  |
 | CPU usage routine |
