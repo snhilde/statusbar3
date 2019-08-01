@@ -145,6 +145,7 @@ All values must be a pound (#) sign followed by six hex digits, in the style of 
 If `color_text` is set to SB_FALSE, then these color codes will be ignored.
 
 The colors change based on the values in the table below:
+
 |                   | Normal color     | Warning color             | Error color       |
 | ----------------- | ---------------- | ------------------------- | ----------------- |
 | Battery routine   | 26 - 100 % left  | 11 - 25 % left            | 0 - 10 % left     |
@@ -161,6 +162,7 @@ The colors change based on the values in the table below:
 | Weather routine   | always normal color                                              |
 | Wifi routine      | Wifi connected   | Wifi on but not connected | Wifi turned off   |
 | Delimiter         | not printed, colors not used                                     |
+
 1. The largest partition determines the color.
 2. Volume percentages are rounded to the nearest ten.
 
