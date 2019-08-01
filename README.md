@@ -157,7 +157,7 @@ The colors change based on the values in the table below:
 | RAM routine       | 0 - 74 % free    | 75 - 89 % free   | 90 - 100% free    |
 | Time routine      | always normal color                                     |
 | TODO routine      | always normal color                                     |
-| Volume routine    |                  |                  |                   |
+| Volume routine    | 0 - 70 %         | 80 - 90 %        | 100 %             |
 | Weather routine   |                  |                  |                   |
 | Wifi routine      |                  |                  |                   |
 | Delimiter         |                  |                  |                   |
