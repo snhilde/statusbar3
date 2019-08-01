@@ -677,9 +677,9 @@ static void *sb_load_routine(void *thunk)
 			break;
 		}
 
-		if (loads[0] > 2 || loads[1] > 2 || loads[2] > 2) {
+		if (loads[0] >= 2 || loads[1] >= 2 || loads[2] >= 2) {
 			routine->color = routine->colors.error;
-		} else if (loads[0] > 1 || loads[1] > 1 || loads[2] > 1) {
+		} else if (loads[0] >= 1 || loads[1] >= 1 || loads[2] >= 1) {
 			routine->color = routine->colors.warning;
 		} else {
 			routine->color = routine->colors.normal;
