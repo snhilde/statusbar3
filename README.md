@@ -132,7 +132,7 @@ zip_code = "90210"
 ```
 
 ### Colors ###
-Additionally, if you're using the status2d patch, you can tailor the colors of each, from config.h.
+Additionally, if you're using the status2d patch, you can tailor the colors of each routine, from config.h.
 For example:
 ```
 { CPU_USAGE, 1, "#FFFFFF", "#BB4F2E", "#A1273E" },
@@ -160,7 +160,7 @@ output.
 
 This will also enable LeakSanitizer, if your compiler supports it. There is one issue with this: because Statusbar runs
 in a loop (with each routine in its own, separate loop), it never quits. This is a problem because LSAN runs its leak
-detection after the global destructors after finished, an event that never takes place with Statusbar. To work around
+detection after the global destructors have finished, an event that never takes place with Statusbar. To work around
 this, we will manually check for leaks at various points throughout the program -- mostly after routine inits and after
 a routine's loop has finished a cycle -- using these LSAN functions:
 ```
