@@ -163,8 +163,8 @@ The colors change based on the values in the table below:
 | Wifi routine      | connected        | on but not connected | Wifi turned off   |
 | Delimiter         | not printed, colors not used                                |
 
-1. The largest partition determines the color.
-2. Volume percentages are rounded to the nearest ten.
+¹ The largest partition determines the color.
+² Volume percentages are rounded to the nearest ten.
 
 
 ## Contributing ##
