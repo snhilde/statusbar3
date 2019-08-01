@@ -70,7 +70,7 @@ If you do not use this patch, you should set `color_text` to `SB_FALSE` in confi
 
 
 ## Installation ##
-```
+```sh
 ./configure
 make
 make install
@@ -82,7 +82,7 @@ If the binary is installed somewhere in your PATH, you need only run `statusbar`
 
 To start the program when X11 starts up, add this line to your .xsession (or .xinitrc, whatever you use)
 before the call for dwm:
-```
+```sh
 /path/to/statusbar 2> /home/user/statusbar.log &
 ```
 This will start the program, log the errors to statusbar.log, and not block the queue during startup.
@@ -95,7 +95,7 @@ using the [dualstatus patch](#recommendations), then the special routine value o
 at your chosen breakpoint, allowing for dual status bars.
 
 Let's take the battery routine as an example:
-```
+```c
 { BATTERY , 30, "#FFFFFF", "#BB4F2E", "#A1273E" },
 ```
 This will run the battery routine every 30 seconds, using the selected [colors](#colors) depending on the conditions.
@@ -107,34 +107,34 @@ A few routines take some customized values, all of which can be found in src/con
 ### Disk routine ###
 The first value is the path to the mounted filesystem for which you want to display disk usage.
 The second value is the name you want it displayed as.
-```
+```c
 { "/"    , "root" }
 { "/home", "home" }
 ```
 
 ### Time routine ###
 This is how you want the time/date to be displayed. For conversion specifications, see `strftime(3)`.
-```
+```c
 time_format = "%b %d - %I:%M"
 ```
 
 ### TODO routine ###
 If you have a TODO list you want displayed on the status bar, you can specify the path here.
 __Note:__ This is the path relative to your home directory.
-```
+```c
 todo_path = ".TODO"
 ```
 
 ### Weather routine ###
 This is your zip code for displaying the current temperature and tomorrow's low/high.
-```
+```c
 zip_code = "90210"
 ```
 
 ### Colors ###
 Additionally, if you're using the status2d patch, you can tailor the colors of each routine, from config.h.
 For example:
-```
+```c
 { CPU_USAGE, 1, "#FFFFFF", "#BB4F2E", "#A1273E" },
 ```
 This will print the CPU usage each second using the color white (#FFFFFF) for normal conditions,
@@ -152,7 +152,7 @@ faster, and better performing.
 
 ## Development ##
 To turn on debug output, use `--enable-debug` with the configure script like so:
-```
+```sh
 ./configure --enable-debug
 ```
 This will enable a fairly large volume of output to stdout, including each routine's output and libcurl's verbose
@@ -163,7 +163,7 @@ in a loop (with each routine in its own, separate loop), it never quits. This is
 detection after the global destructors have finished, an event that never takes place with Statusbar. To work around
 this, we will manually check for leaks at various points throughout the program -- mostly after routine inits and after
 a routine's loop has finished a cycle -- using these LSAN functions:
-```
+```c
 __lsan_do_leak_check();
 __lsan_disable();
 ```
