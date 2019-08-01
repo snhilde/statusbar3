@@ -155,7 +155,7 @@ The colors change based on the values in the table below:
 | Load routine      | all loads < 1    | any load >= 1    | any load >= 2     |
 | Network routine   | both speeds <= K | either speed = M | either speed > M  |
 | RAM routine       | 0 - 74 % free    | 75 - 89 % free   | 90 - 100% free    |
-| Time routine      |                  |                  |                   |
+| Time routine      | always normal color                                     |
 | TODO routine      |                  |                  |                   |
 | Volume routine    |                  |                  |                   |
 | Weather routine   |                  |                  |                   |
