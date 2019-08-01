@@ -147,7 +147,7 @@ If `color_text` is set to SB_FALSE, then these color codes will be ignored.
 The colors change based on the values in the table below:
 |                   | Normal color  | Warning color  | Error color     |
 | ----------------- | ------------- | -------------- | --------------- |
-| Battery routine   | 26 - 100 %    | 11 - 25 %      | 0 - 10 %        |
+| Battery routine   | 26 - 100 % left | 11 - 25 % left | 0 - 10 % left   |
 | CPU temp routine  | < 75 °C       | 75 - 100 °C    | > 100 °C        |
 | CPU usage routine | 0 - 74 %      | 75 - 89 %      | 90 - 100 %      |
 | Disk routine(1)   | 0 - 74 % full | 75 - 89 % full | 90 - 100 % full |
