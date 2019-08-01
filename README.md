@@ -145,22 +145,22 @@ All values must be a pound (#) sign followed by six hex digits, in the style of 
 If `color_text` is set to SB_FALSE, then these color codes will be ignored.
 
 The colors change based on the values in the table below:
-|                   | Normal color | Warning color | Error color |
-| ----------------- | ------------ | ------------- | ----------- |
-| Battery routine   | 26 - 100 %   | 11 - 25 %     | 0 - 10 %    |
-| CPU temp routine  | < 75 °C      | 75 - 100 °C   | > 100 °C    |
-| CPU usage routine | 0 - 74 %     | 75 - 89 %     | 90 - 100 %  |
+|                   | Normal color  | Warning color  | Error color     |
+| ----------------- | ------------- | -------------- | --------------- |
+| Battery routine   | 26 - 100 %    | 11 - 25 %      | 0 - 10 %        |
+| CPU temp routine  | < 75 °C       | 75 - 100 °C    | > 100 °C        |
+| CPU usage routine | 0 - 74 %      | 75 - 89 %      | 90 - 100 %      |
 | Disk routine(1)   | 0 - 74 % full | 75 - 89 % full | 90 - 100 % full |
-| Fan routine       |              |               |             |
-| Load routine      |              |               |             |
-| Network routine   |              |               |             |
-| RAM routine       |              |               |             |
-| Time routine      |              |               |             |
-| TODO routine      |              |               |             |
-| Volume routine    |              |               |             |
-| Weather routine   |              |               |             |
-| Wifi routine      |              |               |             |
-| Delimiter         |              |               |             |
+| Fan routine       |               |                |                 |
+| Load routine      |               |                |                 |
+| Network routine   |               |                |                 |
+| RAM routine       |               |                |                 |
+| Time routine      |               |                |                 |
+| TODO routine      |               |                |                 |
+| Volume routine    |               |                |                 |
+| Weather routine   |               |                |                 |
+| Wifi routine      |               |                |                 |
+| Delimiter         |               |                |                 |
 1. The largest partition determines the color
 
 
