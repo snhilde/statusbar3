@@ -146,22 +146,22 @@ If `color_text` is set to SB_FALSE, then these color codes will be ignored.
 
 The colors change based on the values in the table below:
 
-|                   | Normal color     | Warning color             | Error color       |
-| ----------------- | ---------------- | ------------------------- | ----------------- |
-| Battery routine   | 26 - 100 % left  | 11 - 25 % left            | 0 - 10 % left     |
-| CPU temp routine  | < 75 °C          | 75 - 100 °C               | > 100 °C          |
-| CPU usage routine | 0 - 74 %         | 75 - 89 %                 | 90 - 100 %        |
-| Disk routine(1)   | 0 - 74 % full    | 75 - 89 % full            | 90 - 100 % full   |
-| Fan routine       | 0 - 74 % max     | 75 - 89 % max             | 90 - 100 % max    |
-| Load routine      | all loads < 1    | any load >= 1             | any load >= 2     |
-| Network routine   | both speeds <= K | either speed = M          | either speed > M  |
-| RAM routine       | 0 - 74 % free    | 75 - 89 % free            | 90 - 100% free    |
-| Time routine      | always normal color                                              |
-| TODO routine      | always normal color                                              |
-| Volume routine(2) | 0 - 70 %         | 80 - 90 %                 | 100 %             |
-| Weather routine   | always normal color                                              |
-| Wifi routine      | Wifi connected   | Wifi on but not connected | Wifi turned off   |
-| Delimiter         | not printed, colors not used                                     |
+|                   | Normal color     | Warning color        | Error color       |
+| ----------------- | ---------------- | -------------------- | ----------------- |
+| Battery routine   | 26 - 100 % left  | 11 - 25 % left       | 0 - 10 % left     |
+| CPU temp routine  | < 75 °C          | 75 - 100 °C          | > 100 °C          |
+| CPU usage routine | 0 - 74 %         | 75 - 89 %            | 90 - 100 %        |
+| Disk routine(1)   | 0 - 74 % full    | 75 - 89 % full       | 90 - 100 % full   |
+| Fan routine       | 0 - 74 % max     | 75 - 89 % max        | 90 - 100 % max    |
+| Load routine      | all loads < 1    | any load >= 1        | any load >= 2     |
+| Network routine   | both speeds <= K | either speed = M     | either speed > M  |
+| RAM routine       | 0 - 74 % free    | 75 - 89 % free       | 90 - 100% free    |
+| Time routine      | always normal color                                         |
+| TODO routine      | always normal color                                         |
+| Volume routine(2) | 0 - 70 %         | 80 - 90 %            | 100 %             |
+| Weather routine   | always normal color                                         |
+| Wifi routine      | connected        | on but not connected | Wifi turned off   |
+| Delimiter         | not printed, colors not used                                |
 
 1. The largest partition determines the color.
 2. Volume percentages are rounded to the nearest ten.
