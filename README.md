@@ -144,6 +144,8 @@ All values must be a pound (#) sign followed by six hex digits, in the style of 
 
 If `color_text` is set to SB_FALSE, then these color codes will be ignored.
 
+The colors change based on the values in the table below:
+
 
 ## Contributing ##
 Send a pull request or a message. Additional functionality is welcome, as are suggestions to make the program leaner,
