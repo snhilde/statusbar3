@@ -159,7 +159,7 @@ The colors change based on the values in the table below:
 | TODO routine      | always normal color                                     |
 | Volume routine(2) | 0 - 70 %         | 80 - 90 %        | 100 %             |
 | Weather routine   | always normal color                                     |
-| Wifi routine      |                  |                  |                   |
+| Wifi routine      | Wifi connected   | Wifi on but not connected | Wifi turned off   |
 | Delimiter         |                  |                  |                   |
 1. The largest partition determines the color.
 2. Volume percentages are rounded to the nearest ten.
