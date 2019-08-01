@@ -156,7 +156,7 @@ The colors change based on the values in the table below:
 | Network routine   | both speeds <= K | either speed = M | either speed > M  |
 | RAM routine       | 0 - 74 % free    | 75 - 89 % free   | 90 - 100% free    |
 | Time routine      | always normal color                                     |
-| TODO routine      |                  |                  |                   |
+| TODO routine      | always normal color                                     |
 | Volume routine    |                  |                  |                   |
 | Weather routine   |                  |                  |                   |
 | Wifi routine      |                  |                  |                   |
