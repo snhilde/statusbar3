@@ -186,7 +186,7 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 	char           path[512];
 	char           contents[512];
 
-	sb_debug(routine->name, "Looking in %s for %s=%s", base, file, match);
+	sb_debug(__func__, "Looking in %s for %s=%s", base, file, match);
 	memset(buf, 0, size);
 
 	dir = opendir(base);
