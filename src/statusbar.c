@@ -1052,8 +1052,8 @@ static SB_BOOL sb_volume_get_snd_elem(snd_mixer_t **mixer, snd_mixer_elem_t **sn
 
 	/* get element */
 	} else {
-		sb_debug(routine->name, "init: opened mixer");
-		sb_debug(routine->name, "init: opened id");
+		sb_debug(__func__, "init: opened mixer");
+		sb_debug(__func__, "init: opened id");
 
 		snd_mixer_selem_id_set_index(snd_id, index);
 		snd_mixer_selem_id_set_name(snd_id, name);
@@ -1086,14 +1086,14 @@ static void *sb_volume_routine(void *thunk)
 	long              decibels;
 	long              perc;
 
-	sb_debug(routine->name, "init: open element");
+	sb_debug(__func__, "init: open element");
 	if (!sb_volume_get_snd_elem(&mixer, &snd_elem, routine)) {
 		routine->run = SB_FALSE;
 	} else if (snd_mixer_selem_get_playback_dB_range(snd_elem, &min, &max) != 0) {
 		sb_print_error(routine, "Failed to get decibels range");
 		routine->run = SB_FALSE;
 	} else {
-		sb_debug(routine->name, "init: opened element");
+		sb_debug(__func__, "init: opened element");
 	}
 	sb_leak_check(__func__);
 
@@ -1107,7 +1107,7 @@ static void *sb_volume_routine(void *thunk)
 			sb_print_error(routine, "Failed to get mute state");
 			break;
 		} else if (mute == 0) {
-			sb_debug(routine->name, "sound is muted");
+			sb_debug(__func__, "sound is muted");
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "mute");
 			pthread_mutex_unlock(&(routine->mutex));
@@ -1115,7 +1115,7 @@ static void *sb_volume_routine(void *thunk)
 			sb_print_error(routine, "Failed to get decibels");
 			break;
 		} else {
-			sb_debug(routine->name, "current decibels: %ld", decibels);
+			sb_debug(__func__, "current decibels: %ld", decibels);
 			perc = sb_normalize_perc((decibels-min)*100/(max-min));
 			perc = rint((float)perc / 10) * 10; /* round to nearest ten */
 			if (perc < 80) {
