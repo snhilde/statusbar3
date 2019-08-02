@@ -866,7 +866,7 @@ static void *sb_ram_routine(void *thunk)
 		routine->run = SB_FALSE;
 	} else {
 		total_f = sb_calc_magnitude(total_l, &total_unit);
-		sb_debug(routine->name, "init: calculated total bytes free");
+		sb_debug(__func__, "init: calculated total bytes free");
 	}
 	sb_leak_check(__func__);
 
