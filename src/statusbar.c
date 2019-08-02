@@ -791,7 +791,7 @@ static void *sb_network_routine(void *thunk)
 		sb_debug(routine->name, "init: found %s for receiving", files[0].path);
 		sb_debug(routine->name, "init: found %s for sending", files[1].path);
 	}
-	sb_leak_check(routine->name);
+	sb_leak_check(__func__);
 
 	while (routine->run) {
 		SB_START_TIMER;
@@ -826,7 +826,7 @@ static void *sb_network_routine(void *thunk)
 				files[0].reduced, files[0].unit, files[1].reduced, files[1].unit);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		sb_leak_check(routine->name);
+		sb_leak_check(__func__);
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
@@ -835,7 +835,7 @@ static void *sb_network_routine(void *thunk)
 #endif
 
 	routine->run = SB_FALSE;
-	sb_leak_check(routine->name);
+	sb_leak_check(__func__);
 	return NULL;
 }
 
