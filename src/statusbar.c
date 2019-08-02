@@ -1638,7 +1638,7 @@ static void *sb_wifi_routine(void *thunk)
 		}
 		close(sock);
 
-		sb_leak_check(routine->name);
+		sb_leak_check(__func__);
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
@@ -1647,7 +1647,7 @@ static void *sb_wifi_routine(void *thunk)
 #endif
 
 	routine->run = SB_FALSE;
-	sb_leak_check(routine->name);
+	sb_leak_check(__func__);
 	return NULL;
 }
 
