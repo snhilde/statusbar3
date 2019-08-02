@@ -961,7 +961,7 @@ static void *sb_todo_routine(void *thunk)
 
 	snprintf(path, sizeof(path), "%s/%s", getenv("HOME"), todo_path);
 	sb_debug(routine->name, "init: using %s", path);
-	sb_leak_check(routine->name);
+	sb_leak_check(__func__);
 
 	routine->color = routine->colors.normal;
 	while (routine->run) {
@@ -1009,7 +1009,7 @@ static void *sb_todo_routine(void *thunk)
 		}
 		pthread_mutex_unlock(&(routine->mutex));
 
-		sb_leak_check(routine->name);
+		sb_leak_check(__func__);
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
@@ -1019,7 +1019,7 @@ static void *sb_todo_routine(void *thunk)
 #endif
 
 	routine->run = SB_FALSE;
-	sb_leak_check(routine->name);
+	sb_leak_check(__func__);
 	return NULL;
 }
 
