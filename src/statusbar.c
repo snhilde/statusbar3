@@ -243,7 +243,7 @@ static void *sb_battery_routine(void *thunk)
 		}
 	}
 	if (routine->run)
-		sb_debug(routine->name, "init: found %s", path);
+		sb_debug(__func__, "init: found %s", path);
 	sb_leak_check(__func__);
 
 	while (routine->run) {
@@ -294,7 +294,7 @@ static SB_BOOL sb_cpu_temp_get_filename(char path[], char filename[], size_t siz
 	DIR           *dir;
 	struct dirent *dirent;
 
-	sb_debug(routine->name, "init: looking for file at %s", path);
+	sb_debug(__func__, "init: looking for file at %s", path);
 
 	dir = opendir(path);
 	if (dir == NULL) {
