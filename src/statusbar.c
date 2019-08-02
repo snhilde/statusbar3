@@ -337,7 +337,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 	} else if (!sb_cpu_temp_get_filename(path, filename, sizeof(filename), routine)) {
 		routine->run = SB_FALSE;
 	} else {
-		sb_debug(routine->name, "init: found %s%s", path, filename);
+		sb_debug(__func__, "init: found %s%s", path, filename);
 	}
 	sb_leak_check(__func__);
 
