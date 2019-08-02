@@ -868,7 +868,7 @@ static void *sb_ram_routine(void *thunk)
 		total_f = sb_calc_magnitude(total_l, &total_unit);
 		sb_debug(routine->name, "init: calculated total bytes free");
 	}
-	sb_leak_check(routine->name);
+	sb_leak_check(__func__);
 
 	while (routine->run) {
 		SB_START_TIMER;
@@ -896,7 +896,7 @@ static void *sb_ram_routine(void *thunk)
 				avail_f, avail_unit, total_f, total_unit);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		sb_leak_check(routine->name);
+		sb_leak_check(__func__);
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
@@ -905,7 +905,7 @@ static void *sb_ram_routine(void *thunk)
 #endif
 
 	routine->run = SB_FALSE;
-	sb_leak_check(routine->name);
+	sb_leak_check(__func__);
 	return NULL;
 }
 
