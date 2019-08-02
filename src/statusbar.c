@@ -724,7 +724,7 @@ static SB_BOOL sb_network_get_paths(struct sb_network_t *rx_file, struct sb_netw
 	struct ifaddrs *ifaddrs = NULL;
 	struct ifaddrs *ifap;
 
-	sb_debug(routine->name, "init: finding interface path");
+	sb_debug(__func__, "init: finding interface path");
 
 	/* open socket and return file descriptor for it */
 	sock = socket(AF_INET, SOCK_DGRAM, 0);
@@ -732,7 +732,7 @@ static SB_BOOL sb_network_get_paths(struct sb_network_t *rx_file, struct sb_netw
 		sb_print_error(routine, "Failed to open socket file descriptor");
 		return SB_FALSE;
 	}
-	sb_debug(routine->name, "init: opened socket");
+	sb_debug(__func__, "init: opened socket");
 
 	/* get all network interfaces */
 	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
@@ -741,7 +741,7 @@ static SB_BOOL sb_network_get_paths(struct sb_network_t *rx_file, struct sb_netw
 		return SB_FALSE;
 	}
 	ifap = ifaddrs;
-	sb_debug(routine->name, "init: got list of interfaces");
+	sb_debug(__func__, "init: got list of interfaces");
 
 	/* go through each interface until we find an active one */
 	while (ifap != NULL) {
@@ -788,8 +788,8 @@ static void *sb_network_routine(void *thunk)
 	if (!sb_network_get_paths(&files[0], &files[1], routine)) {
 		routine->run = SB_FALSE;
 	} else {
-		sb_debug(routine->name, "init: found %s for receiving", files[0].path);
-		sb_debug(routine->name, "init: found %s for sending", files[1].path);
+		sb_debug(__func__, "init: found %s for receiving", files[0].path);
+		sb_debug(__func__, "init: found %s for sending", files[1].path);
 	}
 	sb_leak_check(__func__);
 
