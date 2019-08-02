@@ -1,6 +1,8 @@
 AUTOMAKE_OPTIONS=foreign
 
 CFLAGS= -g -O0 -Wall \
+		-fsanitize=leak \
+		-fno-omit-frame-pointer \
         -DVERSION=\"$(VERSION)\" \
         -DPROG="\"$(PACKAGE)\"" \
         -I /usr/include \
