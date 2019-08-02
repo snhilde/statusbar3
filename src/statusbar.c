@@ -1800,10 +1800,10 @@ int main(int argc, char *argv[])
 	(void)debug_mutex;
 #endif
 
-	sb_debug("Init", "running statusbar with debug output enabled");
+	sb_debug(__func__, "running statusbar with debug output enabled");
 
 	num_routines = sizeof(chosen_routines) / sizeof(*chosen_routines);
-	sb_debug("Init", "%zu routines chosen", num_routines);
+	sb_debug(__func__, "%zu routines chosen", num_routines);
 	if (num_routines < 1) {
 		fprintf(stderr, "No routines chosen, exiting...\n");
 		return 1;
@@ -1828,7 +1828,7 @@ int main(int argc, char *argv[])
 		/* initialize the routine */
 		routine_object->routine = index;
 		if (index == DELIMITER) {
-			sb_debug("Init", "don't initialize delimiter");
+			sb_debug(__func__, "don't initialize delimiter");
 			continue;
 		} else if (index == WEATHER) {
 #ifdef BUILD_WEATHER
@@ -1839,7 +1839,7 @@ int main(int argc, char *argv[])
 			 * functions of other libraries that are similarly thread unsafe, it could
 			 * conflict with any other thread that uses these other libraries."
 			 */
-			sb_debug("Init", "Checking weather arguments");
+			sb_debug(__func__, "Checking weather arguments");
 
 			if (strlen(zip_code) != 5 || strspn(zip_code, "0123456789") != 5) {
 				fprintf(stderr, "Weather routine: Zip Code must be 5 digits\n");
@@ -1883,7 +1883,7 @@ int main(int argc, char *argv[])
 			routine_object->name           = routine_names[index];
 			routine_object->run            = SB_TRUE;
 
-			sb_debug("Init", "Initializing %s:", routine_object->name);
+			sb_debug(__func__, "Initializing %s:", routine_object->name);
 			sb_debug(routine_object->name, "Interval: %ld sec", routine_object->interval / 1000000);
 			sb_debug(routine_object->name, "Normal color: %s", routine_object->colors.normal);
 			sb_debug(routine_object->name, "Warning color: %s", routine_object->colors.warning);
