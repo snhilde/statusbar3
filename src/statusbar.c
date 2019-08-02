@@ -1185,7 +1185,7 @@ static void sb_weather_clear_response(struct sb_weather_t *info)
 
 	info->response = NULL;
 	info->len      = 0;
-	sb_leak_check("Weather");
+	sb_leak_check(__func__);
 }
 
 static SB_BOOL sb_weather_perform_curl(struct sb_weather_t *info, const char *data, sb_routine_t *routine)
@@ -1501,7 +1501,7 @@ static void *sb_weather_routine(void *thunk)
 	} else {
 		sb_debug(routine->name, "init: successful");
 	}
-	sb_leak_check(routine->name);
+	sb_leak_check(__func__);
 
 	routine->color = routine->colors.normal;
 	while (routine->run) {
@@ -1516,7 +1516,7 @@ static void *sb_weather_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output), "weather: %d °F (%d/%d)", temp, low, high);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		sb_leak_check(routine->name);
+		sb_leak_check(__func__);
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
@@ -1534,7 +1534,7 @@ static void *sb_weather_routine(void *thunk)
 #endif
 
 	routine->run = SB_FALSE;
-	sb_leak_check(routine->name);
+	sb_leak_check(__func__);
 	return NULL;
 }
 
