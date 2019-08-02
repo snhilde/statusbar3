@@ -558,7 +558,7 @@ static SB_BOOL sb_fan_get_path(char path[], size_t size, sb_routine_t *routine)
 	DIR               *device;
 	struct dirent     *devent;
 
-	sb_debug(routine->name, "init: looking in %s for device", base);
+	sb_debug(__func__, "init: looking in %s for device", base);
 
 	dir = opendir(base);
 	if (dir == NULL) {
@@ -617,7 +617,7 @@ static void *sb_fan_routine(void *thunk)
 		routine->run = SB_FALSE;
 	} else {
 		strncat(path, "_output", sizeof(path)-strlen(path)-1);
-		sb_debug(routine->name, "init: found %s", path);
+		sb_debug(__func__, "init: found %s", path);
 		max = atol(contents);
 		if (max < 0)
 			routine->run = SB_FALSE;
