@@ -1665,7 +1665,7 @@ static void sb_copy_output(char *full_output, sb_routine_t *routine)
 	}
 
 	strcat(full_output, routine->output);
-	sb_debug(routine->name, "%zu bytes: %s", strlen(routine->output), routine->output);
+	sb_debug(__func__, "%zu bytes: %s", strlen(routine->output), routine->output);
 
 	/* Print status2d terminator code. */
 	if (color_text)
@@ -1690,7 +1690,7 @@ static void sb_print_get_time(char buf[], size_t size, struct timespec *start_tp
 
 static void sb_print(void)
 {
-	sb_debug("Main loop", "starting...");
+	sb_debug(__func__, "starting...");
 	/* Here, we are not using the SB_START_TIMER and SB_STOP_TIMER macros,
  	 * because we need to use CLOCK_REALTIME to get the actual system time. */
 	SB_TIMER_VARS
@@ -1705,17 +1705,17 @@ static void sb_print(void)
 	root = RootWindow(dpy, DefaultScreen(dpy));
 
 	while (1) {
-		sb_debug("\nMain loop", "starting print loop");
+		sb_debug(__func__, "starting print loop");
 		clock_gettime(CLOCK_REALTIME, &start_tp); /* START TIMER */
 
 		memset(full_output, 0, SBLENGTH);
 		for (routine = routine_list; routine != NULL; routine = routine->next) {
 			if (routine->routine == DELIMITER) {
-				sb_debug("Main loop", "adding delimiter");
+				sb_debug(__func__, "adding delimiter");
 				strcat(full_output, ";");
 				continue;
 			} else if (routine->routine == TIME) {
-				sb_debug("Main loop", "printing time");
+				sb_debug(__func__, "printing time");
 				if (blink)
 					blink = SB_FALSE;
 				else
@@ -1727,7 +1727,7 @@ static void sb_print(void)
 
 			len = strlen(routine->output);
 			if (len == 0) {
-				sb_debug(routine->name, "empty, skipping");
+				sb_debug(__func__, "empty, skipping");
 				pthread_mutex_unlock(&(routine->mutex));
 				continue;
 			} else if (strlen(full_output)+len+1 > SBLENGTH+(color_text?10:0)) {
@@ -1741,7 +1741,7 @@ static void sb_print(void)
 			pthread_mutex_unlock(&(routine->mutex));
 		}
 
-		sb_debug("Main loop", "Send output to statusbar");
+		sb_debug(__func__, "Send output to statusbar");
 		XStoreName(dpy, root, full_output);
 		XSync(dpy, False);
 
@@ -1757,7 +1757,7 @@ static void sb_print(void)
 		}
 	}
 #ifdef BUILD_WEATHER
-	sb_debug("Main loop", "clean up global libcurl object");
+	sb_debug(__func__, "clean up global libcurl object");
 	curl_global_cleanup(); /* Same lack of thread-safety as curl_global_init(). */
 #endif
 
