@@ -339,7 +339,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 	} else {
 		sb_debug(routine->name, "init: found %s%s", path, filename);
 	}
-	sb_leak_check(routine->name);
+	sb_leak_check(__func__);
 
 	while (routine->run) {
 		SB_START_TIMER;
@@ -366,7 +366,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output), "%ld °C", now);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		sb_leak_check(routine->name);
+		sb_leak_check(__func__);
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
@@ -375,7 +375,7 @@ static void *sb_cpu_temp_routine(void *thunk)
 #endif
 
 	routine->run = SB_FALSE;
-	sb_leak_check(routine->name);
+	sb_leak_check(__func__);
 	return NULL;
 }
 
