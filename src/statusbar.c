@@ -691,7 +691,7 @@ static void *sb_load_routine(void *thunk)
 		snprintf(routine->output, sizeof(routine->output), "%.2lf, %.2lf, %.2lf", loads[0], loads[1], loads[2]);
 		pthread_mutex_unlock(&(routine->mutex));
 
-		sb_leak_check(routine->name);
+		sb_leak_check(__func__);
 		SB_STOP_TIMER;
 		SB_SLEEP;
 	}
@@ -700,7 +700,7 @@ static void *sb_load_routine(void *thunk)
 #endif
 
 	routine->run = SB_FALSE;
-	sb_leak_check(routine->name);
+	sb_leak_check(__func__);
 	return NULL;
 }
 
