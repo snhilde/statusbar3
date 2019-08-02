@@ -93,10 +93,12 @@ static SB_BOOL sb_isrgb(const char *color)
 static void sb_leak_check(const char *name)
 {
 #ifdef DEBUG_LEAKS
-	/* If a leak is found, these will halt the program.
- 	 * They must be run in every non-terminating loop. */
-	__lsan_do_leak_check();
-	__lsan_disable();
+	/* If a leak is found, this will halt the program.
+ 	 * It must be run in every non-terminating loop. */
+	if (__lsan_do_recoverable_leak_check() != 0) {
+		sb_debug(name, "leak found");
+		exit(EXIT_FAILURE);
+	}
 	sb_debug(name, "no leaks found");
 #else
 	(void)name;
