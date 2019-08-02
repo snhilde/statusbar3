@@ -1745,7 +1745,7 @@ static void sb_print(void)
 		XStoreName(dpy, root, full_output);
 		XSync(dpy, False);
 
-		sb_leak_check("Main loop");
+		sb_leak_check(__func__);
 		clock_gettime(CLOCK_REALTIME, &finish_tp); /* STOP TIMER */
 		elapsed_usec = (finish_tp.tv_sec - start_tp.tv_sec) +
 				((finish_tp.tv_nsec - start_tp.tv_nsec) / 1000);
@@ -1762,7 +1762,7 @@ static void sb_print(void)
 #endif
 
 	fprintf(stderr, "Closing print loop, exiting program...\n");
-	sb_leak_check("Main loop");
+	sb_leak_check(__func__);
 	exit(EXIT_FAILURE);
 }
 
