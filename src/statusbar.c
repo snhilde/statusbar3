@@ -1623,6 +1623,7 @@ static void *sb_wifi_routine(void *thunk)
 		if (ioctl(sock, SIOCGIWESSID, &iwr) < 0) {
 			found = SB_FALSE;
 			routine->color = routine->colors.warning;
+			sb_debug(routine->name, "Wifi is not connected");
 
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "Not Connected");
