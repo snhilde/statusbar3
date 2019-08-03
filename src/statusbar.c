@@ -1623,7 +1623,7 @@ static void *sb_wifi_routine(void *thunk)
 		if (ioctl(sock, SIOCGIWESSID, &iwr) < 0) {
 			found = SB_FALSE;
 			routine->color = routine->colors.warning;
-			sb_debug(routine->name, "Wifi is not connected");
+			sb_debug(__func__, "Wifi is not connected");
 
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "Not Connected");
@@ -1631,11 +1631,11 @@ static void *sb_wifi_routine(void *thunk)
 		} else {
 			found = SB_TRUE;
 			if (strlen(essid) == 0) {
-				sb_debug(routine->name, "Wifi is connected but down");
+				sb_debug(__func__, "Wifi is connected but down");
 				snprintf(essid, sizeof(essid)-1, "Wifi Down");
 				routine->color = routine->colors.error;
 			} else {
-				sb_debug(routine->name, "Wifi is operating on network %s", essid);
+				sb_debug(__func__, "Wifi is operating on network %s", essid);
 				routine->color = routine->colors.normal;
 			}
 
@@ -1644,7 +1644,7 @@ static void *sb_wifi_routine(void *thunk)
 			pthread_mutex_unlock(&(routine->mutex));
 		}
 		close(sock);
-		sb_debug(routine->name, "Closed socket");
+		sb_debug(__func__, "Closed socket");
 
 		sb_leak_check(__func__);
 		SB_STOP_TIMER;
