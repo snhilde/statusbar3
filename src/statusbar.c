@@ -1796,6 +1796,7 @@ static const struct thread_routines_t {
 static SB_BOOL parse_config(void)
 {
 	static const char *path = "./options.conf";
+	FILE              *fd;
 
 	return SB_TRUE;
 }
