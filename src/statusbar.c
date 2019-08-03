@@ -1635,6 +1635,7 @@ static void *sb_wifi_routine(void *thunk)
 				snprintf(essid, sizeof(essid)-1, "Wifi Down");
 				routine->color = routine->colors.error;
 			} else {
+				sb_debug(routine->name, "Wifi is operating on network %s", essid);
 				routine->color = routine->colors.normal;
 			}
 
