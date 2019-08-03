@@ -1631,6 +1631,7 @@ static void *sb_wifi_routine(void *thunk)
 		} else {
 			found = SB_TRUE;
 			if (strlen(essid) == 0) {
+				sb_debug(routine->name, "Wifi is connected but down");
 				snprintf(essid, sizeof(essid)-1, "Wifi Down");
 				routine->color = routine->colors.error;
 			} else {
