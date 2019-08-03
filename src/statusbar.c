@@ -1552,12 +1552,15 @@ static SB_BOOL sb_wifi_init(struct iwreq *iwr, char *essid, size_t max_len, sb_r
 	iwr->u.data.length   = max_len;
 	iwr->u.data.flags    = 0;
 
+	sb_debug(__func__, "initializing wifi");
+
 	/* open socket and return file descriptor for it */
 	sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sock < 0) {
 		sb_print_error(routine, "Failed to open socket file descriptor");
 		return SB_FALSE;
 	}
+	sb_debug(__func__, "opened socket");
 
 	/* get all network interfaces */
 	if (getifaddrs(&ifaddrs) < 0 || ifaddrs == NULL) {
@@ -1566,6 +1569,7 @@ static SB_BOOL sb_wifi_init(struct iwreq *iwr, char *essid, size_t max_len, sb_r
 		return SB_FALSE;
 	}
 	ifap = ifaddrs;
+	sb_debug(__func__, "got list of interfaces");
 
 	/* go through each interface until one returns an ssid */
 	while (ifap != NULL) {
