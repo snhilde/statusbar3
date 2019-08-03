@@ -1793,6 +1793,12 @@ static const struct thread_routines_t {
 	{ WEATHER,    sb_weather_routine    },
 	{ WIFI,       sb_wifi_routine       },
 };
+static SB_BOOL parse_config(void)
+{
+
+	return SB_TRUE;
+}
+
 int main(int argc, char *argv[])
 {
 	size_t             num_routines;
