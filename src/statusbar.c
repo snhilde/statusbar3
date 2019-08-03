@@ -1644,6 +1644,7 @@ static void *sb_wifi_routine(void *thunk)
 			pthread_mutex_unlock(&(routine->mutex));
 		}
 		close(sock);
+		sb_debug(routine->name, "Closed socket");
 
 		sb_leak_check(__func__);
 		SB_STOP_TIMER;
