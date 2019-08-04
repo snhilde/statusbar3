@@ -1841,7 +1841,12 @@ static SB_BOOL sb_start_routine(const char routine_str[], long interval, const c
 		return SB_FALSE;
 	}
 
-	object = &routine_array[routine];
+	/* Get last routine in routine list. */
+	for (object = routine_list; object != NULL; object = object->next);
+
+	/* String routine onto list. */
+	object->next = &routine_array[routine];
+	object       = object->next;
 
 	return SB_TRUE;
 }
