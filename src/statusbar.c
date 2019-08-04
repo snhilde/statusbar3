@@ -1795,6 +1795,35 @@ static const struct thread_routines_t {
 	{ WIFI,       sb_wifi_routine       },
 };
 
+static SB_BOOL sb_check_weather(long interval)
+{
+#ifdef BUILD_WEATHER
+	/* From the libcurl docs, about curl_global_init():
+	 * "You must not call it when any other thread in the program (i.e. a
+	 * thread sharing the same memory) is running. This doesn't just mean
+	 * no other thread that is using libcurl. Because curl_global_init calls
+	 * functions of other libraries that are similarly thread unsafe, it could
+	 * conflict with any other thread that uses these other libraries."
+	 */
+	sb_debug(__func__, "Checking weather arguments");
+
+	if (chosen_routines[i].seconds < 30) {
+		fprintf(stderr, "Weather routine: Interval time must be at least 30 seconds\n");
+		return SB_FALSE;
+	}
+	sb_debug("Weather", "interval is good");
+
+	sb_debug("Weather", "starting libcurl global init");
+	if (curl_global_init(CURL_GLOBAL_SSL) != 0) {
+		fprintf(stderr, "Weather routine: Failed to initialize global libcurl\n");
+		return SB_FALSE;
+	}
+	sb_debug("Weather", "libcurl global init is good");
+#endif
+
+	return SB_TRUE;
+}
+
 static enum sb_routine_e sb_routine_from_str(const char *str)
 {
 	if (strcmp("BATTERY", str) == 0) {
@@ -1853,6 +1882,9 @@ static SB_BOOL sb_start_routine(const char routine_str[], long interval, const c
 	if (routine == DELIMITER) {
 		sb_debug(__func__, "don't initialize delimiter");
 		continue;
+	} else if (index == WEATHER) {
+		if (!sb_check_weather(interval))
+			return SB_FALSE;
 	}
 
 	return SB_TRUE;
