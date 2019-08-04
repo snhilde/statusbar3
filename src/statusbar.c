@@ -1793,6 +1793,12 @@ static const struct thread_routines_t {
 	{ WEATHER,    sb_weather_routine    },
 	{ WIFI,       sb_wifi_routine       },
 };
+static SB_BOOL sb_parse_routine(const char buf[])
+{
+
+	return SB_TRUE;
+}
+
 static SB_BOOL parse_config(void)
 {
 	static const char *path = "src/options.conf";
