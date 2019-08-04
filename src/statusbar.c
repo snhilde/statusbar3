@@ -1808,6 +1808,9 @@ static SB_BOOL parse_config(void)
 	}
 	sb_debug(__func__, "opened %s", path);
 
+	while (fgets(buf, sizeof(buf), fd) != NULL) {
+	}
+
 	return SB_TRUE;
 }
 
