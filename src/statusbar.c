@@ -1798,8 +1798,8 @@ static SB_BOOL sb_parse_routine(const char buf[])
 	char routine[64];
 	long interval;
 	char color_normal[64];
-	char color_normal[64];
-	char color_normal[64];
+	char color_warning[64];
+	char color_error[64];
 
 	return SB_TRUE;
 }
