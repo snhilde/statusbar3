@@ -1793,6 +1793,12 @@ static const struct thread_routines_t {
 	{ WEATHER,    sb_weather_routine    },
 	{ WIFI,       sb_wifi_routine       },
 };
+static SB_BOOL sb_start_routine(const char routine[], long interval, const char color_normal[], const char color_warning[], const char color_error[])
+{
+
+	return SB_TRUE;
+}
+
 static SB_BOOL sb_parse_routine(const char buf[])
 {
 	char routine[64];
