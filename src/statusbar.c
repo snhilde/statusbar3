@@ -1795,7 +1795,7 @@ static const struct thread_routines_t {
 	{ WIFI,       sb_wifi_routine       },
 };
 
-static void sb_set_colors(sb_routine_t *routine, const char color_normal[], const char color_warning[], const char color_error[])
+static void sb_init_set_colors(sb_routine_t *routine, const char color_normal[], const char color_warning[], const char color_error[])
 {
 	/* Vaildate and set colors. If a color is not in the correct format, it will
  	 * be set to NULL now and not used later during printing. */
@@ -1942,7 +1942,7 @@ static SB_BOOL sb_init_parse_routine(const char buf[])
 	object->run         = SB_TRUE;
 
 	/* Set colors. */
-	sb_set_colors(object, color_normal, color_warning, color_error);
+	sb_init_set_colors(object, color_normal, color_warning, color_error);
 
 	sb_debug(__func__, "Initialized %s:", object->name);
 	sb_debug(object->name, "Interval: %ld sec", object->interval / 1000000);
