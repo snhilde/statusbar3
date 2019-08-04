@@ -1886,10 +1886,24 @@ static enum sb_routine_e sb_routine_from_str(const char *str)
 	}
 }
 
-static SB_BOOL sb_start_routine(const char routine_str[], long interval, const char color_normal[], const char color_warning[], const char color_error[])
+static SB_BOOL sb_init_parse_routine(const char buf[])
 {
+	char               routine_str[64];
+	long               interval;
+	char               color_normal[64];
+	char               color_warning[64];
+	char               color_error[64];
 	enum sb_routine_e  routine;
 	sb_routine_t      *object;
+
+	sb_debug(__func__, "checking if config line is a routine description");
+
+	if (sscanf(buf, "%s, %ld, %s, %s, %s", routine_str, &interval, color_normal,
+				color_warning, color_error) != 5) {
+		sb_debug(__func__, "config line is not a routing description");
+		return SB_FALSE;
+	}
+	sb_debug(__func__, "config line is a routine description; parsing routine");
 
 	routine = sb_routine_from_str(routine_str);
 	if (routine == -1) {
@@ -1897,7 +1911,7 @@ static SB_BOOL sb_start_routine(const char routine_str[], long interval, const c
 		return SB_FALSE;
 	}
 
-	/* Get last routine in routine list. */
+	/* Go to end of routine list. */
 	for (object = routine_list; object != NULL; object = object->next);
 
 	/* String routine onto list. */
@@ -1913,7 +1927,8 @@ static SB_BOOL sb_start_routine(const char routine_str[], long interval, const c
 		return SB_TRUE;
 	}
 
-	/* Check and initialize global weather environment. */
+	/* Check and initialize global weather environment. We need to do this now
+ 	 * before any threads start. */
 	if (index == WEATHER) {
 		if (!sb_check_weather(interval))
 			return SB_FALSE;
@@ -1929,33 +1944,13 @@ static SB_BOOL sb_start_routine(const char routine_str[], long interval, const c
 	/* Set colors. */
 	sb_set_colors(object, color_normal, color_warning, color_error);
 
-	sb_debug(__func__, "Initialized %s:", routine_object->name);
-	sb_debug(routine_object->name, "Interval: %ld sec", routine_object->interval / 1000000);
-	sb_debug(routine_object->name, "Normal color: %s", routine_object->colors.normal);
-	sb_debug(routine_object->name, "Warning color: %s", routine_object->colors.warning);
-	sb_debug(routine_object->name, "Error color: %s", routine_object->colors.error);
+	sb_debug(__func__, "Initialized %s:", object->name);
+	sb_debug(object->name, "Interval: %ld sec", object->interval / 1000000);
+	sb_debug(object->name, "Normal color: %s", object->colors.normal);
+	sb_debug(object->name, "Warning color: %s", object->colors.warning);
+	sb_debug(object->name, "Error color: %s", object->colors.error);
 
 	return SB_TRUE;
-}
-
-static SB_BOOL sb_init_parse_routine(const char buf[])
-{
-	char routine[64];
-	long interval;
-	char color_normal[64];
-	char color_warning[64];
-	char color_error[64];
-
-	sb_debug(__func__, "checking if config line is a routine description");
-
-	if (sscanf(buf, "%s, %ld, %s, %s, %s", routine, &interval, color_normal,
-				color_warning, color_error) != 5) {
-		sb_debug(__func__, "config line is not a routing description");
-		return SB_FALSE;
-	}
-
-	sb_debug(__func__, "config line is a routine description; starting routine");
-	return sb_start_routine(routine, interval, color_normal, color_warning, color_error);
 }
 
 static SB_BOOL sb_init_parse_config(void)
