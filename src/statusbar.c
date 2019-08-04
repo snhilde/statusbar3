@@ -2006,10 +2006,12 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	/* create thread */
-	pthread_mutex_init(&(routine_object->mutex), NULL);
-	pthread_create(&(routine_object->thread), NULL, routine_object->thread_func, (void *)routine_object);
-	sb_debug(routine_object->name, "Thread created");
+	/* Create threads. */
+	for (routine = routine_list; routine != NULL; routine = routine->next) {
+		pthread_mutex_init(&(routine->mutex), NULL);
+		pthread_create(&(routine->thread), NULL, routine->thread_func, (void *)routine);
+		sb_debug(routine->name, "Thread created");
+	}
 
 	sb_leak_check(__func__);
 
