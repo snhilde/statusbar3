@@ -1799,11 +1799,14 @@ static SB_BOOL parse_config(void)
 	FILE              *fd;
 	char               buf[512];
 
+	sb_debug(__func__, "Parsing config");
+
 	fd = fopen(path, "r");
 	if (fd == NULL) {
 		fprintf(stderr, "Config: Failed to open %s", path);
 		return SB_FALSE;
 	}
+	sb_debug(__func__, "opened %s", path);
 
 	return SB_TRUE;
 }
