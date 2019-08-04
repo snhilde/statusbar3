@@ -1929,7 +1929,7 @@ static SB_BOOL sb_init_parse_routine(const char buf[])
 
 	/* Check and initialize global weather environment. We need to do this now
  	 * before any threads start. */
-	if (index == WEATHER) {
+	if (routine == WEATHER) {
 		if (!sb_init_handle_weather(interval))
 			return SB_FALSE;
 	}
@@ -1937,8 +1937,8 @@ static SB_BOOL sb_init_parse_routine(const char buf[])
 	/* Set routine's values. */
 	object->thread_func = possible_routines[routine].callback;
 	object->interval    = interval * 1000000;
-	object->color       = routine_object->colors.normal;
-	object->name        = routine_names[index];
+	object->color       = object->colors.normal;
+	object->name        = routine_names[routine];
 	object->run         = SB_TRUE;
 
 	/* Set colors. */
@@ -1991,7 +1991,7 @@ static SB_BOOL sb_init_parse_config(const char *path)
 int main(int argc, char *argv[])
 {
 	static const char *path = "src/options.conf";
-	sb_routine_t      *routine_object;
+	sb_routine_t      *routine;
 
 #ifdef DEBUG
 	/* Create debug mutex so we can print debug statements. */
@@ -2001,7 +2001,7 @@ int main(int argc, char *argv[])
 	(void)debug_mutex;
 #endif
 
-	if (!sb_init_parse_routine(path)) {
+	if (!sb_init_parse_config(path)) {
 		fprintf(stderr, "Failed to parse %s\n", path);
 		exit(EXIT_FAILURE);
 	}
