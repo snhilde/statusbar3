@@ -1795,6 +1795,41 @@ static const struct thread_routines_t {
 	{ WIFI,       sb_wifi_routine       },
 };
 
+static enum sb_routine_e sb_routine_from_str(const char *str)
+{
+	if (strcmp("BATTERY", str) == 0) {
+		return BATTERY;
+	} else if (strcmp("CPU_TEMP", str) == 0) {
+		return CPU_TEMP;
+	} else if (strcmp("CPU_USAGE", str) == 0) {
+		return CPU_USAGE;
+	} else if (strcmp("DISK", str) == 0) {
+		return DISK;
+	} else if (strcmp("FAN", str) == 0) {
+		return FAN;
+	} else if (strcmp("LOAD", str) == 0) {
+		return LOAD;
+	} else if (strcmp("NETWORK", str) == 0) {
+		return NETWORK;
+	} else if (strcmp("RAM", str) == 0) {
+		return RAM;
+	} else if (strcmp("TIME", str) == 0) {
+		return TIME;
+	} else if (strcmp("TODO", str) == 0) {
+		return TODO;
+	} else if (strcmp("VOLUME", str) == 0) {
+		return VOLUME;
+	} else if (strcmp("WEATHER", str) == 0) {
+		return WEATHER;
+	} else if (strcmp("WIFI", str) == 0) {
+		return WIFI;
+	} else if (strcmp("DELIMITER", str) == 0) {
+		return DELIMITER;
+	} else {
+		return -1;
+	}
+}
+
 static SB_BOOL sb_start_routine(const char routine_str[], long interval, const char color_normal[], const char color_warning[], const char color_error[])
 {
 	enum sb_routine_e routine;
