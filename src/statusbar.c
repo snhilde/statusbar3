@@ -1822,7 +1822,7 @@ static void sb_init_set_colors(sb_routine_t *routine, const char color_normal[],
 	}
 }
 
-static SB_BOOL sb_check_weather(long interval)
+static SB_BOOL sb_init_handle_weather(long interval)
 {
 #ifdef BUILD_WEATHER
 	/* From the libcurl docs, about curl_global_init():
@@ -1930,7 +1930,7 @@ static SB_BOOL sb_init_parse_routine(const char buf[])
 	/* Check and initialize global weather environment. We need to do this now
  	 * before any threads start. */
 	if (index == WEATHER) {
-		if (!sb_check_weather(interval))
+		if (!sb_init_handle_weather(interval))
 			return SB_FALSE;
 	}
 
