@@ -1797,6 +1797,7 @@ static SB_BOOL parse_config(void)
 {
 	static const char *path = "src/options.conf";
 	FILE              *fd;
+	char               buf[512];
 
 	fd = fopen(path, "r");
 	if (fd == NULL) {
