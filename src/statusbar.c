@@ -1797,6 +1797,9 @@ static const struct thread_routines_t {
 
 static SB_BOOL sb_start_routine(const char routine_str[], long interval, const char color_normal[], const char color_warning[], const char color_error[])
 {
+	enum sb_routine_e routine;
+
+	routine = sb_routine_from_str(routine_str);
 
 	return SB_TRUE;
 }
