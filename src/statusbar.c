@@ -1813,6 +1813,9 @@ static SB_BOOL parse_config(void)
 		/* Ignore comment lines. */
 		if (buf[0] == '#' || buf[0] == '\n')
 			continue;
+
+		if (sb_parse_routine(buf))
+			continue;
 	}
 
 	return SB_TRUE;
