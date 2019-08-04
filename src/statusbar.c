@@ -1842,8 +1842,13 @@ static SB_BOOL sb_parse_config(void)
 		if (buf[0] == '#' || buf[0] == '\n')
 			continue;
 
+		/* First, try to read in a routine line, because there are more of them. */
 		if (sb_parse_routine(buf))
 			continue;
+
+		/* If it's not a routine line, try to find the variable. */
+
+		/* If we made it this far, then we have an error. */
 	}
 
 	return SB_TRUE;
