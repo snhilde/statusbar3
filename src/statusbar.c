@@ -1803,15 +1803,6 @@ static SB_BOOL parse_config(void)
 		fprintf(stderr, "Config: Failed to open %s", path);
 		return SB_FALSE;
 	}
-	char buf[512];
-	fgets(buf, sizeof(buf), fd);
-	printf("%s", buf);
-
-	fgets(buf, sizeof(buf), fd);
-	printf("%s", buf);
-
-	fgets(buf, sizeof(buf), fd);
-	printf("%s", buf);
 
 	return SB_TRUE;
 }
