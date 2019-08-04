@@ -1775,6 +1775,7 @@ static void sb_print(void)
 }
 
 
+/* --- MAIN INIT --- */
 static const struct thread_routines_t {
 	enum sb_routine_e routine;
 	void *(*callback)(void *thunk);
@@ -1793,6 +1794,7 @@ static const struct thread_routines_t {
 	{ WEATHER,    sb_weather_routine    },
 	{ WIFI,       sb_wifi_routine       },
 };
+
 static SB_BOOL sb_start_routine(const char routine[], long interval, const char color_normal[], const char color_warning[], const char color_error[])
 {
 
