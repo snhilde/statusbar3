@@ -1877,12 +1877,17 @@ static SB_BOOL sb_start_routine(const char routine_str[], long interval, const c
 	object->next = &routine_array[routine];
 	object       = object->next;
 
-	/* Initialize the routine. */
+	/* Set routine. */
 	object->routine = routine;
+
+	/* Continue to next line if delimiter. */
 	if (routine == DELIMITER) {
 		sb_debug(__func__, "don't initialize delimiter");
-		continue;
-	} else if (index == WEATHER) {
+		return SB_TRUE;
+	}
+
+	/* Check and initialize global weather environment. */
+	if (index == WEATHER) {
 		if (!sb_check_weather(interval))
 			return SB_FALSE;
 	}
