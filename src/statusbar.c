@@ -1919,6 +1919,13 @@ static SB_BOOL sb_start_routine(const char routine_str[], long interval, const c
 			return SB_FALSE;
 	}
 
+	/* Set routine's values. */
+	object->thread_func = possible_routines[routine].callback;
+	object->interval    = interval * 1000000;
+	object->color       = routine_object->colors.normal;
+	object->name        = routine_names[index];
+	object->run         = SB_TRUE;
+
 	/* Set colors. */
 	sb_set_colors(object, color_normal, color_warning, color_error);
 
