@@ -73,9 +73,9 @@ typedef struct sb_routine {
 	                                   master status bar string to copy. */
 	const char        *color;       /* Font color for each print cycle. */
 	struct {
-		const char    *normal[8];   /* Font color for normal values. */
-		const char    *warning[8];  /* Font color when routine is in warning range. */
-		const char    *error[8];    /* Font color when routine has an error. */
+		char           normal[8];   /* Font color for normal values. */
+		char           warning[8];  /* Font color when routine is in warning range. */
+		char           error[8];    /* Font color when routine has an error. */
 	} colors;
 	pthread_t          thread;      /* Thread assigned to this routine. */
 	pthread_mutex_t    mutex;       /* Mutex assigned to this routine. This will be used to
