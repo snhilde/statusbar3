@@ -1800,9 +1800,18 @@ static SB_BOOL parse_config(void)
 
 	fd = fopen(path, "r");
 	if (fd == NULL) {
-		sb_print_error("Parse config", "Failed to open %s", path);
+		fprintf(stderr, "Config: Failed to open %s", path);
 		return SB_FALSE;
 	}
+	char buf[512];
+	fgets(buf, sizeof(buf), fd);
+	printf("%s", buf);
+
+	fgets(buf, sizeof(buf), fd);
+	printf("%s", buf);
+
+	fgets(buf, sizeof(buf), fd);
+	printf("%s", buf);
 
 	return SB_TRUE;
 }
