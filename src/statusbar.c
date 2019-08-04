@@ -1953,11 +1953,10 @@ static SB_BOOL sb_init_parse_routine(const char buf[])
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_init_parse_config(void)
+static SB_BOOL sb_init_parse_config(const char *path)
 {
-	static const char *path = "src/options.conf";
-	FILE              *fd;
-	char               buf[512];
+	FILE *fd;
+	char  buf[512];
 
 	sb_debug(__func__, "Parsing config");
 
@@ -1991,114 +1990,27 @@ static SB_BOOL sb_init_parse_config(void)
 
 int main(int argc, char *argv[])
 {
-	size_t             num_routines;
-	int                i;
-	enum sb_routine_e  index;
-	enum sb_routine_e  next;
+	static const char *path = "src/options.conf";
 	sb_routine_t      *routine_object;
 
 #ifdef DEBUG
 	/* Create debug mutex so we can print debug statements. */
 	pthread_mutex_init(&debug_mutex, NULL);
+	sb_debug(__func__, "running statusbar with debug output enabled");
 #else
 	(void)debug_mutex;
 #endif
 
-	sb_debug(__func__, "running statusbar with debug output enabled");
-
-	num_routines = sizeof(chosen_routines) / sizeof(*chosen_routines);
-	sb_debug(__func__, "%zu routines chosen", num_routines);
-	if (num_routines < 1) {
-		fprintf(stderr, "No routines chosen, exiting...\n");
-		return 1;
+	if (!sb_init_parse_routine(path)) {
+		fprintf(stderr, "Failed to parse %s\n", path);
+		exit(EXIT_FAILURE);
 	}
 
-	/* mark head of routine list */
-	routine_list = &(routine_array[chosen_routines[0].routine]);
+	/* create thread */
+	pthread_mutex_init(&(routine_object->mutex), NULL);
+	pthread_create(&(routine_object->thread), NULL, routine_object->thread_func, (void *)routine_object);
+	sb_debug(routine_object->name, "Thread created");
 
-	/* step through each routine chosen in config.h and set it up */
-	for (i=0; i<num_routines; i++) {
-		index          = chosen_routines[i].routine;
-		routine_object = &(routine_array[index]);
-
-		/* string onto routine list */
-		if (i+1 < num_routines) {
-			next = chosen_routines[i+1].routine;
-			routine_object->next = &(routine_array[next]);
-		} else {
-			routine_object->next = NULL;
-		}
-
-		/* initialize the routine */
-		routine_object->routine = index;
-		if (index == DELIMITER) {
-			sb_debug(__func__, "don't initialize delimiter");
-			continue;
-		} else if (index == WEATHER) {
-#ifdef BUILD_WEATHER
-			/* From the libcurl docs, about curl_global_init():
- 			 * "You must not call it when any other thread in the program (i.e. a
-			 * thread sharing the same memory) is running. This doesn't just mean
-			 * no other thread that is using libcurl. Because curl_global_init calls
-			 * functions of other libraries that are similarly thread unsafe, it could
-			 * conflict with any other thread that uses these other libraries."
-			 */
-			sb_debug(__func__, "Checking weather arguments");
-
-			if (strlen(zip_code) != 5 || strspn(zip_code, "0123456789") != 5) {
-				fprintf(stderr, "Weather routine: Zip Code must be 5 digits\n");
-				continue;
-			}
-			sb_debug("Weather", "zip code is good");
-
-			if (chosen_routines[i].seconds < 30) {
-				fprintf(stderr, "Weather routine: Interval time must be at least 30 seconds\n");
-				continue;
-			}
-			sb_debug("Weather", "interval is good");
-
-			sb_debug("Weather", "starting libcurl global init");
-			if (curl_global_init(CURL_GLOBAL_SSL) != 0) {
-				fprintf(stderr, "Weather routine: Failed to initialize global libcurl\n");
-				continue;
-			}
-			sb_debug("Weather", "libcurl global init is good");
-#endif
-		}
-
-		if (
-			/* Check that all 3 colors are 7 characters long and hexadecimal. */
-			color_text == SB_TRUE &&
-			(
-				!sb_isrgb(chosen_routines[i].color_normal)  ||
-				!sb_isrgb(chosen_routines[i].color_warning) ||
-				!sb_isrgb(chosen_routines[i].color_error)
-			)
-		) {
-			fprintf(stderr, "%s: color must be RGB hex (\"#RRGGBB\")", routine_names[index]);
-
-		} else {
-			routine_object->thread_func    = possible_routines[index].callback;
-			routine_object->interval       = chosen_routines[i].seconds * 1000000;
-			routine_object->colors.normal  = chosen_routines[i].color_normal;
-			routine_object->colors.warning = chosen_routines[i].color_warning;
-			routine_object->colors.error   = chosen_routines[i].color_error;
-			routine_object->color          = routine_object->colors.normal;
-			routine_object->name           = routine_names[index];
-			routine_object->run            = SB_TRUE;
-
-			sb_debug(__func__, "Initializing %s:", routine_object->name);
-			sb_debug(routine_object->name, "Interval: %ld sec", routine_object->interval / 1000000);
-			sb_debug(routine_object->name, "Normal color: %s", routine_object->colors.normal);
-			sb_debug(routine_object->name, "Warning color: %s", routine_object->colors.warning);
-			sb_debug(routine_object->name, "Error color: %s", routine_object->colors.error);
-
-			/* create thread */
-			pthread_mutex_init(&(routine_object->mutex), NULL);
-			pthread_create(&(routine_object->thread), NULL, routine_object->thread_func, (void *)routine_object);
-			sb_debug(routine_object->name, "Thread created");
-		}
-	}
 	sb_leak_check(__func__);
 
 	/* print loop */
