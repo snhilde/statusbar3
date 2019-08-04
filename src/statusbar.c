@@ -1801,6 +1801,8 @@ static SB_BOOL sb_parse_routine(const char buf[])
 	char color_warning[64];
 	char color_error[64];
 
+	sb_debug(__func__, "checking if config line is a routine description");
+
 	if (sscanf(buf, "%s, %ld, %s, %s, %s", routine, &interval, color_normal,
 				color_warning, color_error) != 5)
 		return SB_FALSE;
