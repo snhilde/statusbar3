@@ -1831,7 +1831,7 @@ static SB_BOOL sb_parse_config(void)
 
 	fd = fopen(path, "r");
 	if (fd == NULL) {
-		fprintf(stderr, "Config: Failed to open %s", path);
+		fprintf(stderr, "Config: Failed to open %s\n", path);
 		return SB_FALSE;
 	}
 	sb_debug(__func__, "opened %s", path);
@@ -1849,6 +1849,9 @@ static SB_BOOL sb_parse_config(void)
 		/* If it's not a routine line, try to find the variable. */
 
 		/* If we made it this far, then we have an error. */
+		fprintf(stderr, "Config: Failed to parse line\n");
+		sb_debug(__func__, "Line error: %s", buf);
+		return SB_FALSE;
 	}
 
 	return SB_TRUE;
