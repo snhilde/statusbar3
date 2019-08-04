@@ -1938,7 +1938,7 @@ static SB_BOOL sb_start_routine(const char routine_str[], long interval, const c
 	return SB_TRUE;
 }
 
-static SB_BOOL sb_parse_routine(const char buf[])
+static SB_BOOL sb_init_parse_routine(const char buf[])
 {
 	char routine[64];
 	long interval;
@@ -1980,7 +1980,7 @@ static SB_BOOL sb_init_parse_config(void)
 			continue;
 
 		/* First, try to read in a routine line, because there are more of them. */
-		if (sb_parse_routine(buf))
+		if (sb_init_parse_routine(buf))
 			continue;
 
 		/* If it's not a routine line, try to find the variable. */
