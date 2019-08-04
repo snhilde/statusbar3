@@ -1775,25 +1775,45 @@ static void sb_print(void)
 }
 
 
-/* --- MAIN INIT --- */
+/* --- PARSE CONFIG --- */
 static const struct thread_routines_t {
-	enum sb_routine_e routine;
 	void *(*callback)(void *thunk);
 } possible_routines[] = {
-	{ BATTERY,    sb_battery_routine    },
-	{ CPU_TEMP,   sb_cpu_temp_routine   },
-	{ CPU_USAGE,  sb_cpu_usage_routine  },
-	{ DISK,       sb_disk_routine       },
-	{ FAN,        sb_fan_routine        },
-	{ LOAD,       sb_load_routine       },
-	{ NETWORK,    sb_network_routine    },
-	{ RAM,        sb_ram_routine        },
-	{ TIME,       sb_null_cb            },
-	{ TODO,       sb_todo_routine       },
-	{ VOLUME,     sb_volume_routine     },
-	{ WEATHER,    sb_weather_routine    },
-	{ WIFI,       sb_wifi_routine       },
+	{ sb_battery_routine    },
+	{ sb_cpu_temp_routine   },
+	{ sb_cpu_usage_routine  },
+	{ sb_disk_routine       },
+	{ sb_fan_routine        },
+	{ sb_load_routine       },
+	{ sb_network_routine    },
+	{ sb_ram_routine        },
+	{ sb_null_cb            },
+	{ sb_todo_routine       },
+	{ sb_volume_routine     },
+	{ sb_weather_routine    },
+	{ sb_wifi_routine       },
 };
+
+static SB_BOOL sb_init_read_variable(const char buf[])
+{
+	char var[64];
+
+	/* Get variable name. */
+	sscanf(buf, "%s =", var);
+
+	if (strcmp("color_text", var) == 0) {
+	} else if (strcmp("file_system", var) == 0) {
+	} else if (strcmp("time_format", var) == 0) {
+	} else if (strcmp("todo_path", var) == 0) {
+	} else if (strcmp("zip_code", var) == 0) {
+	} else {
+		fprintf(stderr, "Failed to match variable\n");
+		sb_debug(__func__, "Unmatched line: %s", buf);
+		return SB_FALSE;
+	}
+
+	return SB_TRUE;
+}
 
 static void sb_init_set_colors(sb_routine_t *routine, const char color_normal[], const char color_warning[], const char color_error[])
 {
@@ -1967,7 +1987,7 @@ static SB_BOOL sb_init_parse_config(const char *path)
 
 	sb_debug(__func__, "reading config lines");
 	while (fgets(buf, sizeof(buf), fd) != NULL) {
-		/* Ignore comment lines. */
+		/* Ignore comment lines. Ignore empty lines. */
 		if (buf[0] == '#' || buf[0] == '\n')
 			continue;
 
@@ -1976,6 +1996,8 @@ static SB_BOOL sb_init_parse_config(const char *path)
 			continue;
 
 		/* If it's not a routine line, try to find the variable. */
+		if (sb_init_read_variable(buf))
+			continue;
 
 		/* If we made it this far, then we have an error. */
 		fprintf(stderr, "Config: Failed to parse line\n");
@@ -1986,6 +2008,8 @@ static SB_BOOL sb_init_parse_config(const char *path)
 	return SB_TRUE;
 }
 
+
+/* --- MAIN ENTRY --- */
 int main(int argc, char *argv[])
 {
 	static const char *path = "src/options.conf";
@@ -1999,6 +2023,7 @@ int main(int argc, char *argv[])
 	(void)debug_mutex;
 #endif
 
+	/* Parse config file. */
 	sb_debug(__func__, "Parse config");
 	if (!sb_init_parse_config(path)) {
 		fprintf(stderr, "Failed to parse %s\n", path);
