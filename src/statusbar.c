@@ -1810,6 +1810,9 @@ static SB_BOOL parse_config(void)
 
 	sb_debug(__func__, "reading config lines");
 	while (fgets(buf, sizeof(buf), fd) != NULL) {
+		/* Ignore comment lines. */
+		if (buf[0] == '#')
+			continue;
 	}
 
 	return SB_TRUE;
