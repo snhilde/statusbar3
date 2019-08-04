@@ -1795,7 +1795,7 @@ static const struct thread_routines_t {
 	{ WIFI,       sb_wifi_routine       },
 };
 
-static SB_BOOL sb_start_routine(const char routine[], long interval, const char color_normal[], const char color_warning[], const char color_error[])
+static SB_BOOL sb_start_routine(const char routine_str[], long interval, const char color_normal[], const char color_warning[], const char color_error[])
 {
 
 	return SB_TRUE;
