@@ -1808,6 +1808,7 @@ static SB_BOOL parse_config(void)
 	}
 	sb_debug(__func__, "opened %s", path);
 
+	sb_debug(__func__, "reading config lines");
 	while (fgets(buf, sizeof(buf), fd) != NULL) {
 	}
 
