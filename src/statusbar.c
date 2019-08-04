@@ -1929,6 +1929,12 @@ static SB_BOOL sb_start_routine(const char routine_str[], long interval, const c
 	/* Set colors. */
 	sb_set_colors(object, color_normal, color_warning, color_error);
 
+	sb_debug(__func__, "Initialized %s:", routine_object->name);
+	sb_debug(routine_object->name, "Interval: %ld sec", routine_object->interval / 1000000);
+	sb_debug(routine_object->name, "Normal color: %s", routine_object->colors.normal);
+	sb_debug(routine_object->name, "Warning color: %s", routine_object->colors.warning);
+	sb_debug(routine_object->name, "Error color: %s", routine_object->colors.error);
+
 	return SB_TRUE;
 }
 
