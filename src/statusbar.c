@@ -1892,6 +1892,21 @@ static SB_BOOL sb_start_routine(const char routine_str[], long interval, const c
 			return SB_FALSE;
 	}
 
+	/* Check colors. If a color is not in the correct format, it will be set to
+ 	 * NULL now and not used later during printing. */
+	if (!sb_isrgb(color_normal)) {
+		fprintf(stderr, "%s: color must be RGB hex (\"#RRGGBB\")", routine_names[index]);
+		color_normal = NULL;
+	}
+	if (!sb_isrgb(color_warning)) {
+		fprintf(stderr, "%s: color must be RGB hex (\"#RRGGBB\")", routine_names[index]);
+		color_warning = NULL;
+	}
+	if (!sb_isrgb(color_error)) {
+		fprintf(stderr, "%s: color must be RGB hex (\"#RRGGBB\")", routine_names[index]);
+		color_error = NULL;
+	}
+
 	return SB_TRUE;
 }
 
