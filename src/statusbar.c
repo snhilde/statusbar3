@@ -1832,13 +1832,16 @@ static enum sb_routine_e sb_routine_from_str(const char *str)
 
 static SB_BOOL sb_start_routine(const char routine_str[], long interval, const char color_normal[], const char color_warning[], const char color_error[])
 {
-	enum sb_routine_e routine;
+	enum sb_routine_e  routine;
+	sb_routine_t      *object;
 
 	routine = sb_routine_from_str(routine_str);
 	if (routine == -1) {
 		fprintf(stderr, "Failed to determine routine from string\n");
 		return SB_FALSE;
 	}
+
+	object = &routine_array[routine];
 
 	return SB_TRUE;
 }
