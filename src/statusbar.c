@@ -1835,6 +1835,10 @@ static SB_BOOL sb_start_routine(const char routine_str[], long interval, const c
 	enum sb_routine_e routine;
 
 	routine = sb_routine_from_str(routine_str);
+	if (routine == -1) {
+		fprintf(stderr, "Failed to determine routine from string\n");
+		return SB_FALSE;
+	}
 
 	return SB_TRUE;
 }
