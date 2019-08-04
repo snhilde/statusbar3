@@ -1795,6 +1795,33 @@ static const struct thread_routines_t {
 	{ WIFI,       sb_wifi_routine       },
 };
 
+static void sb_set_colors(sb_routine_t *routine, const char color_normal[], const char color_warning[], const char color_error[])
+{
+	/* Vaildate and set colors. If a color is not in the correct format, it will
+ 	 * be set to NULL now and not used later during printing. */
+
+	if (sb_isrgb(color_normal)) {
+		strncpy(routine->colors.normal, color_normal, sizeof(routine->colors.normal));
+	} else {
+		fprintf(stderr, "%s: normal color must be RGB hex (\"#RRGGBB\")", routine->name);
+		memset(routine->colors.normal, 0, sizeof(routine->colors.normal));
+	}
+
+	if (sb_isrgb(color_warning)) {
+		strncpy(routine->colors.warning, color_warning, sizeof(routine->colors.warning));
+	} else {
+		fprintf(stderr, "%s: warning color must be RGB hex (\"#RRGGBB\")", routine->name);
+		memset(routine->colors.warning, 0, sizeof(routine->colors.warning));
+	}
+
+	if (sb_isrgb(color_error)) {
+		strncpy(routine->colors.error, color_error, sizeof(routine->colors.error));
+	} else {
+		fprintf(stderr, "%s: error color must be RGB hex (\"#RRGGBB\")", routine->name);
+		memset(routine->colors.error, 0, sizeof(routine->colors.error));
+	}
+}
+
 static SB_BOOL sb_check_weather(long interval)
 {
 #ifdef BUILD_WEATHER
@@ -1892,20 +1919,8 @@ static SB_BOOL sb_start_routine(const char routine_str[], long interval, const c
 			return SB_FALSE;
 	}
 
-	/* Check colors. If a color is not in the correct format, it will be set to
- 	 * NULL now and not used later during printing. */
-	if (!sb_isrgb(color_normal)) {
-		fprintf(stderr, "%s: color must be RGB hex (\"#RRGGBB\")", routine_names[index]);
-		color_normal = NULL;
-	}
-	if (!sb_isrgb(color_warning)) {
-		fprintf(stderr, "%s: color must be RGB hex (\"#RRGGBB\")", routine_names[index]);
-		color_warning = NULL;
-	}
-	if (!sb_isrgb(color_error)) {
-		fprintf(stderr, "%s: color must be RGB hex (\"#RRGGBB\")", routine_names[index]);
-		color_error = NULL;
-	}
+	/* Set colors. */
+	sb_set_colors(object, color_normal, color_warning, color_error);
 
 	return SB_TRUE;
 }
