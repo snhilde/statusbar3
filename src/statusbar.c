@@ -1834,18 +1834,18 @@ static SB_BOOL sb_init_handle_weather(long interval)
 	 */
 	sb_debug(__func__, "Checking weather arguments");
 
-	if (chosen_routines[i].seconds < 30) {
+	if (interval < 30) {
 		fprintf(stderr, "Weather routine: Interval time must be at least 30 seconds\n");
 		return SB_FALSE;
 	}
-	sb_debug("Weather", "interval is good");
+	sb_debug(__func__, "interval is good");
 
-	sb_debug("Weather", "starting libcurl global init");
+	sb_debug(__func__, "starting libcurl global init");
 	if (curl_global_init(CURL_GLOBAL_SSL) != 0) {
 		fprintf(stderr, "Weather routine: Failed to initialize global libcurl\n");
 		return SB_FALSE;
 	}
-	sb_debug("Weather", "libcurl global init is good");
+	sb_debug(__func__, "libcurl global init is good");
 #endif
 
 	return SB_TRUE;
