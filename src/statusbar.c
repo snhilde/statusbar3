@@ -1958,7 +1958,7 @@ static SB_BOOL sb_parse_routine(const char buf[])
 	return sb_start_routine(routine, interval, color_normal, color_warning, color_error);
 }
 
-static SB_BOOL sb_parse_config(void)
+static SB_BOOL sb_init_parse_config(void)
 {
 	static const char *path = "src/options.conf";
 	FILE              *fd;
