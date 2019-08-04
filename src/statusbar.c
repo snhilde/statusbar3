@@ -1958,8 +1958,6 @@ static SB_BOOL sb_init_parse_config(const char *path)
 	FILE *fd;
 	char  buf[512];
 
-	sb_debug(__func__, "Parsing config");
-
 	fd = fopen(path, "r");
 	if (fd == NULL) {
 		fprintf(stderr, "Config: Failed to open %s\n", path);
@@ -2001,6 +1999,7 @@ int main(int argc, char *argv[])
 	(void)debug_mutex;
 #endif
 
+	sb_debug(__func__, "Parse config");
 	if (!sb_init_parse_config(path)) {
 		fprintf(stderr, "Failed to parse %s\n", path);
 		exit(EXIT_FAILURE);
