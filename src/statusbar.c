@@ -1810,7 +1810,7 @@ static SB_BOOL sb_parse_routine(const char buf[])
 	}
 
 	sb_debug(__func__, "config line is a routine description; starting routine");
-	return SB_TRUE;
+	return sb_start_routine(routine, interval, color_normal, color_warning, color_error);
 }
 
 static SB_BOOL parse_config(void)
