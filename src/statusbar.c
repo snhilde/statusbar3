@@ -1885,11 +1885,11 @@ int main(int argc, char *argv[])
 			strncpy(routine_object->colors.warning, chosen_routines[i].color_warning, sizeof(routine_object->colors.warning));
 			strncpy(routine_object->colors.error,   chosen_routines[i].color_error,   sizeof(routine_object->colors.error));
 
-			routine_object->thread_func    = possible_routines[index].callback;
-			routine_object->interval       = chosen_routines[i].seconds * 1000000;
-			routine_object->color          = routine_object->colors.normal;
-			routine_object->name           = routine_names[index];
-			routine_object->run            = SB_TRUE;
+			routine_object->thread_func = possible_routines[index].callback;
+			routine_object->interval    = chosen_routines[i].seconds * 1000000;
+			routine_object->color       = routine_object->colors.normal;
+			routine_object->name        = routine_names[index];
+			routine_object->run         = SB_TRUE;
 
 			sb_debug(__func__, "Initializing %s:", routine_object->name);
 			sb_debug(routine_object->name, "Interval: %ld sec", routine_object->interval / 1000000);
