@@ -153,7 +153,7 @@ static SB_BOOL sb_read_file(char buf[], size_t size, const char *base, const cha
 	char  path[512];
 	FILE *fd;
 
-	sb_debug(__func__, "Reading %s%s", base, file?file:"");
+	sb_debug(__func__, "reading %s%s", base, file?file:"");
 	memset(buf, 0, size);
 
 	snprintf(path, sizeof(path), "%s%s", base, file?file:"");
@@ -186,7 +186,7 @@ static SB_BOOL sb_get_path(char buf[], size_t size, const char *base, const char
 	char           path[512];
 	char           contents[512];
 
-	sb_debug(__func__, "Looking in %s for %s=%s", base, file, match);
+	sb_debug(__func__, "looking in %s for %s=%s", base, file, match);
 	memset(buf, 0, size);
 
 	dir = opendir(base);
@@ -1623,7 +1623,7 @@ static void *sb_wifi_routine(void *thunk)
 		if (ioctl(sock, SIOCGIWESSID, &iwr) < 0) {
 			found = SB_FALSE;
 			routine->color = routine->colors.warning;
-			sb_debug(__func__, "Wifi is not connected");
+			sb_debug(__func__, "wifi is not connected");
 
 			pthread_mutex_lock(&(routine->mutex));
 			snprintf(routine->output, sizeof(routine->output), "Not Connected");
@@ -1631,11 +1631,11 @@ static void *sb_wifi_routine(void *thunk)
 		} else {
 			found = SB_TRUE;
 			if (strlen(essid) == 0) {
-				sb_debug(__func__, "Wifi is connected but down");
+				sb_debug(__func__, "wifi is connected but down");
 				snprintf(essid, sizeof(essid)-1, "Wifi Down");
 				routine->color = routine->colors.error;
 			} else {
-				sb_debug(__func__, "Wifi is operating on network %s", essid);
+				sb_debug(__func__, "wifi is operating on network %s", essid);
 				routine->color = routine->colors.normal;
 			}
 
@@ -1644,7 +1644,7 @@ static void *sb_wifi_routine(void *thunk)
 			pthread_mutex_unlock(&(routine->mutex));
 		}
 		close(sock);
-		sb_debug(__func__, "Closed socket");
+		sb_debug(__func__, "closed socket");
 
 		sb_leak_check(__func__);
 		SB_STOP_TIMER;
@@ -1749,7 +1749,7 @@ static void sb_print(void)
 			pthread_mutex_unlock(&(routine->mutex));
 		}
 
-		sb_debug(__func__, "Send output to statusbar");
+		sb_debug(__func__, "send output to statusbar");
 		XStoreName(dpy, root, full_output);
 		XSync(dpy, False);
 
@@ -1846,7 +1846,7 @@ int main(int argc, char *argv[])
 			 * functions of other libraries that are similarly thread unsafe, it could
 			 * conflict with any other thread that uses these other libraries."
 			 */
-			sb_debug(__func__, "Checking weather arguments");
+			sb_debug(__func__, "checking weather arguments");
 
 			if (strlen(zip_code) != 5 || strspn(zip_code, "0123456789") != 5) {
 				fprintf(stderr, "Weather routine: Zip Code must be 5 digits\n");
@@ -1891,16 +1891,16 @@ int main(int argc, char *argv[])
 			routine_object->name        = routine_names[index];
 			routine_object->run         = SB_TRUE;
 
-			sb_debug(__func__, "Initializing %s:", routine_object->name);
-			sb_debug(routine_object->name, "Interval: %ld sec", routine_object->interval / 1000000);
-			sb_debug(routine_object->name, "Normal color: %s", routine_object->colors.normal);
-			sb_debug(routine_object->name, "Warning color: %s", routine_object->colors.warning);
-			sb_debug(routine_object->name, "Error color: %s", routine_object->colors.error);
+			sb_debug(__func__, "initializing %s:", routine_object->name);
+			sb_debug(routine_object->name, "interval: %ld sec", routine_object->interval / 1000000);
+			sb_debug(routine_object->name, "normal color: %s", routine_object->colors.normal);
+			sb_debug(routine_object->name, "warning color: %s", routine_object->colors.warning);
+			sb_debug(routine_object->name, "error color: %s", routine_object->colors.error);
 
 			/* create thread */
 			pthread_mutex_init(&(routine_object->mutex), NULL);
 			pthread_create(&(routine_object->thread), NULL, routine_object->thread_func, (void *)routine_object);
-			sb_debug(routine_object->name, "Thread created");
+			sb_debug(routine_object->name, "thread created");
 		}
 	}
 	sb_leak_check(__func__);
