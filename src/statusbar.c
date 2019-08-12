@@ -1881,11 +1881,12 @@ int main(int argc, char *argv[])
 			fprintf(stderr, "%s: color must be RGB hex (\"#RRGGBB\")", routine_names[index]);
 
 		} else {
+			strncpy(routine_object->colors.normal,  chosen_routines[i].color_normal,  sizeof(routine_object->colors.normal));
+			strncpy(routine_object->colors.warning, chosen_routines[i].color_warning, sizeof(routine_object->colors.warning));
+			strncpy(routine_object->colors.error,   chosen_routines[i].color_error,   sizeof(routine_object->colors.error));
+
 			routine_object->thread_func    = possible_routines[index].callback;
 			routine_object->interval       = chosen_routines[i].seconds * 1000000;
-			routine_object->colors.normal  = chosen_routines[i].color_normal;
-			routine_object->colors.warning = chosen_routines[i].color_warning;
-			routine_object->colors.error   = chosen_routines[i].color_error;
 			routine_object->color          = routine_object->colors.normal;
 			routine_object->name           = routine_names[index];
 			routine_object->run            = SB_TRUE;
