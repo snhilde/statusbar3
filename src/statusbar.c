@@ -1513,7 +1513,7 @@ static void *sb_weather_routine(void *thunk)
 			break;
 
 		pthread_mutex_lock(&(routine->mutex));
-		snprintf(routine->output, sizeof(routine->output), "weather: %d °F (%d/%d)", temp, low, high);
+		snprintf(routine->output, sizeof(routine->output), "weather: %d °F (%d/%d)", temp, high, low);
 		pthread_mutex_unlock(&(routine->mutex));
 
 		sb_leak_check(__func__);
