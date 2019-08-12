@@ -68,7 +68,7 @@ typedef struct sb_routine {
 	                                   access the routine's flags and to match it to various
 	                                   checks and calls. */
 	const char        *name;        /* Printable name of routine. */
-	long               interval;    /* How often to call routine in microseconds. */
+	long               interval;    /* How often to call routine, in microseconds. */
 	char               output[256]; /* String of data that each routine will output for
 	                                   master status bar string to copy. */
 	const char        *color;       /* Font color for each print cycle. */
@@ -82,7 +82,7 @@ typedef struct sb_routine {
 	                                   lock output when reading from or writing to it. */
 	void            *(*thread_func)(void *); /* Callback function for thread. */
 	struct sb_routine *next;        /* Pointer to next routine in list. This is how we are
-	                                   going to keep track of the order or routines for
+	                                   going to keep track of the order of routines for
 	                                   printing to the status bar. */
 	SB_BOOL            run;         /* SB_TRUE (default) means run routine.
 									   SB_FALSE means thread has exited and routine won't be run. */
