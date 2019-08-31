@@ -10,7 +10,7 @@
 		clock_gettime(CLOCK_MONOTONIC_RAW, &finish_tp);
 
 #define SB_SLEEP \
-		elapsed_usec = (finish_tp.tv_sec - start_tp.tv_sec) + ((finish_tp.tv_nsec - start_tp.tv_nsec) / 1000); \
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) + ((finish_tp.tv_nsec - start_tp.tv_nsec) / 1000); \
 		if (elapsed_usec < routine->interval) { \
 			if (usleep(routine->interval - elapsed_usec) != 0) { \
 				sb_print_error(routine, "Error sleeping"); \
@@ -1755,7 +1755,7 @@ static void sb_print(void)
 
 		sb_leak_check(__func__);
 		clock_gettime(CLOCK_REALTIME, &finish_tp); /* STOP TIMER */
-		elapsed_usec = (finish_tp.tv_sec - start_tp.tv_sec) +
+		elapsed_usec = ((finish_tp.tv_sec - start_tp.tv_sec) * 1000000) +
 				((finish_tp.tv_nsec - start_tp.tv_nsec) / 1000);
 
 		if (elapsed_usec < 1000000) {
