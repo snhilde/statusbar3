@@ -1262,9 +1262,9 @@ static SB_BOOL sb_weather_get_forecast(struct sb_weather_t *info, int *low, int 
 	} else if (strcmp(tmp->valuestring, "Tonight") == 0) {
 		i = 1;
 	} else {
+		i = 0;
 		sb_print_error(routine, "Error in forecast array");
-		cJSON_Delete(json);
-		return SB_FALSE;
+		sb_print_error(routine, "  Unknown value: %s", tmp->valuestring);
 	}
 
 	tmp   = cJSON_GetArrayItem(array, i);
