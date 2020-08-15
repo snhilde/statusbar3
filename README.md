@@ -1,3 +1,7 @@
+![Version Badge](https://img.shields.io/badge/Version-3.2-informational)
+![Maintenance Badge](https://img.shields.io/badge/Maintained-no-critical)
+![Class Badge](https://img.shields.io/badge/Status-deprecated-inactive)
+
 # Status Bar
 
 ![bottom_bar](images/bottom_bar.png "Example Output")
